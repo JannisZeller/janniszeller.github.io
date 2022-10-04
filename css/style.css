@@ -1,0 +1,63 @@
+body {
+    background-color: #1E1E1E;
+    color: #D4D4D4; /*#D4D4D4*/
+    font-family: Calibri, 'Helvetica', sans-serif;
+    font-size: large;
+    line-height: 1.5;
+    margin: 3em;
+    text-align: left;
+}
+
+div.globalWrap {
+    width: 50%;
+    margin: auto;
+}
+
+div.verticalMenu {
+    width: 100%;
+}  
+
+div.verticalMenu div.head {
+    font-size: normal;
+    background-color: #D4D4D4;
+    color: #1E1E1E;
+    display: block;
+    margin: 0;
+    padding: 0.5em;
+    border: 1px solid white;
+    border-radius: 0.2em;
+}
+
+div.verticalMenu a {
+    background-color: rgba(255, 255, 255, .16); 
+    display: block; 
+    padding: 0.5em;
+    text-decoration: none; 
+    border: 1px solid white;
+    border-radius: 0.2em;
+}
+
+
+a {
+    color: #BB86FC;
+}
+
+@media screen and (max-width: 1500px) and (min-width: 1000px) {
+    div.globalWrap {
+        width: 75%;
+    }
+}
+
+
+@media screen and (max-width: 1000px) {
+    body {
+        font-size: medium;
+        margin-left: 2em;
+        margin-right: 2em;
+        margin-top: 3em;
+    }
+
+    div.globalWrap {
+        width: 100%;
+    }
+}
