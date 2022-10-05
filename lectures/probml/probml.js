@@ -27,6 +27,10 @@ color_scroll_divs = function(scrolls) {
 
 window.onload = function() {
     color_scroll_divs(scrolls);
+    var backg = document.getElementsByClassName('globalWrap')[0];
+    backg.style.visibility = 'visible';
+    backg.style.opacity = 1;
+    console.log(backg)
 }
 
 window.onresize = function() {
