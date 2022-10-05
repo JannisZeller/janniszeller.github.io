@@ -41,7 +41,12 @@
   <li>Note that lots of the rules for events on a probability space get generalized to random variables without further discussion, which can be found in introductory stochastic books. Additionally the notation of probability measures is often "abused", meaning shortened, by assuming that it is clear which part belongs to which random variable etc.</li> 
   <li>If not stated otherwise $\Omega$ represents the "base"-set of some measurable space and $\Sigma$ represents the $\sigma$-algebra. </li>
   <li>If not stated otherwise $A^C$ represents the complement relative to "base"-set of some measurable space $\Omega$, i. e. $A^C := \Omega\setminus A$.</li>
-  <li>$P(A, B) := P(A\cap B)$.</li> 
+  <li>Probabilities of intersections will get abbreviated especially for random variables:</li> 
+  <div class='scroll'>
+    $$
+      P(A, B) := P(A\cap B) \, .
+    $$
+  </div>
   <li>If not stated otherwise $B_1,B_2,...\in \Sigma$ denotes a finite or countable infinite family of sets.</li>
   <li>If a random variable is called e. g. $X$, then the sufficient space on which it lives (mostly it will be some dimensional $\mathbb R^d$) gets shortly denoted by $\mathbb X$.</li>
   <li>The <b>indicator function</b> is used as</li>
@@ -120,8 +125,18 @@
   <li>A probability measures can be uniquely defined by defining $P(\omega)$ for all atomic events $\omega \in \Omega$.</li>
   <li><b>Additional Properties of Probability Measures: The definition of a probability measure implies the following:</b></li>
   <ul>
-    <li>$P(A\cup B) = P(A) + P(B) - P(A\cap B)$.</li>
-    <li>$P(A) = 1-P(A^C)$.</li>
+    <li>Intersections and Unions:</li>
+    <div class='scroll'>
+      $$
+        P(A\cup B) = P(A) + P(B) - P(A\cap B)\, .
+      $$
+    </div>
+    <li>Complements:</li>
+    <div class='scroll'>
+      $$
+        P(A) = 1-P(A^C)\, .
+      $$
+    </div>
     <li>Let $B_1,B_2,...\in \Sigma$ pairwise disjoint, with $\bigcup B_i = \Omega$. Then</li>
     <div class='scroll'>
       $$
