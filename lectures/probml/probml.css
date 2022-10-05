@@ -1,0 +1,92 @@
+body {
+    background-color: #1E1E1E;
+    color: #D4D4D4; /*#D4D4D4*/
+    font-family: Calibri, 'Helvetica', sans-serif;
+    font-size: large;
+    line-height: 1.5;
+    margin: 3em;
+    text-align: left;
+}
+
+div.globalWrap {
+    width: 50%;
+    margin: auto;
+}
+
+h2, h3 {
+    padding-top: 0.5em;
+    margin-bottom: -0.5em;
+}
+
+li {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em
+}
+
+a {
+    color: #BB86FC;
+}
+
+ul, ol {
+    padding-left: 1em;
+}
+
+.flul {
+    padding-left: 1.5em;
+}
+
+.mdtbl {
+    border-collapse: collapse;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.bottom-border {
+    border-bottom: 2px solid;
+}
+
+td {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+.rightcol {
+    padding-left: 2.5em;
+}
+
+div.scroll {
+    margin: 4px, 4px;
+    padding: 4px;
+    width: 100%;    
+    border-radius: 0.5em;
+    transition: background-color 0.5s, color 0.5s, margin-top 0.5s;
+}
+
+/* For tooltips */
+a.tip span {display: none; position: absolute; color: #D4D4D4; background: #292929; padding: 5px; border-radius: 0.5em;}
+a.tip {position: relative;}
+a.tip:hover span {display: inline; text-align: center; z-index: 99;}
+
+
+@media screen and (max-width: 1000px) {
+    body {
+        font-size: medium;
+        margin-left: 2em;
+        margin-right: 2em;
+        margin-top: 3em;
+    }
+
+    div.globalWrap {
+        width: 100%;
+    }
+
+    table {
+        font-size: smaller;
+    }
+}
+
+@media screen and (max-width: 1500px) and (min-width: 1000px) {
+    div.globalWrap {
+        width: 75%;
+    }
+}
