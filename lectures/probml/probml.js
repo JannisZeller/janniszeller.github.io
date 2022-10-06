@@ -22,17 +22,27 @@ color_scroll_divs = function(scrolls) {
         }
     }   
     console.log("Scanning and Converting Formula-Divs.");
-    console.log("Numbers of indented Formulas" + k.toString());
+    console.log("Numbers of indented Formulas " + k.toString());
 }
 
 window.onload = function() {
     color_scroll_divs(scrolls);
-    var backg = document.getElementsByClassName('globalWrap')[0];
-    backg.style.visibility = 'visible';
-    backg.style.opacity = 1;
-    console.log(backg)
+
+    var background = document.getElementById('background');
+    background.style.opacity = 0.5;
+
+    var content = document.getElementsByClassName('content')[0];
+    content.style.visibility = 'visible';
+    content.style.opacity = 0.88;
+    console.log(content)
 }
 
+var delay;
 window.onresize = function() {
-    color_scroll_divs(scrolls);
+    // Optimizing with Debouncing: Run color_scroll_divs only when resize ended 
+    clearTimeout(delay);
+    delay = setTimeout(function() {
+        color_scroll_divs(scrolls);
+    }, 1000);
 }
+
