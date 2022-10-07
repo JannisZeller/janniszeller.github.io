@@ -1393,7 +1393,8 @@ input, select, textarea {
 					#header nav ul li a:active {
 						background-color: rgba(255, 255, 255, 0.175);
 					}
-
+		
+		/*
 		#header nav.use-middle:after {
 			content: '';
 			display: block;
@@ -1408,6 +1409,7 @@ input, select, textarea {
 		#header nav.use-middle ul li.is-middle {
 			border-left: 0;
 		}
+		*/
 
 		body.is-article-visible #header {
 			-moz-transform: scale(0.95);
@@ -1692,7 +1694,15 @@ input, select, textarea {
 	font-size: 							large;
 	text-decoration: 				underline;
 	text-underline-offset: 	0.5em;
-	letter-spacing: 				0.02em;
+	letter-spacing: 				0.05em;
+}
+
+h3.own {
+	font-weight: normal;
+	text-transform: none;
+	letter-spacing: 0.05em;
+	font-size: 			large;
+	text-decoration: underline;
 }
 
 ul.litlist {
@@ -1706,6 +1716,18 @@ ul.litlist > li {
 	text-indent: 		-1em;
 	line-height: 		1.5em;
 	padding-bottom: 1em;
+}
+
+div.scroll {
+	margin: 4px, 4px;
+	padding: 4px;
+	width: 100%;    
+	border-radius: 0.5em;
+	transition: background-color 0.325s, color 0.325s, margin-top 0.325s;
+}
+
+p.mathpar {
+	margin-bottom: 0em;
 }
 
 /* 

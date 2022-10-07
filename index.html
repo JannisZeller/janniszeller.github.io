@@ -45,6 +45,11 @@
 								<!-- <li><a href="#elements">Elements</a></li> -->
 							</ul>
 						</nav>
+						<nav>
+							<ul>
+								<li><a href="#showerthoughts">Showerthoughts</a> </li>
+							</ul>
+						</nav>
 					</header>
 
 				<!-- Main -->
@@ -105,7 +110,6 @@
 							</ul>
 						</article>
 
-
 							<!-- GDCP Dokkol 2022, Literature List-->		
 							<article id="phdcol2022">
 								<p class="long-header">Literature List - Presentation GDCP PhD-Colloquium, 2022</p>
@@ -140,6 +144,43 @@
 								</ul>
 							</article>
 
+						<!-- Showerthoughts -->
+						<article id="showerthoughts">
+							<h2 class="major">Showerthoughts</h2>
+							<p>Some "Showerthoughts" to share with friends and family.</p>
+
+							<h3 class="own">Relationship between MSE and Residual R-Squared</h3>
+							<p class="mathpar">Given some data $(x_i, y_i), \ i =1,...,N$ and a predictive model $\hat{y}_i = f(x_i)$ the formulas for the Residual $R^2$ and the Mean-Squared-Error $\mathrm{MSE}$ are:
+								<div class='scroll'>
+									$$
+										R^2 = 1 - \frac{\sum_i(y_i - \hat y_i)^2}{\sum_i(y_i-\bar y)^2}\, , \qquad \mathrm{MSE}= \frac{1}{n} \sum_{i=1}^n(y_i - \hat y_i)^2\, , 
+									$$
+								</div>
+								where $\bar y$ is the average or mean of the data predictions, i. e.
+								<div class='scroll'>
+									$$
+										\bar y = \frac{1}{n} \sum_{i=1}^n y_i\, .
+									$$
+								</div>
+								That being said, the denominator in $R^2$ can be identified as the <b>empirical variance</b> of the data:
+								<div class='scroll'>
+									$$
+										\frac{1}{n} \sum_{i=1}^n (y_i - \bar y)^2 = \hat \sigma_y^2\, .
+									$$
+								</div>
+								This gives rise to the typical interpretation of $R^2$ to be the <i>portion of variance in the data, the model can "explain"</i>, or easier: the extend to which the model performs better than just using the average for prediction. <br> <br> 
+								One can easily identify that:
+								<div class='scroll'>
+									$$
+										R^2 = 1 - \frac{\mathrm{MSE}}{\hat \sigma_y^2} \, .
+									$$
+								</div>
+								In unregularized regression models, $R^2$ is therefore directly connected with the $\mathrm{MSE}$, i. e. for a given dataset they correspond deterministically in a linear fashion. 
+							</p>
+							
+
+							
+						</article>
 
 						<!-- About -->
 							<article id="about">
@@ -438,6 +479,9 @@ print 'It took ' + i + ' iterations to sort the deck.';</code></pre>
 			<script src="assets/js/breakpoints.min.js"></script>
 			<script src="assets/js/util.js"></script>
 			<script src="assets/js/main.js"></script>
-
+			<script src="assets/js/scrollmath.js"></script>
+			<script type="text/javascript" id="MathJax-script" async
+				src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+			</script>
 	</body>
 </html>
