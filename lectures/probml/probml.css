@@ -12,13 +12,18 @@ body {
 
 #background {
     position:   fixed;
-    height:     100%;
+    min-height: 100%;
     min-width:  100%;
     z-index:    1;
     opacity:    1;
     background-color: #1b1f22;
     -webkit-transition: opacity 1s ease-in-out;
     transition:         opacity 1s ease-in-out;
+}
+
+#wrapper {
+    min-width:      100%;
+    margin-bottom:  3em;
 }
 
 div.content {
@@ -42,7 +47,7 @@ div.content {
     margin:         auto;
     padding:        2em;
     padding-top:    3em;
-    border-radius:  0.7em;
+    border-radius:  0.5em;
     box-shadow:     0 0 1em 0em #000000;
     /* Transition */
     -webkit-transition: visibility 0s, opacity 0.325s linear;
