@@ -1677,3 +1677,46 @@ input, select, textarea {
 		body.is-preload #footer {
 			opacity: 0;
 		}
+
+
+
+/* -------------------------------------------------------------------------- */
+/* OWN STUFF */
+/* -------------------------------------------------------------------------- */
+
+
+/* Literature Sections */
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+.long-header {
+	font-size: 							large;
+	text-decoration: 				underline;
+	text-underline-offset: 	0.5em;
+	letter-spacing: 				0.02em;
+}
+
+ul.litlist {
+	list-style: 		none;
+	padding-left: 	0;
+	margin-bottom: 	0.5em;
+}
+
+ul.litlist > li {
+	padding-left: 	1em;
+	text-indent: 		-1em;
+	line-height: 		1.5em;
+	padding-bottom: 1em;
+}
+
+/* 
+@media screen and (max-width: 1680px) {
+
+}
+
+@media screen and (max-width: 736px) {
+
+}
+
+@media screen and (max-width: 480px) {
+
+} */
