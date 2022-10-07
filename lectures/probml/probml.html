@@ -1440,6 +1440,12 @@
   </div>
   where $\hat f = \mathrm{argmax}\, \log p(f_X\vert y)$ and $\Sigma = -\nabla^2 \big(\log p(f_X\vert y)\big\vert_{f_X=\hat f} \big)^{-1}$. 
   <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ w. r. t. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} f_X$) with the approximations $\hat f$ and $\hat \Sigma$.</li>
+  <li>Note that for this setting the Laplace approximation yields at $f_X = \hat f_X$:</li>
+  <div class='scroll'>
+    $$
+      k_{XX}^{-1}(\hat f_X - m_X) = \nabla \log p(y\vert \hat f_X):= r\, .
+    $$
+  </div>
   <li>When using the sigmoid link function, these quantities are relatively easy to compute and the problem even results tp be <i>convex</i>, i. e. the Hessian $\nabla^2 \big(\log p(f_X\vert y)\big)$ is negative definite.</li>
   <li>The implementation can be followed in more detail in the <a href="https://youtu.be/iatPLQd7qcg?t=4462">lecture</a>.
   <li>Note that to actually predict labels or label-probabilities instead of "latent" functions, one can use</li>
@@ -1491,12 +1497,31 @@
 <h2>Generalized Linear Models</h2>
 
 <ul class="flul">
-  <li></li>  
-  <li></li>
+  <li><b>Connecting Gaussian Process Classification with SVMs:</b> It is possible to somewhat "derive" an SVM-optimization Problem from probabilistic methods, which is shown in the following:</li>  
+  <ul>
+    <li>Assuming the identical setting as in the last part we know, that (in Laplace approximation):</li>
+    <div class='scroll'>
+      $$
+        \mathbb E_q(f_x) = m_x + \underbrace{k_{xX}k^{-1}_{XX} (\hat f_X - m_X)}_{:= r} := m_x + k_{xX}r\, .
+      $$
+    </div>
+  </ul>
 </ul>
 
+
+
+
+
+
+
+
+
+
+
+
+
 <br> <br>
-<a target="_blank" href="https://www.youtube.com/watch?v=V93pFwd4fiI&ab_channel=T%C3%BCbingenMachineLearning&t=00m00s" style="color: #BB86FC;">Current Video</a>
+<a target="_blank" href="https://www.youtube.com/watch?v=V93pFwd4fiI&ab_channel=T%C3%BCbingenMachineLearning&t=11m19s" style="color: #BB86FC;">Current Video</a>
 
 
 </div>
