@@ -26,10 +26,20 @@ color_scroll_divs = function(scrolls) {
 }
 
 window.onload = function() {
-    color_scroll_divs(scrolls);
+    // color_scroll_divs(scrolls);
+
+    // var bg = jQuery("#background");
+
+    // function resizeBackground() {
+    //     bg.height(jQuery(window).height());
+    // }
+    
+    // jQuery(window).resize(resizeBackground);
+    // resizeBackground();
 
     var background = document.getElementById('background');
     background.style.opacity = 0.5;
+    
 
     var content = document.getElementsByClassName('content')[0];
     content.style.visibility = 'visible';
