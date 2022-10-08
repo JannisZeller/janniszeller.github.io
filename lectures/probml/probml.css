@@ -17,8 +17,8 @@ body {
     z-index:    1;
     opacity:    1;
     background-color: #1b1f22;
-    -webkit-transition: opacity 1s ease-in-out, height 999999999s;
-    transition:         opacity 1s ease-in-out, height 999999999s;
+    -webkit-transition: opacity 1s ease-in-out;
+    transition:         opacity 1s ease-in-out;
 }
 
 #wrapper {
