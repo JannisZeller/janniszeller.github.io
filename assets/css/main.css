@@ -1717,6 +1717,10 @@ ul.litlist > li {
 	padding-bottom: 1em;
 }
 
+ul > ul > li {
+	list-style: circle;
+}
+
 div.scroll {
 	margin: 4px, 4px;
 	padding: 4px;

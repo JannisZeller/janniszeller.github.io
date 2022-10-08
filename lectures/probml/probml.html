@@ -11,16 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0. user-scalable=1">
 
   <!-- Scripts -->
-  <script type="text/javascript" id="MathJax-script" async
-  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-  </script>
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']]
-      }
-    };
-  </script>
+  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script src="./probml.js"></script>
 
   <!-- Adding jQuery code from stackoverflow to prevent display mess caused by using
@@ -34,17 +25,21 @@
 
 
 <!-- In order for the scrollable formulas to get formatted correctly, always set them outside of a <li>-Element -->
-<body id="backg">
-<div id="background"></div>
-<div id="wrapper">
 
-<div class="content">
+<body>
+  <div id="bg2"></div>
+  <div id="bg1"></div>
+  
+  <div id="wrapper">
+  
+  <div class="content">
 
 
 <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1> 
 
-<p>Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen (Germany) 2020 / 2021. Lectures on <a target="_blank" href="https://www.youtube.com/watch?v=UbaVGD4Lfis&amp;list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&amp;ab_channel=T%C3%BCbingenMachineLearning">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
-<br>
+<p>
+  Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen (Germany) 2020 / 2021. Lectures on <a target="_blank" href="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
+</p>
 <h3>Notation</h3>
 <ul class="flul">
   <li>Note that lots of the rules for events on a probability space get generalized to random variables without further discussion, which can be found in introductory stochastic books. Additionally the notation of probability measures is often "abused", meaning shortened, by assuming that it is clear which part belongs to which random variable etc.</li> 
@@ -116,7 +111,6 @@
   </div>
   where in the second formulation the <a target="_blank" href="https://en.wikipedia.org/wiki/Dirac_delta_function">$\delta$-function</a> has been used (which is not actually a function.)
 </ul>
-
 
 
 
@@ -325,7 +319,19 @@
       P(Z=z) = \int_\mathbb R f^X(z-y)f^Y(y) \, \mathrm dy  
     $$
   </div>
-  <li>Example of a probabilistic inference scheme for the proportion of people wearing glasses given a sample $X$ and using a uniform prior for the true probability $\pi$ for wearing glasses and $P(X_i = 1\vert \pi)=\pi \ \ \Rightarrow \ \ P(X_i=0\vert \pi)=1-\pi$, which leads for a Beta-Distribution for the Posterior: $P(\pi \vert X) = B(n-1,m-1)^{-1}\pi^n(1-\pi)^m$, when observing a sample with $n$ positive results (wearing glasses) and $m=N-n$ negative results. This actual results for all $\beta$-distributed priors.</li>
+  <li>Example of a probabilistic inference scheme for the proportion of people wearing glasses given a sample $X$ and using a uniform prior for the true probability $\pi$ for wearing glasses and 
+  <div class='scroll'>
+    $$
+      P(X_i = 1\vert \pi)=\pi \ \ \Rightarrow \ \ P(X_i=0\vert \pi)=1-\pi \, , 
+    $$
+  </div>
+  which leads for a Beta-Distribution for the Posterior: 
+  <div class='scroll'>
+    $$
+      P(\pi \vert X) = B(n-1,m-1)^{-1}\pi^n(1-\pi)^m\, ,
+    $$
+  </div>
+  when observing a sample with $n$ positive results (wearing glasses) and $m=N-n$ negative results. This actual results for all $\beta$-distributed priors.</li>
 </ul>
 
 
@@ -1515,22 +1521,16 @@
 
 
 
-
-
-
-
-
-
-
-
-
 <br> <br>
 <a target="_blank" href="https://www.youtube.com/watch?v=V93pFwd4fiI&ab_channel=T%C3%BCbingenMachineLearning&t=11m19s" style="color: #BB86FC;">Current Video</a>
 
 
-</div>
+<!-- </div> -->
 
-</div>
+</div> <!-- content -->
+
+</div> <!-- wrapper -->
+
 </body>
 
 </html>
