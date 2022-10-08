@@ -42,6 +42,15 @@ color_scroll_divs = function(scrolls) {
 }
 
 window.onload = function() {
+    check = window.mobileCheck();
+    if (check) {
+        var bg1 = document.getElementById("bg1");
+        bg1.style.transform = "scale(1.125, 1.125)";
+        var bg2 = document.getElementById("bg2");
+        bg2.style.transform = "scale(1.125, 1.125)";
+        console.log("Transformed Background image to fit url-bar hiding mobile browsers.")
+    }
+
     color_scroll_divs(scrolls);
 
     var bg2 = document.getElementById('bg2');
