@@ -26,7 +26,7 @@ color_scroll_divs = function(scrolls) {
 }
 
 window.onload = function() {
-    // color_scroll_divs(scrolls);
+    color_scroll_divs(scrolls);
 
     // var bg = jQuery("#background");
 
