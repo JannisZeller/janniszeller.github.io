@@ -28,8 +28,8 @@ color_scroll_divs = function(scrolls) {
 window.onload = function() {
     color_scroll_divs(scrolls);
 
-    // var background = document.getElementById('background');
-    // background.style.opacity = 0.5;
+    var background = document.getElementById('background');
+    background.style.opacity = 0.5;
 
     var content = document.getElementsByClassName('content')[0];
     content.style.visibility = 'visible';
