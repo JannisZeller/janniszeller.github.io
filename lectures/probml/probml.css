@@ -10,7 +10,7 @@ body {
     z-index: -1;
 }
 
-#background {
+/* #background {
     position:   fixed;
     min-height: 100vh;
     min-width:  100%;
@@ -19,7 +19,7 @@ body {
     background-color: #1b1f22;
     -webkit-transition: opacity 1s ease-in-out;
     transition:         opacity 1s ease-in-out;
-}
+} */
 
 #wrapper {
     min-width:      100%;
