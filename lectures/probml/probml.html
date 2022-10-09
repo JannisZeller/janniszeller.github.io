@@ -11,13 +11,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0. user-scalable=1">
 
   <!-- Scripts -->
-  <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!-- <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script> -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Adding jQuery code from stackoverflow to prevent display mess caused by using
-       a background on mobile when taskbars gets hidden etc. -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script> -->
-  <script src="./bgmobile.js"></script> 
-  <!-- Finally Probml-Skript -->
+  <!-- Probml-Skript -->
   <script src="./probml.js"></script>
 
   <!-- Styling -->
@@ -29,12 +27,31 @@
 <!-- In order for the scrollable formulas to get formatted correctly, always set them outside of a <li>-Element -->
 
 <body>
-  <div id="bg2"></div>
-  <div id="bg1"></div>
-  
-  <div id="wrapper">
-  
-  <div class="content">
+
+  <!-- MathJax Macros -->
+  <div style="width:0;height:0;position:fixed;opacity:0;">
+  $$
+    \def\abs#1{{\left\vert #1 \right\vert}}
+    \def\R{{\mathbb R}}
+    \def\C{{\mathbb C}}
+    \def\E{{\mathbb E}}
+    \def\X{{\mathbb X}}
+    \def\Y{{\mathbb Y}}
+    \def\d{{\mathrm d}}
+    \def\cases#1{{\begin{cases}#1\end{cases}}}
+    \def\align#1{{\begin{align*}#1\end{align*}}}
+  $$
+  </div>
+
+<!-- Background -->
+<div id="bg2"></div>
+<div id="bg1"></div>
+
+<!-- Wrapper for content-padding -->
+<div id="wrapper">
+
+<!-- Actual Content -->
+<div class="content">
 
 
 <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1> 
@@ -265,7 +282,7 @@
   <li><b>Topology:</b> Let $\Omega$ be a space and $\tau$ be a collection of sets. $\tau$ is called a topology on $\Omega$ if</li>
   <ul>
     <li>$\Omega \in \tau$ and $\emptyset \in \tau$.</li>
-    <li><i>Any</i> union of elements of $\tau$ is in \$tau$.</li>
+    <li><i>Any</i> union of elements of $\tau$ is in $\tau$.</li>
     <li>Any intersection of <i>finitely many</i> elements of $\tau$ is in $\tau$.</li>
   </ul>
   The elements of $\tau$ are called <b>open sets.</b>
@@ -1208,7 +1225,7 @@
         f^{(l)} := w_k\phi^{(l)} \qquad \Rightarrow \qquad f^{(l)} \sim \mathcal{GP}\Big(0, \underbrace{\theta_l^2{\phi^{(l)}}^T \phi^{(l)}}_{:=k^{(l)}} \Big) = \mathcal{GP}\big(0, k^{(l)} \big) \, .
       $$
     </div>
-    To construct the posterior for individual features consider <a class="tip" href="javascript:void(0)">$\mathbf{f}$<span>Explicitly formatted as vector here.</span></a>$\, = (f^{(1)},f^{(2)},\dots )^T$. Therefore $\mathbf{f}\sim \mathcal{GP}(\mathbf{0}, K)$, where $K = \mathrm{diag}\, (k^{(1)}, k^{(2)}, \dots )$ is a (block)-diagonal matrix. The Gaussian Process Regression is then carried out by the assumption $Y \vert \mathbf f \sim \mathcal N (\vec 1 ^T \mathbf f, \sigma^2 \boldsymbol 1)$ where $\vec 1$ is the vector containing only ones of suitable size. The "Bayesian Inference with Gaussians" formula in combination with the diagonal form of $K$ yields:
+    To construct the posterior for individual features consider <span class="tip">$\mathbf{f} \, = (f^{(1)},f^{(2)},\dots )^T $<span>Explicitly formatted as bold-vector here.</span></span>. Therefore $\mathbf{f}\sim \mathcal{GP}(\mathbf{0}, K)$, where $K = \mathrm{diag}\, (k^{(1)}, k^{(2)}, \dots )$ is a (block)-diagonal matrix. The Gaussian Process Regression is then carried out by the assumption $Y \vert \mathbf f \sim \mathcal N (\vec 1 ^T \mathbf f, \sigma^2 \boldsymbol 1)$ where $\vec 1$ is the vector containing only ones of suitable size. The "Bayesian Inference with Gaussians" formula in combination with the diagonal form of $K$ yields:
     <div class='scroll'>
       $$
         \mathbf f_x \vert Y=y \sim \mathcal N\big(K_{xX} G^{-1}y, K_{xx}-K_{xX}G^{-1}K_{Xx}^T\big)\, .
@@ -1517,17 +1534,48 @@
         \mathbb E_q(f_x) = m_x + \underbrace{k_{xX}k^{-1}_{XX} (\hat f_X - m_X)}_{:= r} := m_x + k_{xX}r\, .
       $$
     </div>
+    <li>Using the properties of the likelihood on can obtain that the only main contributions to $r$ originate from the datapoints close to the decision-boundary.</li>
+    <li>These datapoints are called <b>support points</b> and their contributions to $r$ are called <b>support vectors.</b></li>
+    <li><b>Support-Vector-Machine:</b>  To approximate the Log-Likelihood using only the support vectors one chooses a loss-function, which sets the gradient of each contribution $y_if_i$ to zero if $ f_i>1$ which can be achieved using the <b>Hinge-Loss:</b></li>
+    <div class='scroll'>
+      $$
+        \mathcal l (y_i; f_i) =  [1-y_if_i]_+ = \max\{ 0, \ 1-y_if_i \} = \cases{
+          1-y_if_i\, ,  & y_if_i \leq 1 \\
+          0\, ,         & y_if_i > 1
+        } \, .
+      $$
+    </div>
+    to use instead of "$-\log \sigma (y_if_i)$" for each individual datum. This is basically the SVM-algorithm.
+    <li><b>Problem:</b> Using the Hinge-Loss breaks the interpretability of "$\exp \log p(f_x\vert y)$" as a posterior distribution, because the terms do not sum to $1$ (or a constant, which would be sufficient when rescaling). There are ways to reintroduce the interpretability though (e. g. introducing a third implicit class). The SVM can therefore interpreted as a fundamentally non-probabilistic model.</li>
   </ul>
+  <li><b>Multiple Class Classification:</b> In the following part the transition from binary to multiclass classification is shown.</li>
+  <ul>
+    <li>Assume now $C$ classes $[c_1,\dots c_C]$. Therefore for each training datum $k$, each class must have its own latent function, where a high value of the latent function $f_k^{(l)}$ resembles a high probability of $k$ belonging to class $c_l$. Therefore the latent function becomes vector-valued and the training data becomes</li>
+    <div class='scroll'>
+      $$
+        f_X = \left[f_1^{(1)}, \dots f_n^{(1)}, \ f_1^{(2)}, \dots , f_n^{(2)}, \ f_1^{(C)} \dots f_n^{(C)}  \right] \, .
+      $$
+    </div>
+    The sigmoid link-function then typically gets replaced by the <b>Softmax</b>:
+    <div class='scroll'>
+      $$
+        p\left( y_i^{(c)} \big\vert f_i \right) = \pi_i^{(c)} = \frac{\exp f_i^{(c)}}{\sum\limits_{\tilde c=1}^C\exp f_{i}^{(\tilde c)}} \, .
+      $$
+    </div>
+    <li>The derivations and calculations are completely analogous to the binary case.</li>
+  </ul>
+  <li>The two examples showed, that the key element to address different kinds of output scenarios is the link function. This gives rise to Generalized Linear Models.</li>
+  <li><b>Generalized Linear Model</b> (Working Definition): A Generalized Linear Model (GLM) is a probabilistic regression model for a function $f$ with a Gaussian Process prior $p(f)$ and a non-Gaussian likelihood $p(y\vert f_x)$. Note the distinction to a general linear model (GP prior but also GP likelihood, with non-linear kernel $k$).</li>
+  <li>Due to the fact, that in GLMs the likelihood is non-Gaussian the posterior needs to be approximated, which can be done by e. g. the Laplace Approximation.</li>
+  <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
 </ul>
 
 
 
 
 <br> <br>
-<a target="_blank" href="https://www.youtube.com/watch?v=V93pFwd4fiI&ab_channel=T%C3%BCbingenMachineLearning&t=11m19s" style="color: #BB86FC;">Current Video</a>
+<a target="_blank" href="https://youtu.be/V93pFwd4fiI?t=3178" style="color: #BB86FC;">Current Video</a>
 
-
-<!-- </div> -->
 
 </div> <!-- content -->
 

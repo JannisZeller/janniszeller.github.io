@@ -7,7 +7,7 @@ window.mobileCheck = function() {
   };
 
 var scrolls = document.getElementsByClassName('scroll');
-var mathjax_scale = 1;
+var mathjax_scale = 1.0;
 check = window.mobileCheck();
 
 MathJax = {
@@ -18,6 +18,8 @@ MathJax = {
     inlineMath: [['$', '$']]
   }
 };
+
+console.log(MathJax.version);
 
 color_scroll_divs = function(scrolls) {
     var k = 0;

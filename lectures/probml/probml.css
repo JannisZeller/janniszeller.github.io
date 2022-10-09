@@ -112,9 +112,31 @@ div.scroll {
 }
 
 /* For tooltips */
-a.tip span {display: none; position: absolute; color: #D4D4D4; background: #292929; padding: 5px; border-radius: 0.5em;}
-a.tip {position: relative;}
-a.tip:hover span {display: inline; text-align: center; z-index: 99;}
+span.tip {
+    color: #03DAC6;
+}
+.tip span {
+    display:    none; 
+    position:   absolute; 
+    padding:    5px; 
+    border-radius: 0.5em;
+}
+span.tip span {   
+    background: #90fff4; 
+    color:      #000000;
+}
+a.tip span {
+    background: #c79aff; 
+    color:      #000000; 
+}
+.tip {
+    position: relative;
+}
+.tip:hover span {
+    display:    flex;
+    text-align: center; 
+    z-index:    99;
+}
 
 
 @media screen and (max-width: 1000px) {
