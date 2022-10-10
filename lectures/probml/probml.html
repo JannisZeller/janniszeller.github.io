@@ -31,15 +31,18 @@
   <!-- MathJax Macros -->
   <div style="width:0;height:0;position:fixed;opacity:0;">
   $$
-    \def\abs#1{{\left\vert #1 \right\vert}}
-    \def\R{{\mathbb R}}
-    \def\C{{\mathbb C}}
-    \def\E{{\mathbb E}}
-    \def\X{{\mathbb X}}
-    \def\Y{{\mathbb Y}}
-    \def\d{{\mathrm d}}
-    \def\cases#1{{\begin{cases}#1\end{cases}}}
-    \def\align#1{{\begin{align*}#1\end{align*}}}
+    \newcommand{\abs}[1]{{\left\vert #1 \right\vert}}
+    \newcommand{\R}{{\mathbb R}}
+    \newcommand{\N}{{\mathbb N}}
+    \newcommand{\C}{{\mathbb C}}
+    \newcommand{\E}{{\mathbb E}}
+    \newcommand{\X}{{\mathbb X}}
+    \newcommand{\Y}{{\mathbb Y}}
+    \newcommand{\d}{{\mathrm d}}
+    \newcommand{\cases}[1]{{\begin{cases}#1\end{cases}}}
+    \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
+    \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
+    \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
   $$
   </div>
 
@@ -703,7 +706,7 @@
   <li><b>Multivariate Gaussian Distribution:</b> Let $X$ be gaussian distributed with mean $\mu \in \mathbb R^{n}$ and Covariance-Matrix $\Sigma\in \mathbb R^{n\times n}$ which is symmetric and positive definite (therefore invertible), i.e. $X\sim \mathcal N (\mu, \Sigma)$ then its PDF is given by:</li>
   <div class='scroll'>
     $$
-      \mathcal N(x; \mu, \sigma)=\frac{1}{(2\pi)^{n/2}\vert \Sigma \vert^{1/2}} \exp \left(-\frac{1}{2} (x-\mu)^T\Sigma^{-1}(x-\mu) \right) \, .
+      \mathcal N(x; \mu, \Sigma)=\frac{1}{(2\pi)^{n/2}\vert \Sigma \vert^{1/2}} \exp \left(-\frac{1}{2} (x-\mu)^T\Sigma^{-1}(x-\mu) \right) \, .
     $$
   </div>
   <li><b>Algebraic Trick:</b> The Gaussian PDF obeys the following algebraic rule, which can be useful when solving Integrals to leverage the normalization condition:</li>
@@ -1585,7 +1588,7 @@
   <li>Note that to actually predict labels or label-probabilities instead of "latent" functions, one can use</li>
   <div class='scroll'>
     $$
-      \bar{\pi}_i = \int \sigma (f_i) \cdot \mathcal N (f_i; \bar f_i, [\overline{\Sigma_x}]_{ii})\, \mathrm df_i \qquad \textsf{or} \qquad \hat \pi_i = \sigma(\bar f_i )
+      \bar{\pi}_i = \E_{p(f\vert y)}[\pi_x] \approx \int \sigma (f_i) \cdot \mathcal N (f_i; \bar f_i, [\overline{\Sigma_x}]_{ii})\, \mathrm df_i \qquad \textsf{or} \qquad \hat \pi_i = \sigma(\bar f_i )
     $$
   </div>
   where $\sigma (\cdot)$ can be the logistic link function, but does not have to.
@@ -1593,7 +1596,6 @@
 
 
 <h2>Generalized Linear Models</h2>
-
 <ul class="flul">
   <li><b>Connecting Gaussian Process Classification with SVMs:</b> It is possible to somewhat "derive" an SVM-optimization Problem from probabilistic methods, which is shown in the following:</li>  
   <ul>
@@ -1635,21 +1637,60 @@
   </ul>
   <li>The two examples showed, that the key element to address different kinds of output scenarios is the link function. This gives rise to Generalized Linear Models.</li>
   <li><b>Generalized Linear Model</b> (Working Definition): A Generalized Linear Model (GLM) is a probabilistic regression model for a function $f$ with a Gaussian Process prior $p(f)$ and a non-Gaussian likelihood $p(y\vert f_x)$. Note the distinction to a general linear model (GP prior but also GP likelihood, with non-linear kernel $k$).</li>
-  <li>Due to the fact, that in GLMs the likelihood is non-Gaussian the posterior needs to be approximated, which can be done by e. g. the Laplace Approximation.</li>
+  <li>Due to the fact that in GLMs the likelihood is non-Gaussian, the posterior needs to be approximated, which can be done by e. g. the Laplace Approximation.</li>
   <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
 </ul>
 
 
 <h2>Bayesian Neural Networks</h2>
+<ul class="flul">
+  <li>Lets first take a few steps back to the Gaussian Parametric Regression Framework in the following sense. Assume we have an arbitrary number of inputs $X$ (i. e. $x_1,x_2, \dots$), which shall be mapped to a general output $y\in \mathbb Y$ which might be of any kind (including e. g. classifications). These inputs get transformed into $d\in \N$ features $\phi_1^\theta,\dots, \phi_d^\theta$ which might depend on an arbitrary number of (hyper-)parameters $\theta$. To predict $y$ these get concatenated via some function $f$ which we model as a Gaussian Process.</li>
+  <li>Still the likelihood $Y\vert f$ is not assumed to be Gaussian here.</li>
+  <li>In Laplace Approximation one can show that <a href="http://gaussianprocess.org/gpml/" target="_blank">(Rasmussen & Williams, 2006, pp. 41-43)</a>:</li>
+  <div class='scroll'>
+    $$
+      \log q(y\vert X) = \log p(y\vert f) - \frac{1}{2} (\hat f - m_X)^Tk_{XX}^{-1}(\hat f-m_X) - \frac{1}{2}\log\big( \abs{k_{XX}} \cdot \abs{k_{XX}^{-1}+W} \big) \, ,
+    $$ 
+  </div>
+  where $W = -\nabla_f^2 \log p(y\vert f)$.
+  <li>Applying this result to the typical Neural Network setting where $f(x) = v^T \phi_x^\theta$ with some weights $v$ for which a gaussian prior is assumed is possible straightforward just like in the Gaussian Parametric Regression part.</li>
+  <li>Now lets generalize this to multi-layer networks. At each layer there is a link function $\psi_l$ applied and the final link function is denoted by $\sigma$. This results in:</li>
+  <div class='scroll'>
+    $$
+      p(y_i \vert W) = \prod_{i=1}^n \sigma(f_W(x_i))\, , \qquad f_W(x) = w_L^T \psi_L\Big( w_{L-1}^T \psi_{L-1} \big(\dots (w_1x) \dots \big) \Big)\, .
+    $$
+  </div>
+  "Standard" deep learning models proceed in modelling this in a MAP fashion by using the point estimate:
+  <div class='scroll'>
+    $$
+      W^* = \argmax W p(W\vert y) = \argmin{W} \left( - \sum_{i=1}^n \sigma(f_W(x_i)) - \log p(W) \right) := \argmin{W}J(W)
+    $$
+  </div>
+  where $\log p(W)$ is a regularizer which results from some prior assumption on $W$.
+  <li>Doing this can have some flaws though when viewed through the lens of probability theory as discussed in this <a href="https://youtu.be/V93pFwd4fiI?t=4409" target="_blank">lecture part</a>.</li>
+  <li>However one can use a Laplace Approximation and a linear approximation for $f$ - this time for deep networks - to integrate out the Uncertainty over the $W$'s. This leads to e. g. the classification probability approximation (MacKay, 1992, cited as in the <a href="https://youtu.be/V93pFwd4fiI?t=4960" target="_blank">lecture</a>)</li>
+  <div class='scroll'>
+    $$
+      p(y=1\vert x) \approx \sigma \left( \frac{m(x)}{\sqrt{1+\pi v(x)/8}}\right)
+    $$
+  </div>
+  where
+  <div class='scroll'>
+    $$
+      m(x) = f_{W^*}(x) \, , \qquad v(x) = - \Big(\nabla f \Big\vert_{W^*}\Big)^T \Big(\nabla_W^2 J\Big\vert_{W^*}\Big)^{-1} \Big(\nabla f \Big\vert_{W^*}\Big)
+    $$
+  </div>
+  <li>Note that extending neural networks to this kind of notion of Uncertainty might be computationally pretty expensive despite all of the approximations used, because still one would need the inverse of the Hessian $\nabla_W^2 J(W)$ which is of size "number of weights"$\, \times \,$ "number of weights". This can be made more lightweight if instead only approximations to the Hessian are used. There is software out there which extend known deep learning frameworks to a notion of uncertainty, e. g. <a href="http://backpack.pt" target="_blank">backpack for pytorch</a>.</li>
+</ul>
 
+
+<h2>Exponential Families</h2>
 <ul class="flul">
   <li></li>
 </ul>
 
-
-
 <br> <br>
-<a target="_blank" href="https://youtu.be/V93pFwd4fiI?t=3178" style="color: #BB86FC;">Current Video</a>
+<a target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=391" style="color: #BB86FC;">Current Video</a>
 
 
 </div> <!-- content -->
