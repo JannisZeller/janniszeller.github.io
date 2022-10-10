@@ -103,25 +103,22 @@ table.mdtbl {
     box-shadow: 0 0 0.5em 0em #000000;
 }
 
-table.mdtbl > tr, td {
+table.mdtbl td {
+    width: 50%;
     padding: 0.5em;
     line-height: 1em;
-    width: 50%;
-}
-
-table.mdtbl tr {
     background-color: #2e3236;
     border-bottom: 0.05em solid white;
 }
 
-table.mdtbl tr:first-child {
+table.mdtbl tr:first-child td {
     background-color: #90fff4;
     color: #000000;
     font-weight: bold;
     border: none;
 }
 
-table.mdtbl tr:last-child {
+table.mdtbl tr:last-child td {
     border: none;
 }
 
