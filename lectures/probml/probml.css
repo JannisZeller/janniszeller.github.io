@@ -1,3 +1,17 @@
+/* Colors */
+/* -------------------------------------------------------------------------- */
+/* 
+Primary Background: #1b1f22
+Scroll and Table Background: #2e3236
+Secondary1: #BB86FC
+Secondary1 Background: #c79aff
+Secondary2: #03DAC6
+Secondary2 Background: #90fff4
+*/
+
+
+
+
 /* Box Model and General Settings */
 /* -------------------------------------------------------------------------- */
 body {
@@ -81,7 +95,17 @@ li {
 }
 
 a {
+    -moz-transition:    color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
+    -webkit-transition: color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
+    -ms-transition:     color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
+    transition:         color 0.2s ease-in-out, background-color 0.2s ease-in-out, border-bottom-color 0.2s ease-in-out;
+    border-bottom: dotted 1px #BB86FC; /*rgba(255, 255, 255, 0.5)*/
+    text-decoration: none;
     color: #BB86FC;
+}
+
+a:hover {
+    border-bottom-color: transparent;
 }
 
 ul, ol {

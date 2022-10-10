@@ -59,7 +59,7 @@
 <p>
   Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen (Germany) 2020 / 2021. Lectures on <a target="_blank" href="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
 </p>
-<h3>Notation</h3>
+<h3><i>Notation</i></h3>
 <ul class="flul">
   <li>Note that lots of the rules for events on a probability space get generalized to random variables without further discussion, which can be found in introductory stochastic books. Additionally the notation of probability measures is often "abused", meaning shortened, by assuming that it is clear which part belongs to which random variable etc.</li> 
   <li>If not stated otherwise $\Omega$ represents the "base"-set of some measurable space and $\Sigma$ represents the $\sigma$-algebra. </li>
@@ -85,6 +85,19 @@
   <li>Given a probability distribution $\mathcal P$ with parameters $\theta$, e. g. the normal distribution $\mathcal N(\mu, \sigma^2)$ or the uniform distribution $U(a,b)$ and a random variable distributed accordingly $X\sim \mathcal P(\theta)$. Then the density is denoted as $P(X=x)=p(x) = \mathcal P(x; \theta)$.</li>
   <li>If space is an issue, determinants of matrices get denoted as $\vert A \vert$. Elsewhere $\det A$ is used for clarity.</li>
 </ul>
+
+<h3><i>The Toolbox</i></h3>
+<p>Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:</p>
+<table class="mdtbl">
+  <tr>
+    <td><b>Modelling Techniques</b></td>
+    <td><b>Computation Techniques</b></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
 
 
 <h2><i>Preface:</i> A Short Primer on Measure Theory</h2>
@@ -216,32 +229,39 @@
 <ul class="flul">
   <li>When moving from boolean logic to probability one has to take care of the probability of all atomic events, which already for simple examples need huge amount of memory $(2^{26}-1$ floats for "storing" the alphabet).</li>
   <li>Being uncertain is potentially much more expensive in terms of computation and memory than simply committing to a single hypothesis. This is <i>the</i> key challenge of probabilistic reasoning in practice.</li>
-  <li><b>Inverse Image:</b> Let $X:\Omega \to \Gamma$. The preimage or inverse image of a set $B\subset \Gamma$ under $X$, denoted by $X^{-1}(B)$ is the subset of $X$ defined by</li>
+  <li><b>Inverse Image:</b> Let $X:\Omega \to \X$. The preimage or inverse image of a set $B\subset \X$ under $X$, denoted by $X^{-1}(B)$ is the subset of $X$ defined by</li>
   <div class='scroll'>
     $$
       X^{-1}(B) = \big\{ \omega \in \Omega : X(\omega) \in B \big\} \, .
     $$
   </div>
-  <li><b>Measurable Functions and Random Variables:</b> Let $(\Omega, \Sigma)$ and $(\Gamma, \Xi)$ be two measurable spaces. A function $X:\Omega \to \Gamma$ is called measurable if $X^{-1}(B) \in \Sigma$ for all $B \in \Xi$. If there is, additionally, a probability measure $P$ on $(\Omega, \Sigma)$, then $X$ is called a random variable.</li>
-  <li><b>Distribution Measure:</b> Let $X:\Omega \to \Gamma$ be a random variable. Then the distribution measure (or law) $P_X$ of $X$ is defined for any $B \in \Xi$ as</li>
+  <li><b>Measurable Functions and Random Variables:</b> Let $(\Omega, \Sigma)$ and $(\X, \Xi)$ be two measurable spaces. A function $X:\Omega \to \X$ is called measurable if $X^{-1}(B) \in \Sigma$ for all $B \in \Xi$. If there is, additionally, a probability measure $P$ on $(\Omega, \Sigma)$, then $X$ is called a random variable.</li>
+  <li><b>Distribution Measure:</b> Let $X:\Omega \to \X$ be a random variable. Then the distribution measure (or law) $P_X$ of $X$ is defined for any $B \in \Xi$ as</li>
   <div class='scroll'>
     $$
       P_X(B) = P(X\in B) = P\left( X^{-1}(B) \right) = P\big( \{\omega \, \vert \, X(\omega)\, \in B\} \big)\, .
     $$
   </div>
+  <li><b>Support of a RV:</b> The support of a RV is given by the set of elements of $\X$ where the probability of $X$ is not zero:</li>
+  <div class='scroll'>
+    $$
+      \mathrm{supp}\, X = \big\{ x\in \X \ \vert \ P_X(\{x\} \neq 0 \big\}\, .
+    $$
+  </div>
+  Note that $\X$ can sometimes be already defined as being equal to $\mathrm{supp}\, X$ because points with no probability are irrelevant for modelling.
   <li><b>Abusing Notations:</b> This is where the abuse of notation comes in. When $X$ represents a random variable $P(X)$ implicitly represents the distribution measure of $X$. This is also used for defining "junctions" and "unions" of random variables: For junctions of random variables the following notation is used:</li>
   <div class='scroll'>
     $$
       P(X, Y) = P(X\in B, Y \in C) = P\Big( \{\omega \, \vert \, X(\omega)\, \in B\} \cap \{\omega \, \vert \, Y(\omega)\, \in C\} \Big) \, .
     $$
   </div>
-  <li>Using <b>Random Variables</b> and introducing <b>independence:</b></li>
+  <li><b>Independence:</b> Using the definitions from above one can apply the concepts of conditional (in)dependence directly to RVs. Two RVs $X$ and $Y$ are therefore called independent if</li>
   <div class='scroll'>
     $$
-      P(X, Y) = P(X)\cdot P(Y) \quad \Leftrightarrow \quad X, Y \ \textsf{independent.}
+      P(X, Y) = P(X)\cdot P(Y)\, .
     $$
   </div>
-  <li>Introducing <b>Joint Distributions</b> and <b>Marginal Distributions</b></li>
+  <li><b>Joint and Marginal Distributions:</b> </li>
   <li>Introducing <b>Conditional Independence</b>: Two RVs $X$ and $Y$ are conditionally independent given RV $Z$, iff their conditional distribution factorizes:</li>
   <div class='scroll'>
     $$
@@ -255,14 +275,13 @@
       P(X\vert Y, Z) = \frac{P(X, Y, Z)}{P(Y, Z)} = \frac{P(X, Y, Z)}{P(Z)} \cdot \left( \frac{P(Y, Z)}{P(Z)} \right)^{-1} = P(X, Y\vert Z) \cdot \frac{1}{P(Y\vert Z)} = P(X\vert Z)\, .
     $$
   </div>
-  <li>Independence (Assumptions) can help tremendously to simplify probabilistic models (Burglary, Alarm, Earthquake example).</li>
-  <li><b>Inference in the Bayesian framework inference consists of</b>:</li>
+  <li>Independence (Assumptions) can help tremendously to simplify probabilistic models (Burglary, Alarm, Earthquake example from the <a href="https://youtu.be/YWK74ZNPrHc?t=2760">lecture</a>)</li>
+  <li><b>Inference in the Bayesian framework consists of</b>:</li>
   <ol>
     <li>Identify all relevant variables.</li>
     <li>Define the joint probability for the <b>generative model</b></strong></li>
     <li>Mechanically using Bayes Theorem and computing marginals.</li>
   </ol>
-  <li>Introducing of <b>Graphical Models</b> in the form of Directed Acyclic Graphs <b>DAG</b>) which represent generative models due to the product rule.</li>
 </ul>
 
 
@@ -294,21 +313,18 @@
     $$
   </div>
   <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
+  <table class="mdtbl">
+    <tr>
+      <td><b>Model</b></td>
+      <td><b>Computation Technique</b></td>
+    </tr>
+    <tr>
+      <td>Directed Graphical Models (representable by a DAG)</td>
+      <td></td>
+    </tr>
+  </table>
 </ul>
-
-
-<h2>The Toolbox</h2>
-<p>Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:</p>
-<table class="mdtbl">
-  <tr>
-    <td><b>Modelling Techniques</b></td>
-    <td><b>Computation Techniques</b></td>
-  </tr>
-  <tr>
-    <td>Directed Graphical Models (representable by a DAG)</td>
-    <td></td>
-  </tr>
-</table>
 
 
 <h2>Continuous Random Variables</h2>
@@ -380,24 +396,55 @@
       P(X_i = 1\vert \pi)=\pi \ \ \Rightarrow \ \ P(X_i=0\vert \pi)=1-\pi \, , 
     $$
   </div>
-  which leads for a Beta-Distribution for the Posterior: 
+  which leads for a Beta-Distribution for the Posterior:</li>
   <div class='scroll'>
     $$
       P(\pi \vert X) = B(n-1,m-1)^{-1}\pi^n(1-\pi)^m\, ,
     $$
   </div>
-  when observing a sample with $n$ positive results (wearing glasses) and $m=N-n$ negative results. This actual results for all $\beta$-distributed priors.</li>
+  when observing a sample with $n$ positive results (wearing glasses) and $m=N-n$ negative results. This actual results for all $\beta$-distributed priors.
+  <li>Note that <i>Discrete RVs can be viewed as a special case of Continuous RVs</i> using the Dirac-Measure. A Discrete RV $X$ with $P(X=x) = p_x$ can be described as a continuous RV using the PDF:</li>
+  <div class='scroll'>
+    $$
+      \mathcal P(x) = \sum_{y \, \in\, \mathrm{supp}\, X} p_y \delta(x-y) \, .
+    $$
+  </div>
+  For this reason sometimes when denoting properties of RVs in general, one sometimes sticks to using the integral notation for continuous RVs. This can also be interpreted in context of measure theory.
 </ul>
-
 
 
 <h2>Expectations</h2>
-
 <ul class="flul">
-  <li>Introduction of <b>Expectations</b> in the notations $\langle f\rangle_p := \mathbb E_p\big(f(X)\big) := \int f(x)p(x) \, \mathrm dx$ with mean, variance, $p$-th moment and entropy.</li>
+  <li><b>Expectation of a Function:</b> Given some RV $X \in \X$ with PDF $\mathcal P(x)$. The Expectation of a function $f: \X \to \mathbb F$ is given by:</li>
+  <div class='scroll'>
+    $$
+      \E_\mathcal P [f] := \int f(x) \, \d \mathcal P(x) = \cases{
+        \displaystyle\int f(x)\mathcal P(x) \, \d x , & \textsf{continuous RV} \\
+        \displaystyle\sum_{x\, \in \, \mathrm{supp}\, X} f(x)\mathcal P(x), & \textsf{discrete RV} 
+      } \, .
+    $$
+  </div>
+  Another notation for expectation is using angle-brackets:
+  <div class='scroll'>
+    $$
+      \langle f\rangle_\mathcal P = \E_p[f] \, .
+    $$
+  </div>
+  <li><b>Mean:</b> The Mean is the expectation of the identity function $x\to x$:</li>
+  <div class='scroll'>
+    $$
+      \E[X] = \int x \, \d \mathcal P(x) \, .
+    $$
+  </div>
+  <li><b>Variance:</b> The Variance is the expectation of the quadratic deviation from the mean:</li>
+  <div class='scroll'>
+    $$
+      \mathrm{Var}\, X = \E\left[(X-\E X)^2\right] =\dots = \E\left[X^2\right] - \E X^2 \, .
+    $$
+  </div>
+  <li><b>Moments:</b> The $p$-th moment of a RV $X$ is the expectation $\E[x^p]$.
+  <li><b>Entropy:</b> The entropy is the expectation of $f(x)=-\log x$.</li>
 </ul>
-
-
 
 
 <h2>Monte Carlo Method</h2>
@@ -818,8 +865,6 @@
     </ol>
   </li>
 </ul>
-
-
 
 
 <h2>Gaussian Parametric Regression</h2>
@@ -1594,6 +1639,12 @@
   <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
 </ul>
 
+
+<h2>Bayesian Neural Networks</h2>
+
+<ul class="flul">
+  <li></li>
+</ul>
 
 
 
