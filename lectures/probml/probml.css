@@ -1,3 +1,5 @@
+/* Box Model and General Settings */
+/* -------------------------------------------------------------------------- */
 body {
     margin:         0;
     padding:        0;
@@ -62,6 +64,12 @@ div.content {
     transition:         visibility 0s, opacity 0.325s linear;
 }
 
+
+
+
+/* Styling general Elements */
+/* -------------------------------------------------------------------------- */
+
 h2, h3 {
     padding-top: 0.5em;
     margin-bottom: -0.5em;
@@ -84,24 +92,53 @@ ul, ol {
     padding-left: 1.5em;
 }
 
-.mdtbl {
+/* Tables */
+table.mdtbl {
     border-collapse: collapse;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left:    auto;
+    margin-right:   auto;
+    margin-top:     0.5em;
+    margin-bottom:  0.5em;
+    width: 75%;
+    box-shadow: 0 0 0.5em 0em #000000;
 }
 
-.bottom-border {
-    border-bottom: 2px solid;
+table.mdtbl > tr, td {
+    padding: 0.5em;
+    line-height: 1em;
+    width: 50%;
 }
 
-td {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
+table.mdtbl tr {
+    background-color: #2e3236;
+    border-bottom: 0.05em solid white;
 }
 
-.rightcol {
-    padding-left: 2.5em;
+table.mdtbl tr:first-child {
+    background-color: #90fff4;
+    color: #000000;
+    font-weight: bold;
+    border: none;
 }
+
+table.mdtbl tr:last-child {
+    border: none;
+}
+
+table.mdtbl tr:first-child td:first-child {border-top-left-radius: 0.3em;}
+table.mdtbl tr:first-child td:last-child  {border-top-right-radius: 0.3em;}
+
+table.mdtbl tr:last-child td:first-child {border-bottom-left-radius: 0.3em;}
+table.mdtbl tr:last-child td:last-child  {border-bottom-right-radius: 0.3em;}
+
+
+
+
+
+
+
+/* Responsive and interactive Elements */
+/* -------------------------------------------------------------------------- */
 
 div.scroll {
     margin: 4px, 4px;
@@ -111,7 +148,6 @@ div.scroll {
     transition: background-color 0.325s, color 0.325s, margin-top 0.325s;
 }
 
-/* For tooltips */
 span.tip {
     color: #03DAC6;
 }

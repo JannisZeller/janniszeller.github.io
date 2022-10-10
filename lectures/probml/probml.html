@@ -88,7 +88,6 @@
 
 
 <h2><i>Preface:</i> A Short Primer on Measure Theory</h2>
-
 <ul class="flul">
   <li>This short preface is not completely included in the actual lecture but there are notations from measure theory used, which are briefly introduced here, of course without going into details of topology (because of the authors incapacity to do so).</li>
   <li><b>$\boldsymbol\sigma$-Algebra / $\boldsymbol\sigma$-Field:</b> Let $\Omega$ be some set and let $\mathcal P(\Omega)$ represent its power set. Then a subset $\Sigma \subset \mathcal P(\Omega)$ is called a $\sigma$-algebra if it satisfies the following three properties:</li>
@@ -132,10 +131,7 @@
 </ul>
 
 
-
-
 <h2>Probability Theory</h2>
-
 <ul class="flul">
   <li><b>Probability Measure:</b> Let $(\Omega, \Sigma)$ be a measurable space. A probability measure $P$ is a measure with total measure $1$ meaning</li>
   <div class='scroll'>
@@ -216,10 +212,7 @@
 </ul>
 
 
-
-
 <h2>Random Variables</h2>
-
 <ul class="flul">
   <li>When moving from boolean logic to probability one has to take care of the probability of all atomic events, which already for simple examples need huge amount of memory $(2^{26}-1$ floats for "storing" the alphabet).</li>
   <li>Being uncertain is potentially much more expensive in terms of computation and memory than simply committing to a single hypothesis. This is <i>the</i> key challenge of probabilistic reasoning in practice.</li>
@@ -273,6 +266,49 @@
 </ul>
 
 
+<h2>Graphical Models</h2>
+<p>Directed Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in this <a href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture part</a>.</p>
+<ul class="flul">
+  <li><b>Directed Graphical Model (DGM) aka. Bayesian network</b> is  a probability distribution over variables $\{X_1,\dots , X_D\}$ that can be written as</li>
+  <div class='scroll'>
+    $$
+      P(X_1, X_2, \dots X_D) = \prod_{i=1}^D p(X_i\vert \mathrm{pa}(X_i)) \, ,
+    $$
+  </div>
+  where $\mathrm{pa}(X_i)$ are the parental variables of $X_i$. A DGM can be represented by a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a> with the propositional variables as nodes and arrows from parents to children.
+  <li>An example of such a model in a pictorial view is:</li>
+  <div
+    style="width: 100%; text-align: center; padding-bottom: 0.5em">
+  <img  
+    src="https://upload.wikimedia.org/wikipedia/commons/3/39/Graph_model.svg" 
+    alt="Image of a DGM represented by a DAG." 
+    width="30%" 
+    style="background-color: white;">
+    <br>
+    "Graph model" CC-BY-SA 4.0 <a href="https://commons.wikimedia.org/wiki/User:IkamusumeFan">IkamusumeFan</a> on <a href="https://en.wikipedia.org/wiki/File:Graph_model.svg">Wikipedia</a>.
+  </div>
+  In this case e. g. $\mathrm{pa}(D) = \{ A, B, C \}$ and $\mathrm{pa}(A) = \emptyset$. The full model becomes:
+  <div class='scroll'>
+    $$
+      P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
+    $$
+  </div>
+  <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
+</ul>
+
+
+<h2>The Toolbox</h2>
+<p>Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:</p>
+<table class="mdtbl">
+  <tr>
+    <td><b>Modelling Techniques</b></td>
+    <td><b>Computation Techniques</b></td>
+  </tr>
+  <tr>
+    <td>Directed Graphical Models (representable by a DAG)</td>
+    <td></td>
+  </tr>
+</table>
 
 
 <h2>Continuous Random Variables</h2>
@@ -359,17 +395,6 @@
 
 <ul class="flul">
   <li>Introduction of <b>Expectations</b> in the notations $\langle f\rangle_p := \mathbb E_p\big(f(X)\big) := \int f(x)p(x) \, \mathrm dx$ with mean, variance, $p$-th moment and entropy.</li>
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models contains a Computation technique to solve corresponding integrals for each model type:</li>
-  <table class="mdtbl">
-    <tr class="bottom-border">
-      <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
-    </tr>
-    <tr>
-      <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
-    </tr>
-  </table>
 </ul>
 
 
@@ -400,11 +425,8 @@
 </ul>
 
 
-
 <h2>Sampling by Transformation</h2>
-
 <p>Still one open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b></p>
-
 <ul class="flul">
   <li>One can sample from the uniform distribution $U(0,1)$ pretty decent computationally using <a target="_blank" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Pseudorandom Number Generators</a>.</li>
   <li><b>Sampling by Transformation:</b> Given that $U \sim U(0,1)$ and $X\sim P_X$ with CDF $F(x)$, then $F^{-1}(U)$ is distributed according to $P_X$.</li>
@@ -418,12 +440,8 @@
 </ul>
 
 
-
-
 <h2>Rejection Sampling</h2>
-
 <p>But what to do <b>if we do not know a good transformation?</b></p>
-
 <ul class="flul">
   <li>What makes sampling hard, is that we need to know the cumulative density everywhere, i.e. a global description of the entire function.</li>
   <li>Practical Monte Carlo Methods aim to construct samples from $p(x) = \tilde p(x) / Z$ assuming that it is possible to evaluate the <b>unnormalized</b> density $\tilde p$ at arbitrary points. Typical example: Compute moments of a posterior:</li>
@@ -441,7 +459,6 @@
   </div>
   <li>Rejection sampling gets very inefficient, if large values of $c$ are needed - especially in higher dimensions (see gaussian example where $c=(\sigma_q / \sigma_p)^D$.</li>
 </ul>
-
 
 
 <h2>Importance Sampling</h2>
@@ -464,8 +481,6 @@
   <li>Note that with unknown $Z$ this is not an unbiased estimator anymore. To estimate $Z$ we used the expectation rewrite-tick on $f=1$ which yields $1 = \mathbb E_p(1) = \mathbb E_q( p / q) = E_q( \tilde p / q) \cdot  Z^{-1}$ which ca easily be solved for $Z$. If $Z$ is known this formula can be further simplified leading to replace $\tilde w_s$ with $w_s = p(x_s) / q(x_s)$.</li>
   <li>A flaw of importance sampling is, that $\mathrm{Var}(f\cdot p/q)$, which is important for the convergence rate of this procedure, can be unbounded, because $p(x)/q(x)$ might get very big for small $q(x)$.</li>
 </ul>
-
-
 
 
 <h2>Markov Chain Monte Carlo Methods</h2>
@@ -491,6 +506,11 @@
     $$
   </div>
   In the last step we use, that the transition probability must integrate to $1$ (i.e. some point must be reached). 
+</ul>
+
+
+<h2>The Metropolis-Hastings Method</h2>
+<ul class="flul">
   <li><b>The Metropolis-Hastings Method</b>: We want to find samples of an (unnormalized) distribution $\tilde p(x)$. Therefore one can follow the following procedure:</li>
   <ol>
     <li>Given a current sample instance $x_t$, draw a <i>proposal</i> $x'\sim q(x' \vert x_t)$ from a distribution $q$ - e.g. $q(x'\vert x_t) = \mathcal N (x';x_t, \sigma^2)$.</li>
@@ -517,6 +537,11 @@
   <li>There exist mathematical arguments for existence and uniqueness of the stationary distribution of an MCMC.</li>
   <li><b>Mixing Problem:</b> Choosing the parameter $\sigma$ of $q$ is not trivial and there is a tradeoff between lots of acceptances and coverage of the complete probability mass of $p$.</li>
   <li>In practice MCMCs are use <b>local operations</b> so they do not have to deal with this problem too much. Therefore the local behavior has to be tuned. One algorithm to address this problem is Gibbs Sampling:</li>
+</ul>
+
+
+<h2>Gibbs Sampling</h2>
+<ul class="flul">
   <li><b>Gibbs Sampling:</b> In Gibbs Sampling one assumes that for a multivariate RV $x=(x_1,...,x_n)$ there exists index sets $I \subset \{1,...,n\}=:N$ for which:</li>
   <div class='scroll'>
     $$
@@ -542,6 +567,11 @@
     <li>Continue with the rest of $N\setminus I$ and add $x'$ to the sample when all $N$ indices have been updated.</li>
   </ol>
   In practice this resembles updating all the dimensions after each other and adding a new point to the sample when every dimension has been updated. To work well, it is necessary, to align the PDF as much to the axes as possible. 
+</ul>
+
+
+<h2>Hamiltonian Monte Carlo Methods</h2>
+<ul class="flul">
   <li><b>Hamiltonian Monte Carlo (HMC):</b> Hamiltonian Monte Carlo Methods aim - like Gibbs Sampling - at modelling the problem in such a way, that  $a=1$. There is some amount of theory necessary to understand it though. Looking at the situation through the lens of physics what is actually done can be interpreted as "moving" $x$ through the space as it was driven by a potential energy which is to be constructed from the $p(x)$:</li>
   <ul>
     <li>Lets consider <b>Boltzmann distributions</b>, i.e. distributions which can be written as</li>
@@ -593,13 +623,21 @@
     which can be done numerically with pretty high precision (see e.g. <a target="_blank" href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta Methods</a>). However computing these numerically introduces some "noise" to the process and forces us to keep a decision rule as before (see e.g. <a target="_blank" href="https://arxiv.org/pdf/2108.12107.pdf">Vishnoi, 2021</a>).</li>
   </ul>
   <li>HMC has the flaw of needing us to set the step size of the ODE-integrator and the number of steps which should be propagated before a new sample is fixed. Especially with too big step sizes (but also with to long integration) the dynamics tend to move back and forth through the parameter-space and end up ending close to the start point. This is called the <b>U-Turn Problem</b>, which can be further addressed (e.g. see <a target="_blank" href="https://arxiv.org/abs/1111.4246?context=cs">Hoffman and Gelman, 2011</a>).</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
+  <table class="mdtbl">
+    <tr>
+      <td><b>Model</b></td>
+      <td><b>Computation Technique</b></td>
+    </tr>
+    <tr>
+      <td>Directed Graphical Models (representable by a DAG)</td>
+      <td>Monte Carlo Sampling and extensions</td>
+    </tr>
+  </table>
 </ul>
 
 
-
-
 <h2>The Gaussian Distribution</h2>
-
 <ul class="flul">
   <li><b>Univariate Gaussian Distribution:</b> Let $X$ be gaussian distributed with mean $\mu$ and Variance $\sigma^2$, i.e. $X\sim \mathcal N (\mu, \sigma^2)$ then its PDF is given by:</li>
   <div class='scroll'>
@@ -785,30 +823,41 @@
 
 
 <h2>Gaussian Parametric Regression</h2>
-
 <ul class="flul">
   <li><b>Supervised Regression:</b> 
     <ul>
-      <li>Given is a dataset $\{(x_i, y_i)\vert x_i \in \mathbb R^{f-1}, \ y_i \in \mathbb R^F, \ i=1,...,N\}$, with $f, F\in \mathbb N$, for which the following model is proposed: $Y\vert f \sim \mathcal N (f(X), \sigma^2\boldsymbol 1)$. Let $X$ denote the complete dataset of $x_i$'s and analogous for $Y$ and $y_i$'s. For $f=2, \ F=1$ this reduces to good ol' Linear Regression.</li>
-      <li>Assume that $f$ is a linear function, i.e. 
+      <li>Given is a dataset  
       <div class='scroll'>
         $$
-          f(x_i)=f_{x_i}=w_0 + x_i^TW_1, \quad \textsf{with} \quad w_0 \in \mathbb R^F \ \ \textsf{and} \ \ W_1 \in \mathbb R^{(f-1) \times F}
+          \left\{(x_i, y_i)\, \vert \, x_i \in \mathbb R^{d-1}, \ y_i \in \mathbb R^F, \ i=1,\dots ,N\right\} \, , 
+        $$
+      </div>
+      with $d, F\in \mathbb N$, for which the following model is proposed: 
+      <div class='scroll'>
+        $$
+          Y\vert f \sim \mathcal N (f(X), \sigma^2\boldsymbol 1) \, . 
+        $$
+      </div>
+      Let $X$ denote the complete dataset of $x_i$'s and analogous for $Y$ and $y_i$'s. For $d=2, \ F=1$ this reduces to good ol' Linear Regression.</li>
+      <li>Assume that $d$ is a linear function, i.e. 
+      <div class='scroll'>
+        $$
+          f(x_i)=f_{x_i}=w_0 + x_i^TW_1, \quad \textsf{with} \quad w_0 \in \mathbb R^F \ \ \textsf{and} \ \ W_1 \in \mathbb R^{(d-1) \times F}
         $$
       </div>
       and use the notation
       <div class='scroll'>
         $$
           \phi(X) = \begin{pmatrix}
-            1 & 1 & \dots & 1 \\
+            1 & 1 & \dots & 1 \\ 
             x_{11} & x_{21} & \dots & x_{N, 1} \\
             \vdots & \vdots & \ddots & \vdots \\
-            x_{1, f-1} & x_{2, f-1} & \dots & x_{N, f-1}
-          \end{pmatrix} \in \mathbb R^{f\times N}
+            x_{1, d-1} & x_{2, d-1} & \dots & x_{N, d-1}
+          \end{pmatrix} \in \mathbb R^{d\times N}
           \, , \qquad 
           W = \begin{pmatrix}
           w_0^T \\ W_1
-          \end{pmatrix} \in \mathbb R^{f \times F}
+          \end{pmatrix} \in \mathbb R^{d \times F}
         $$
       </div>
       then 
@@ -818,14 +867,14 @@
         $$
       </div>
       contains the "somewhat prediction" for each $y_i$ row-wise.
-      <li>Choose a gaussian prior for $W$, i.e. $\tilde W\sim \mathcal N(\mu, \Sigma)$, where $\tilde W$ is an unrolled version of $W$ with all elements of $\tilde W$ in an $f\cdot F$-dimensional vector and $\Sigma \in \mathbb R^{f\cdot F\times f\cdot F}$. Going on from here without restricting the dimensions or some assumption about independence of certain dimensions of $Y$ gets verbose because therefore we would need to construct a matrix distribution for $W$, which can be done using the <a target="_blank" href="https://en.wikipedia.org/wiki/Matrix_normal_distribution">Matrix Normal Distribution</a> though. <b>Nevertheless let from now be $\boldsymbol{F=1}$</b> which yields $\Sigma \in \mathbb R^{f \times f}$ and $f_X\in \mathbb R^N$ and therefore $f_X \sim \mathcal N (\phi_X^T\mu, \ \phi_X^T \Sigma \phi_X)$.</li>
+      <li>Choose a gaussian prior for $W$, i.e. $\tilde W\sim \mathcal N(\mu, \Sigma)$, where $\tilde W$ is an unrolled version of $W$ with all elements of $\tilde W$ in an $d\cdot F$-dimensional vector and $\Sigma \in \mathbb R^{d\cdot F\times d\cdot F}$. Going on from here without restricting the dimensions or some assumption about independence of certain dimensions of $Y$ gets verbose because therefore we would need to construct a matrix distribution for $W$, which can be done using the <a target="_blank" href="https://en.wikipedia.org/wiki/Matrix_normal_distribution">Matrix Normal Distribution</a> though. <b>Nevertheless let from now be $\boldsymbol{F=1}$</b> which yields $\Sigma \in \mathbb R^{d \times d}$ and $f_X\in \mathbb R^N$ and therefore $f_X \sim \mathcal N (\phi_X^T\mu, \ \phi_X^T \Sigma \phi_X)$.</li>
       <li>For inference of $f$ all that is left is to calculate the posterior of $W$ using what is given:</li>
         <div class="scroll">
           $$
             P(W\vert Y, \phi_X) \propto P(Y\vert W, \phi_X) \cdot P(W) \, .
           $$
         </div>
-      We use the second formulation of the formula from "Bayesian Inference with Gaussians" because then only $f \times f$ matrices need to be inverted whereas in the other formulation $N\times N$ matrices would need to be inverted:
+      We use the second formulation of the formula from "Bayesian Inference with Gaussians" because then only $d \times d$ matrices need to be inverted whereas in the other formulation $N\times N$ matrices would need to be inverted:
       <div class="scroll">
         $$
           \Rightarrow \quad W\vert Y=y, \phi_X \sim \mathcal N \Big( \big(\Sigma^{-1}+\sigma^{-2}\phi_X\phi_X^T\big)^{-1}\big( \Sigma^{-1}\mu + \sigma^{-2}\phi_X y\big), \ \ \big(\Sigma^{-1}+\sigma^{-2}\phi_X\phi_X^T\big)^{-1} \Big) \, , 
@@ -858,29 +907,26 @@
   <li><b>"Underestimation" of Uncertainty:</b> In the way we used Bayesian gaussian regression so far, the variance of the posterior $W\vert Y=y; \phi_X$ or $f_x\vert Y=y; \phi_X$ does not depend on the observed data $y$. This leads to an overconfident prediction of the "area" in which $f(x)$ should be for "new" observations $x$.</li>
   <li><b>Generalized Regression:</b> Nothing in the Bayesian Regression framework hinders us from choosing arbitrary functions in $\phi_X$, which is pretty cool. Choosing e.g. $\phi_x=(\cos x,\, \sin x,\, \cos(2x), \, \sin (2x),\,...)^T$ or step-functions (using the <a target="_blank" href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heaviside Step Function</a>) is also valid, and even only requires minimal modifications in a program which does the job!</li>
   <li><b>Multivariate Outputs:</b> Above we restricted the general discussion to $y\in \mathbb R$ when we noticed wo would have to use the somewhat unhandy Matrix normal distribution to go on if we want higher dimensional outputs. Otherwise one can also <i>do gaussian regression for each output feature separately</i> to cover multivariate output.</li>
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models now contains a new tool:</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
-    <tr class="bottom-border">
+    <tr>
       <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
+      <td><b>Computation Technique</b></td>
     </tr>
     <tr>
       <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
+      <td>Monte Carlo Sampling and extensions</td>
     </tr>
     <tr>
       <td>Gaussian Distributions</td>
-      <td class="rightcol">Gaussian "Linear Algebra" Inference</td>
+      <td>Gaussian Inference by Linear Algebra</td>
     </tr>
   </table>
   <li><b>Two Sides of the Coin:</b> Being able to choose the prior function-space with little restrictions makes gaussian regression in this fashion very flexible. On the other side we get the difficulty to be forced to do at least <i>some</i> choice of feature space which might be not optimal in the end.</li>
 </ul>
 
 
-
-
 <h2>Learning Representations</h2>
-
 <ul class="flul">
   <li><b>Feature Selection:</b> There is an infinite-dimensional space of feature functions to choose from. One approach is to restrict oneself to a finite-dimensional sub-space and search in there, e.g.</li>
   <div class='scroll'>
@@ -950,23 +996,23 @@
     $$
   </div>
   where typically the <b>Log-Prior takes the role of a regularization</b>. The first equality holds because the marginal $p(y\vert x) = \int p(y \vert \theta, x) p(\theta) \, \mathrm d\theta$ does not depend on $\theta$.
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models now contains a new tool:</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
-    <tr class="bottom-border">
+    <tr>
       <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
+      <td><b>Computation Technique</b></td>
     </tr>
     <tr>
       <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
+      <td>Monte Carlo Sampling and extensions</td>
     </tr>
     <tr>
       <td>Gaussian Distributions</td>
-      <td class="rightcol">Gaussian "Linear Algebra" Inference</td>
+      <td>Gaussian Inference by Linear Algebra</td>
     </tr>
     <tr>
-      <td>Hierarchical Models</td>
-      <td class="rightcol">MLE / MAP</td>
+      <td>(Deep) Learnt Representations</td>
+      <td>Maximum Likelihood / Maximum Aposteriori</td>
     </tr>
   </table>
   <li>A linear Gaussian regressor is actually equivalent to a <b>single (hidden) layer neural network</b> with quadratic output loss, and fixed input layer.</li>
@@ -988,10 +1034,7 @@
 </ul>
 
 
-
-
 <h2>Gaussian Processes</h2>
-
 <ul class="flul">
   <li>In the last part we explicitly chose feature by defining feature functions which depended on parameters $\theta$ which were determined via ML or MAP estimation. In this part we will use another approach by increasing the number of features.</li>
   <li>We shorten the notation by introducing the <i>mean function</i> and the <i>covariance function</i> a. k. a. <b>kernel</b>:</li>
@@ -1055,35 +1098,33 @@
   </ul>
   are Mercer kernels as well.
   <li>Note that also parameters of kernels can be learned analogous as in "Learning Representations", e. g. by using ML or MAP estimation.</li>
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models now contains a new tool:</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
-    <tr class="bottom-border">
+    <tr>
       <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
+      <td><b>Computation Technique</b></td>
     </tr>
     <tr>
       <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
+      <td>Monte Carlo Sampling and extensions</td>
     </tr>
     <tr>
       <td>Gaussian Distributions</td>
-      <td class="rightcol">Gaussian "Linear Algebra" Inference</td>
+      <td>Gaussian Inference by Linear Algebra</td>
     </tr>
     <tr>
-      <td>Hierarchical Models</td>
-      <td class="rightcol">MLE / MAP</td>
+      <td>(Deep) Learnt Representations</td>
+      <td>Maximum Likelihood / Maximum Aposteriori</td>
     </tr>
     <tr>
-      <td>Kernels / Gaussian Process Models</td>
-      <td class="rightcol">Gaussian inference + MLE / MAP</td>
+      <td>Kernels</td>
+      <td></td>
     </tr>
   </table>
 </ul>
 
 
-
 <h2>Understanding Kernels</h2>
-
 <ul class="flul">
   <li><b>Eigenvalues / Eigenvectors and Spectral Theorem:</b> Let $A$ be a matrix. A scalar $\lambda \in \mathbb C$ and a vector $v \in \mathbb C^n$ are called eigenvalue and corresponding eigenvector if $Av = \lambda v$. Ihe eigenvectors of symmetric matrices $A = A^T$ are in $\mathbb R^n$ and form the basis of the image of $A$ (where $\mathrm{Im} (A) = \{ Ax \vert x \in \mathbb R^n \}$). </li>
   <ul>
@@ -1171,14 +1212,10 @@
 </ul>
 
 
-
-
 <h2>Example of Gaussian Process Regression</h2>
-
 <p>
   The <a target="_blank" href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a> presents an actual hands-on example on how to apply the framework presented in the last parts, including prior information etc. to infer a future prediction. It is not really practical to try to follow the whole example in these notes, so follow the video (again) if searching for details. There are just some general notes, hints and best practices one can extract from the worked through example.
 </p>
-
 <ul class="flul">
   <li>It is a good idea to include known quantities in the model, e. g. known standard errors of measure instruments etc.</li>
   <li>It is always a good idea to create some visualizations if possible to get a feeling for the data and as a sanity check.</li>
@@ -1267,10 +1304,7 @@
 </ul>
 
 
-
-
 <h2>Gauss-Markov Models</h2>
-
 <ul class="flul">
   <li>The following part is about connecting chain DAGS - $A\to B\to C$ or $P(A, B, C) = P(C\vert B)\cdot P( B\vert A)\cdot P(A)$ - with the notion of Gaussian Processes. These models work on time series.</li>
   <li><b>Time Series:</b> A time series is a sequence $[y(t_i)]_{i\in \mathbb N}$ of observations $y_i:= x(t_i) \in \mathbb Y$, indexed by a scalar variable $t\in \mathbb R$. In many applications the time points $t_i$ are equally spaced $t_i = t_0 + i \cdot \delta_t$. Models that account for all values $t\in \mathbb R$ are called continuous tie, while models that only consider $[t_i]_{i \in \mathbb N}$ are called discrete time.</li>
@@ -1338,40 +1372,37 @@
   </div>
   Note that $m_T=m_T^S$ and for $P$ respectively only holds for the last timestep.
   <li><b>Generalization from Discrete to Continuous Time:</b> Until now, it is only possible to make predictions at discrete timesteps. The generalization is possible by approaching $\delta t \to 0$ (infinitesimal small timesteps) while reducing the introduced variance at each step by the same factor. This gives rise to a whole new field and introduces a new probability measure called the <i>Wiener Measure</i>. The resulting processes can be described with <i>Stochastic Differential Equations</i> which also connects Gaussian Processes to discrete Gauss-Markov Models.</li>
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models now contains a new tool:</li>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
-    <tr class="bottom-border">
+    <tr>
       <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
+      <td><b>Computation Technique</b></td>
     </tr>
     <tr>
       <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
+      <td>Monte Carlo Sampling and extensions</td>
     </tr>
     <tr>
       <td>Gaussian Distributions</td>
-      <td class="rightcol">Gaussian "Linear Algebra" Inference</td>
+      <td>Gaussian Inference by Linear Algebra</td>
     </tr>
     <tr>
-      <td>Hierarchical Models</td>
-      <td class="rightcol">MLE / MAP</td>
+      <td>(Deep) Learnt Representations</td>
+      <td>Maximum Likelihood / Maximum Aposteriori</td>
     </tr>
     <tr>
-      <td>Kernels / Gaussian Process Models</td>
-      <td class="rightcol">Gaussian inference + MLE / MAP</td>
+      <td>Kernels</td>
+      <td></td>
     </tr>
     <tr>
-      <td>Time Series Markov Models</td>
-      <td class="rightcol">Gaussian Markov Models = Kalman Filtering + RTS Smoothing</td>
+      <td>Markov Chains</td>
+      <td></td>
     </tr>
-  </table> 
+  </table>
 </ul>
 
 
-
-
 <h2>Gaussian Process Classification</h2>
-
 <ul class="flul">
   <li>Until now all algorithms have been Regression-Type algorithms, though the features or input domain $\mathbb X$ was not restricted to $\mathbb R^d$. To be more precise here is a definition:</li>
   <li><b>Regression:</b> Given supervised data $(X, Y) := (x_i, y_i)_{i=1,\dots, n}$ with $x_i \in \mathbb X$ and $y_i \in \mathbb R^d$ find a function $f:\mathbb X\to \mathbb R^d$ such that $f$ "models" $Y\approx f(X)$.</li>
@@ -1463,6 +1494,33 @@
     <li>Note that if $p(\theta)=\mathcal N(\theta; m, \Sigma)$, then $p(\theta) = q(\theta)$. </li>
     <li><b></b>This technique is not only applicable in this classification setting but in lots of intractable posterior estimations.</b> But note that it can be <b>arbitrarily wrong,</b> because it is a <b>local</b> approximation.</li>
   </ul>
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
+  <table class="mdtbl">
+    <tr>
+      <td><b>Model</b></td>
+      <td><b>Computation Technique</b></td>
+    </tr>
+    <tr>
+      <td>Directed Graphical Models (representable by a DAG)</td>
+      <td>Monte Carlo Sampling and extensions</td>
+    </tr>
+    <tr>
+      <td>Gaussian Distributions</td>
+      <td>Gaussian Inference by Linear Algebra</td>
+    </tr>
+    <tr>
+      <td>(Deep) Learnt Representations</td>
+      <td>Maximum Likelihood / Maximum Aposteriori</td>
+    </tr>
+    <tr>
+      <td>Kernels</td>
+      <td>Laplace Approximation</td>
+    </tr>
+    <tr>
+      <td>Markov Chains</td>
+      <td></td>
+    </tr>
+  </table>
   <li>Applying the Laplace Approximation to the GP-Classification Problem (not yet restricted to sigmoid-link functions) yields:</li>
   <div class='scroll'>
     $$
@@ -1486,41 +1544,7 @@
     $$
   </div>
   where $\sigma (\cdot)$ can be the logistic link function, but does not have to.
-  <li>The <b style="color:rgb(255, 109, 109)">Toolbox</b> for Modelling different kinds of Generative Models now contains a new tool:</li>
-  <table class="mdtbl">
-    <tr class="bottom-border">
-      <td><b>Model</b></td>
-      <td class="rightcol"><b>Computation Technique</b></td>
-    </tr>
-    <tr>
-      <td>Directed Graphical Models (representable by a DAG)</td>
-      <td class="rightcol">Monte Carlo Sampling</td>
-    </tr>
-    <tr>
-      <td>Gaussian Distributions</td>
-      <td class="rightcol">Gaussian "Linear Algebra" Inference</td>
-    </tr>
-    <tr>
-      <td>Hierarchical Models</td>
-      <td class="rightcol">MLE / MAP</td>
-    </tr>
-    <tr>
-      <td>Kernels / Gaussian Process Models</td>
-      <td class="rightcol">Gaussian inference + MLE / MAP</td>
-    </tr>
-    <tr>
-      <td>Time Series Markov Models</td>
-      <td class="rightcol">Gaussian Markov Models = Kalman Filtering + RTS Smoothing</td>
-    </tr>
-    <tr>
-      <td>(intractable) Posteriors Models</td>
-      <td class="rightcol">Laplace approximations</td>
-    </tr>
-  </table> 
 </ul>
-</ul>
-
-
 
 
 <h2>Generalized Linear Models</h2>
