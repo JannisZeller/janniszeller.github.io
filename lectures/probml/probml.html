@@ -17,13 +17,6 @@
 
   <!-- Probml-Skript -->
   <script src="./probml.js"></script>
-  <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']]
-      }
-    };
-  </script>
 
   <!-- Styling -->
   <link href="./probml.css" rel="stylesheet" type="text/css" media="all">
@@ -46,8 +39,10 @@
     \newcommand{\X}{{\mathbb X}}
     \newcommand{\Y}{{\mathbb Y}}
     \newcommand{\d}{{\mathrm d}}
+    \newcommand{\var}{{\mathrm{Var}\,}}
     \newcommand{\cases}[1]{{\begin{cases}#1\end{cases}}}
     \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
+    \newcommand{\alignn}[1]{{\begin{align}\begin{split}#1\end{split}\end{align}}}
     \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
     \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
   $$
@@ -67,29 +62,31 @@
 <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1> 
 
 <p>
-  Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen (Germany) 2020 / 2021. Lectures on <a target="_blank" href="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
+  Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen (Germany) 2020 / 2021. Lectures on <a class="link" target="_blank" href="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
 </p>
 <h3><i>Notation</i></h3>
 <ul class="flul">
+  <li id="here">External links are formatted as <a class="link" href="#here">links</a> and cross references are formatted as <a href="#here">crossrefs</a>. Other emphasized parts are <span class="tip">emphasized</span>. </li>
   <li>Note that lots of the rules for events on a probability space get generalized to random variables without further discussion, which can be found in introductory stochastic books. Additionally the notation of probability measures is often "abused", meaning shortened, by assuming that it is clear which part belongs to which random variable etc.</li> 
   <li>If not stated otherwise $\Omega$ represents the "base"-set of some measurable space and $\Sigma$ represents the $\sigma$-algebra. </li>
+  <li>Given a set of Variables $x_i, \  i\in I\subset \mathbb N$ the full "vector" of all $I$ variables is simply denoted by $x = (x_1,x_2, \dots)$. Subsets of this vector connected to subsets $K$ of $I$, i. e. $K\subset I$ are then denoted by $x_{K}$. Also $x_{I\setminus K}$ denotes the collection of all $x_i$ except the ones for $i \in K$.</li>
   <li>If not stated otherwise $A^C$ represents the complement relative to "base"-set of some measurable space $\Omega$, i. e. $A^C := \Omega\setminus A$.</li>
   <li>Probabilities of intersections will get abbreviated especially for random variables:</li> 
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(A, B) := P(A\cap B) \, .
-    $$
+    \end{align*}
   </div>
   <li>If not stated otherwise $B_1,B_2,...\in \Sigma$ denotes a finite or countable infinite family of sets.</li>
   <li>If a random variable is called e. g. $X$, then the sufficient space on which it lives (mostly it will be some dimensional $\mathbb R^d$) gets shortly denoted by $\mathbb X$.</li>
   <li>The <b>indicator function</b> is used as</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       1_A(x) = \begin{cases} 
         0, & x\not \in A \\
         1, & x \in A
       \end{cases} \, .
-    $$
+    \end{align*}
   </div>
   <li>The <b>Identity Matrix</b> is denoted by a boldsymbol $\boldsymbol 1$ without further denoting the dimensions.</li>
   <li>Given a probability distribution $\mathcal P$ with parameters $\theta$, e. g. the normal distribution $\mathcal N(\mu, \sigma^2)$ or the uniform distribution $U(a,b)$ and a random variable distributed accordingly $X\sim \mathcal P(\theta)$. Then the density is denoted as $P(X=x)=p(x) = \mathcal P(x; \theta)$.</li>
@@ -131,26 +128,26 @@
     <li><i>Null empty set:</i> $\mu(\emptyset) = 0$.</li>
     <li><i>Countable additivity ($\sigma$-additivity):</i> For $A_1,A_2,...\in \Sigma$ pairwise disjoint ($A_i \cap A_j =\emptyset $ if $i\neq j$) $\mu$ holds:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \mu\left(\bigcup_{k=1}^\infty A_k \right) = \sum_{k=1}^\infty \mu(A_k)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
   </ol>
   <li><b>Measure Space:</b> The triplet $(\Omega, \Sigma, \mu)$ is called a measure space.</li>
   <li><b>"Measure Integral"-Notation:</b> Given a measure space and $f: \Omega \to \mathbb R^d$. Then the following notation gets used to "measure" the function:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int_\Omega f(y) \, \mathrm d \mu(y)\, \cong \int_\Omega f(y)\mu(y)\, \mathrm dy\, .
-    $$
+    \end{align*}
   </div>
-  <li>E. g. lets look at the <a target="_blank" href="https://en.wikipedia.org/wiki/Lebesgue_measure">Lebesgue Measure</a>, which resembles the "classical" known integration technique on $\mathbb R^d$. Let $A \subset \mathbb R$. Then the Lebesgue measure $\lambda(A)$ is the Infimum of the summed lengths of all sequences of open subsets of $\mathbb R^d$ which contain $A$. Therefore at integration time one multiplies the function $f$ with a length of an interval, which leads to something really close to the known <a target="_blank" href="https://en.wikipedia.org/wiki/Riemann_integral">Riemann Integral</a> from calculus.</li>
+  <li>E. g. lets look at the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Lebesgue_measure">Lebesgue Measure</a>, which resembles the "classical" known integration technique on $\mathbb R^d$. Let $A \subset \mathbb R$. Then the Lebesgue measure $\lambda(A)$ is the Infimum of the summed lengths of all sequences of open subsets of $\mathbb R^d$ which contain $A$. Therefore at integration time one multiplies the function $f$ with a length of an interval, which leads to something really close to the known <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Riemann_integral">Riemann Integral</a> from calculus.</li>
   <li>The arguably easiest measure to execute on a test function $f$ is the <b>Dirac Measure:</b> $\delta_x(A) = 1_A(x)$ such that:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int_\Omega f(y) \, \mathrm d\delta_x(y) = \int_\Omega f(y) \delta_x(y)\, \mathrm dy = f(x)
-    $$
+    \end{align*}
   </div>
-  where in the second formulation the <a target="_blank" href="https://en.wikipedia.org/wiki/Dirac_delta_function">$\delta$-function</a> has been used (which is not actually a function.)
+  where in the second formulation the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Dirac_delta_function">$\delta$-function</a> has been used (which is not actually a function.)
 </ul>
 
 
@@ -158,9 +155,9 @@
 <ul class="flul">
   <li><b>Probability Measure:</b> Let $(\Omega, \Sigma)$ be a measurable space. A probability measure $P$ is a measure with total measure $1$ meaning</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(\Omega) = 1\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Probability Space:</b> A triplet $(\Omega, \Sigma, P)$ is called a probability space. $\Omega$ can then be interpreted as the set of all possible outcomes (<i>atomic events</i>) of an experiment. $A\in \Sigma$ can be interpreted as an event being a set of possible outcomes.</li>
   <li>A probability measures can be uniquely defined by defining $P(\omega)$ for all atomic events $\omega \in \Omega$.</li>
@@ -168,58 +165,61 @@
   <ul>
     <li>Intersections and Unions:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P(A\cup B) = P(A) + P(B) - P(A\cap B)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Complements:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P(A) = 1-P(A^C)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Let $B_1,B_2,...\in \Sigma$ pairwise disjoint, with $\bigcup B_i = \Omega$. Then</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P(A) = \sum_i P(A \cap B_i)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
   </ul>
   <li><b>Conditional Probability:</b> Let $A, B \in \Sigma$. Then the conditional probability of $A$ given $B$ is defined as
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(B\vert A) := \frac{P(A, B)}{P(B)}
-    $$
+    \end{align*}
   </div>
   <li>This immediately yields the product rule: </li>
   <div class="scroll">
-    $$
+    \begin{align*}
       P(A, B) = P(A\vert B) \cdot P(B) = P(B\vert A) \cdot P(A)\, .
-     $$
+    \end{align*}
   </div>
   <li>Note that for multiple conditional probabilities we also have:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(A\vert B, C) = \frac{P(A, B, C)}{P(B, C)}\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Law of Total Probability:</b> Let $B_1, B_2, ... \in \Sigma$ ($n$ might be infinity) be a set of pairwise disjoint events with $\bigcup_iB_i=\Omega$. Then for each event $A$ it holds:</li>
   <div class='scroll'>
-    $$
+    \begin{align}
       P(A) = \sum_i P(A\cap B_i) = \sum_n P(A\vert B_i)P(B_i) \, .
-    $$
+      \label{eq:total_prob}
+    \end{align}
   </div>
   <li><b>Chain Rule of Probability:</b> Let $A_i \in \Sigma$, $i=1,...,n$ be a set of events, then</li>
   <div class='scroll'>
-    $$
+    \begin{align}
       P \left( \bigcap_{i=1}^n A_i \right) = \prod_k P\left( A_k \Big{\vert} \bigcap_{j=1}^{k-1}A_j \right) = P(A_n\vert A_{n-1} \cap ... \cap A_1) \cdot P(A_{n-1}\vert A_{n-2} \cap...\cap A_1) \cdot ... \cdot P(A_1)
-    $$
+      \label{eq:chain_prob}
+    \end{align}
   </div>
-  <li><b>Bayes Theorem and Bayesian Modelling</b> - Using data $D$ and latent variable $X$ one denotes:</li>
+  <li id="bayes_theorem"><b>Bayes Theorem and Bayesian Modelling</b> - Using data $D$ and latent variable $X$ one denotes:</li>
   <div class='scroll'>
-    $$
-      \underbrace{P(X\vert D)}_{\textsf{posterior for $X$ given $D$}} =  \frac{\overbrace{P(D\vert X)}^{\textsf{likelihood for $X$}} \cdot\overbrace{P(X)}^{\textsf{prior for $X$}}}{\underbrace{P(D)}_{\textsf{evidence for the model}}} = \frac{P(X) \cdot P(D\vert X)}{\sum_{x\in \mathrm{supp}(X)} P(X)\cdot P(D\vert X)} \, .
-    $$
+    \begin{align}
+      \underbrace{P(X\vert D)}_{\textsf{posterior for $X$ given $D$}} =  \frac{\overbrace{P(D\vert X)}^{\textsf{likelihood for $X$}} \cdot\overbrace{P(X)}^{\textsf{prior for $X$}}}{\underbrace{P(D)}_{\textsf{evidence for the model}}} = \frac{P(X) \cdot P(D\vert X)}{\displaystyle\sum_{x\in \mathrm{supp}(X)} P(X)\cdot P(D\vert X)} \, .
+      \label{eq:bayes}
+    \end{align}
   </div>
   <li>When found a posterior distribution of the model parameters one can use this distribution to sample sets of parameters. Using these sampled parameters one can go on to sample additional data-predictions which are drawn from the predictive distribution $P(D\vert X)$ for given parameters $X$. Iterating these steps lead a so called <b>Posterior Predictive Function</b> for new data. This might be necessary, if the posterior integral is intractable.</li>
   <li>Bayes Theorem <b>implications</b>:</li>
@@ -241,51 +241,62 @@
   <li>Being uncertain is potentially much more expensive in terms of computation and memory than simply committing to a single hypothesis. This is <i>the</i> key challenge of probabilistic reasoning in practice.</li>
   <li><b>Inverse Image:</b> Let $X:\Omega \to \X$. The preimage or inverse image of a set $B\subset \X$ under $X$, denoted by $X^{-1}(B)$ is the subset of $X$ defined by</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       X^{-1}(B) = \big\{ \omega \in \Omega : X(\omega) \in B \big\} \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Measurable Functions and Random Variables:</b> Let $(\Omega, \Sigma)$ and $(\X, \Xi)$ be two measurable spaces. A function $X:\Omega \to \X$ is called measurable if $X^{-1}(B) \in \Sigma$ for all $B \in \Xi$. If there is, additionally, a probability measure $P$ on $(\Omega, \Sigma)$, then $X$ is called a random variable.</li>
   <li><b>Distribution Measure:</b> Let $X:\Omega \to \X$ be a random variable. Then the distribution measure (or law) $P_X$ of $X$ is defined for any $B \in \Xi$ as</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P_X(B) = P(X\in B) = P\left( X^{-1}(B) \right) = P\big( \{\omega \, \vert \, X(\omega)\, \in B\} \big)\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Support of a RV:</b> The support of a RV is given by the set of elements of $\X$ where the probability of $X$ is not zero:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathrm{supp}\, X = \big\{ x\in \X \ \vert \ P_X(\{x\} \neq 0 \big\}\, .
-    $$
+    \end{align*}
   </div>
   Note that $\X$ can sometimes be already defined as being equal to $\mathrm{supp}\, X$ because points with no probability are irrelevant for modelling.
   <li><b>Abusing Notations:</b> This is where the abuse of notation comes in. When $X$ represents a random variable $P(X)$ implicitly represents the distribution measure of $X$. This is also used for defining "junctions" and "unions" of random variables: For junctions of random variables the following notation is used:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X, Y) = P(X\in B, Y \in C) = P\Big( \{\omega \, \vert \, X(\omega)\, \in B\} \cap \{\omega \, \vert \, Y(\omega)\, \in C\} \Big) \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Independence:</b> Using the definitions from above one can apply the concepts of conditional (in)dependence directly to RVs. Two RVs $X$ and $Y$ are therefore called independent if</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X, Y) = P(X)\cdot P(Y)\, .
-    $$
+    \end{align*}
   </div>
-  <li><b>Joint and Marginal Distributions:</b> </li>
+  <li><b>Joint and Marginal Distributions:</b> The joint distribution of multiple RVs $X=(X_1,X_2, \dots)$ where the indices are in $I\subset \N$ is</li>
+  <div class='scroll'>
+    \begin{align*}
+      P(X) = P(X_1,X_2, \dots)\, .
+    \end{align*}
+  </div>
+  The marginal distribution of a subset $K\subset I$ is given by integrating out all other variables:
+  <div class='scroll'>
+    \begin{align*}
+      \mathcal P (x_K) = \int \mathcal P (x) \, \d x_{I\setminus K}
+    \end{align*}
+  </div>
   <li>Introducing <b>Conditional Independence</b>: Two RVs $X$ and $Y$ are conditionally independent given RV $Z$, iff their conditional distribution factorizes:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X, Y \vert Z) = P(X\vert Z) \cdot P(Y\vert Z)  \quad \overset{(I)}{ \Rightarrow} \quad P(X \vert Y, Z) = P(X \vert Z) 
-    $$
+    \end{align*}
   </div>
   i. e. "given information about $Z$, $Y$ does not provide any further information about $X$."
   <li>Calculation of the implication $(I)$: Let $X, Y, Z$ be RVs with $P(X, Y \vert Z) = P(X\vert Z) \cdot P(Y\vert Z)$. Then:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X\vert Y, Z) = \frac{P(X, Y, Z)}{P(Y, Z)} = \frac{P(X, Y, Z)}{P(Z)} \cdot \left( \frac{P(Y, Z)}{P(Z)} \right)^{-1} = P(X, Y\vert Z) \cdot \frac{1}{P(Y\vert Z)} = P(X\vert Z)\, .
-    $$
+    \end{align*}
   </div>
-  <li>Independence (Assumptions) can help tremendously to simplify probabilistic models (Burglary, Alarm, Earthquake example from the <a href="https://youtu.be/YWK74ZNPrHc?t=2760">lecture</a>)</li>
+  <li>Independence (Assumptions) can help tremendously to simplify probabilistic models (Burglary, Alarm, Earthquake example from the <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=2760">lecture</a>)</li>
   <li><b>Inference in the Bayesian framework consists of</b>:</li>
   <ol>
     <li>Identify all relevant variables.</li>
@@ -296,15 +307,15 @@
 
 
 <h2>Graphical Models</h2>
-<p>Directed Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in this <a href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture part</a>.</p>
+<p>Directed Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in this <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture part</a>.</p>
 <ul class="flul">
   <li><b>Directed Graphical Model (DGM) aka. Bayesian network</b> is  a probability distribution over variables $\{X_1,\dots , X_D\}$ that can be written as</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X_1, X_2, \dots X_D) = \prod_{i=1}^D p(X_i\vert \mathrm{pa}(X_i)) \, ,
-    $$
+    \end{align*}
   </div>
-  where $\mathrm{pa}(X_i)$ are the parental variables of $X_i$. A DGM can be represented by a <a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a> with the propositional variables as nodes and arrows from parents to children.
+  where $\mathrm{pa}(X_i)$ are the parental variables of $X_i$. A DGM can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a> with the propositional variables as nodes and arrows from parents to children.
   <li>An example of such a model in a pictorial view is:</li>
   <div
     style="width: 100%; text-align: center; padding-bottom: 0.5em">
@@ -314,13 +325,13 @@
     width="30%" 
     style="background-color: white;">
     <br>
-    "Graph model" CC-BY-SA 4.0 <a href="https://commons.wikimedia.org/wiki/User:IkamusumeFan">IkamusumeFan</a> on <a href="https://en.wikipedia.org/wiki/File:Graph_model.svg">Wikipedia</a>.
+    "Graph model" CC-BY-SA 4.0 <a class="link" href="https://commons.wikimedia.org/wiki/User:IkamusumeFan">IkamusumeFan</a> on <a class="link" href="https://en.wikipedia.org/wiki/File:Graph_model.svg">Wikipedia</a>.
   </div>
   In this case e. g. $\mathrm{pa}(D) = \{ A, B, C \}$ and $\mathrm{pa}(A) = \emptyset$. The full model becomes:
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
-    $$
+    \end{align*}
   </div>
   <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
   <li><b style="color: #03DAC6">The Toolbox:</b></li>
@@ -338,7 +349,6 @@
 
 
 <h2>Continuous Random Variables</h2>
-
 <ul class="flul">
   <li>To model continuous random variables one need continuous spaces as $\Omega$ such as $\Omega = \mathbb R^d$. In such spaces it can be shown that not all sets are measurable. To resolve this problem on uses the notion of <i>Topologies</i> which resemble $\sigma$-fields and introduces the so called <i>Borel Algebra</i> which serves as a $\sigma$-algebra for probability modelling.</li>
   <li><b>Topology:</b> Let $\Omega$ be a space and $\tau$ be a collection of sets. $\tau$ is called a topology on $\Omega$ if</li>
@@ -351,73 +361,73 @@
   <li><b>Borel Algebra:</b> Let $(\Omega, \tau)$ be a topological space. The Borel $\sigma$-algebra is the $\sigma$-algebra <i>generated</i> by $\tau$. That is by taking $\tau$ and completing it to include infinite intersections of elements from $\tau$ and all components in $\Omega$ to elements of $\tau$. The Borel algebra sometimes gets denoted by $\mathcal B$ and indeed $(\mathbb R^d, \mathcal B)$ is yet again, a measurable space.</li>
   <li><b>Probability Density Function (PDF):</b> Let $P$ be a probability measure on $(\mathbb R^d, \mathcal B)$. $P$ ha the <i>density</i> $p$ if $p$ is a non-negative (Borel-) measurable function on $\mathbb R^d$ satisfying</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(B) = \int_B p(x)\, \mathrm dx = \int_B p(x)\, \mathrm dx_1\dots \mathrm dx_d \quad  \forall \quad B\in \mathcal B\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Cumulative Distribution Function (CDF):</b> For probability measure $P$ on $(\mathbb R^d, \mathcal B)$ the cumulative distribution function is the function</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       F(x) = P\left(\prod_{i=1}^d (X_i < x_i)\right )\, .
-    $$
+    \end{align*}
   </div>
   If $F$ is sufficiently smooth, then $P$ has a density, given by
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x) = \partial^d F\vert_x := \frac{\partial^d F}{\partial x_1 \dots \partial x_d} \Big \vert_x\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Rules for Continuous Random Variables:</b> The rules and notations of discrete random variables can be transferred to continuous random variables mainly by transferring sums to integrals:</li>
   <ul>
     <li>For probability densities $p$ on $(\mathbb R^d, \mathcal B)$ is always holds:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P(\mathbb R^d) = \int_{\mathbb R^d} p(x) \, \mathrm dx = 1
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Let $X=(V, W)$ be a random variable with density $p_X$. Then the <b>marginal density</b> of $V$ (analogous for $W$) is given by the sum rule:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         p_V(v) = \int_{\mathbb W} p_X(v, w)\, \mathrm dw\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>The <b>conditional density</b> $p(x\vert y)$ (for $p(y) > 0$) is given by the product rule and can be rewritten using Bayes Theorem:</li>
     <div class='scroll'>
-      $$
-        p(x\vert y) = \frac{p(x, y)}{p(y)} = \frac{p(x, y)}{\int_{\mathbb X} p(x) \cdot p(y\vert x)\, \mathrm dx}\, .
-      $$
-    </div>
+    \begin{align*}
+        p(x\vert y) = \frac{p(x, y)}{p(y)} = \frac{p(x)\cdot p(y\vert x)}{\int_{\mathbb X} p(x) \cdot p(y\vert x)\, \mathrm dx}\, .
+      \end{align*}
+  </div>
   </ul>
-  <li><b>Transformation Theorem for PDFs</b> (Omitting some mathematical constraints): Let $X$ be a RV with a PDF $f^X(x)$ and let $\Phi$ be a differentiable mapping. Let $\mathrm D\Phi$ be the <a target="_blank" href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant">Jacobian</a> of $\Phi$ and let the RV $Y$ be $Y = \Phi(X)$ with PDF $f^Y(y)$. Then</li>
+  <li class="cr"><b>Transformation Theorem for PDFs</b> (Omitting some mathematical constraints): Let $X$ be a RV with a PDF $f^X(x)$ and let $\Phi$ be a differentiable mapping. Let $\mathrm D\Phi$ be the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant">Jacobian</a> of $\Phi$ and let the RV $Y$ be $Y = \Phi(X)$ with PDF $f^Y(y)$. Then</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       f^Y(y) = \frac{f^X\big( \Phi^{-1} (y)\big)}{\Big \vert \mathrm D \Phi \big( \Phi^{-1}(y) \big) \Big \vert} \, .
-    $$
+    \end{align*}
   </div>
   <li>A special and very easy case for this is the <b>Convolution</b> of two RVs. Let $X$ and $Y$ be two independent RVs with PDFs $f^X$ and $f^Y$ and $Z = X+Y$ which yields:</li>
   <div class='scroll'>
-    $$ 
+    \begin{align*} 
       P(Z=z) = \int_\mathbb R f^X(z-y)f^Y(y) \, \mathrm dy  
-    $$
+    \end{align*}
   </div>
-  <li>Example of a probabilistic inference scheme for the proportion of people wearing glasses given a sample $X$ and using a uniform prior for the true probability $\pi$ for wearing glasses and 
+  <li class="cr" id="glasses_example"><b>Example of a probabilistic inference scheme:</b> For the proportion of people wearing glasses given a sample $X$ and using a uniform prior for the true probability $\pi$ for wearing glasses and</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(X_i = 1\vert \pi)=\pi \ \ \Rightarrow \ \ P(X_i=0\vert \pi)=1-\pi \, , 
-    $$
+    \end{align*}
   </div>
-  which leads for a Beta-Distribution for the Posterior:</li>
+  which leads for a Beta-Distribution for the Posterior:
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(\pi \vert X) = B(n-1,m-1)^{-1}\pi^n(1-\pi)^m\, ,
-    $$
+    \end{align*}
   </div>
   when observing a sample with $n$ positive results (wearing glasses) and $m=N-n$ negative results. This actual results for all $\beta$-distributed priors.
   <li>Note that <i>Discrete RVs can be viewed as a special case of Continuous RVs</i> using the Dirac-Measure. A Discrete RV $X$ with $P(X=x) = p_x$ can be described as a continuous RV using the PDF:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathcal P(x) = \sum_{y \, \in\, \mathrm{supp}\, X} p_y \delta(x-y) \, .
-    $$
+    \end{align*}
   </div>
   For this reason sometimes when denoting properties of RVs in general, one sometimes sticks to using the integral notation for continuous RVs. This can also be interpreted in context of measure theory.
 </ul>
@@ -427,30 +437,30 @@
 <ul class="flul">
   <li><b>Expectation of a Function:</b> Given some RV $X \in \X$ with PDF $\mathcal P(x)$. The Expectation of a function $f: \X \to \mathbb F$ is given by:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \E_\mathcal P [f] := \int f(x) \, \d \mathcal P(x) = \cases{
         \displaystyle\int f(x)\mathcal P(x) \, \d x , & \textsf{continuous RV} \\
         \displaystyle\sum_{x\, \in \, \mathrm{supp}\, X} f(x)\mathcal P(x), & \textsf{discrete RV} 
       } \, .
-    $$
+    \end{align*}
   </div>
   Another notation for expectation is using angle-brackets:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \langle f\rangle_\mathcal P = \E_p[f] \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Mean:</b> The Mean is the expectation of the identity function $x\to x$:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \E[X] = \int x \, \d \mathcal P(x) \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Variance:</b> The Variance is the expectation of the quadratic deviation from the mean:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathrm{Var}\, X = \E\left[(X-\E X)^2\right] =\dots = \E\left[X^2\right] - \E X^2 \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Moments:</b> The $p$-th moment of a RV $X$ is the expectation $\E[x^p]$.
   <li><b>Entropy:</b> The entropy is the expectation of $f(x)=-\log x$.</li>
@@ -461,22 +471,22 @@
 <ul class="flul">
   <li><b>Monte Carlo Method</b>: Idea: draw a "sample" (or just "sample") a number of $S$ values for $x_s\sim p(x)$ to solve:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int f(x)p(x) \, \mathrm d x  \approx \frac{1}{S}\sum_{s=1}^S f(x_s) \quad \textsf{and} \quad \int p(x,y) \ \mathrm dx \approx \sum_s p(y\vert x_s )\, .
-    $$
+    \end{align*}
   </div>
   <li>Let $\phi = \int f(x)p(x) \,  \mathrm d x = \mathbb E_p(f)$. let $x_s \sim p, \ s=1,..., S$ be iid. Then the <b>Monte Carlo estimator</b> for $\phi$ is given by:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \hat \phi = \frac{1}{S} \sum_{s=1}^S f(x_s)\, .
-    $$
+    \end{align*}
   </div>
   <li>The Monte Carlo estimator is an <b>unbiased estimator</b>, meaning $\mathbb E\hat \phi = \phi$.</li>
-  <li>The <b>expected square error (or variance)</b> of the MC-Estimator drops as $\mathcal O(S^{-1})$: </li>
+  <li>The <b>variance</b> of the MC-Estimator drops as $\mathcal O(S^{-1})$: </li>
   <div class='scroll'>
-    $$ 
-      \mathbb E(\hat \phi - \mathbb E \hat \phi)^2 = S^{-1}\mathrm{Var}(f) \, .
-    $$
+    \begin{align*} 
+      \var \hat \phi = S^{-1}\mathrm{Var}(f) \, .
+    \end{align*}
   </div>
   <li>To achieve really high precision in terms of the standard deviation $\sigma_{\hat \phi} = \sqrt{\mathrm{Var}(\hat \phi)}$ one needs the doubled order of magnitude in sample size, which makes plain MC estimation pretty inefficient.</li>
 </ul>
@@ -485,14 +495,14 @@
 <h2>Sampling by Transformation</h2>
 <p>Still one open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b></p>
 <ul class="flul">
-  <li>One can sample from the uniform distribution $U(0,1)$ pretty decent computationally using <a target="_blank" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Pseudorandom Number Generators</a>.</li>
+  <li>One can sample from the uniform distribution $U(0,1)$ pretty decent computationally using <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Pseudorandom Number Generators</a>.</li>
   <li><b>Sampling by Transformation:</b> Given that $U \sim U(0,1)$ and $X\sim P_X$ with CDF $F(x)$, then $F^{-1}(U)$ is distributed according to $P_X$.</li>
   <li>Example: The exponential distribution $\mathrm{Exp}(\lambda)$ for which $F(x; \lambda) = P(X \leq x; \lambda) = 1 - e^{-\lambda x}$ with $F^{-1}(y; \lambda) = -\log (y) / \lambda$:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       P\big (F^{-1}(U; \lambda) \leq u\big ) &= P\left( -\frac{\log U}{\lambda} \leq u \right) = P \left(  U \geq e^{-\lambda u} \right) = 1 - P \left(  U < e^{-\lambda u} \right) \\
     &= 1 -\int_0^{e^{-\lambda u}} 1\,\mathrm d t = 1 - e^{-\lambda u} \, .
-    \end{align*}$$
+    \end{align*}
   </div>
 </ul>
 
@@ -503,37 +513,36 @@
   <li>What makes sampling hard, is that we need to know the cumulative density everywhere, i.e. a global description of the entire function.</li>
   <li>Practical Monte Carlo Methods aim to construct samples from $p(x) = \tilde p(x) / Z$ assuming that it is possible to evaluate the <b>unnormalized</b> density $\tilde p$ at arbitrary points. Typical example: Compute moments of a posterior:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x\vert D) = \frac{p(D\vert x)p(x)}{\int P(D, x)\mathrm d x} \qquad \textsf{as} \qquad E_{p(x\vert D)}[x^n] \approx \frac{1}{S}\sum_S s_i^n \quad \textsf{with} \ x_i\sim p(x\vert D) \, .
-    $$
+    \end{align*}
   </div>
   <li>One possibility to realize that is <b>Rejection Sampling</b>: We want so sample from $p(x) = \tilde p(x) / Z$ which is given up to a constant $Z$. Therefore choose $q(x)$ s. t. $cq(x) \geq \tilde p(x)$ for a fixed $c>0$ and draw $s \sim q(s)$ and $u \sim U(0, cq(s))$. Then accept $s$ to the sample if $u \leq \tilde p(s)$ and reject if $u > \tilde p(s)$.</li>
   <li>This works because:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       P(s\vert u \leq \tilde p (s)) = \frac{P(s, u\leq \tilde p(s))}{P(u\leq \tilde p(s))} =  \frac{P(u\leq \tilde p(s) \vert s)P(s)}{P(u\leq \tilde p(s))} = \frac{\tilde p(s)}{cq(s)} \left( \int q(t)\frac{\tilde p(t)}{cq(t)} \, \mathrm dt \right)^{-1} q(s) = p(s)\, .
-    $$
+    \end{align*}
   </div>
   <li>Rejection sampling gets very inefficient, if large values of $c$ are needed - especially in higher dimensions (see gaussian example where $c=(\sigma_q / \sigma_p)^D$.</li>
 </ul>
 
 
 <h2>Importance Sampling</h2>
-
 <ul class="flul">
   <li>For the next method the <b>Expectation Rewrite-Trick</b> is needed. Suppose a PDF $p(x)$ and a function $f(x)$ with the expectation $\mathbb E_p(f) = \int f(x)p(x)  \, \mathrm dx$ (works also in the discrete case) is to be calculated. Assume another PDF $q(x)$. Then this can be rewritten:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathbb E_p(f) = \int f(x)p(x)  \, \mathrm dx = \int q(x) \cdot  f(x)\frac{p(x)}{q(x)}  \, \mathrm dx = \mathbb E_q \left( f\cdot \frac{p}{q} \right)
-    $$
+    \end{align*}
   </div>
   <li>The latter expectation $\mathbb E_q$ can then be estimated using e.g. MC sampling, meaning reducing it to a sum: $\mathbb E_q(h) \approx S^{-1}\sum_s h(x_s), \ x_s \sim q(x)$.</li>
   <li>An improved version of Rejection Sampling is <b>Importance Sampling</b>: Assume $q(x) > 0$ if $p(x) >0$. Then use the following estimator for a function $f$ (which is the goal of sampling):</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \phi &= \int f(x)p(x) \, \mathrm dx = \frac{1}{Z} \int f(x) \frac{\tilde p(x)}{q(x)}q(x) \, \mathrm dx \overset{\textsf{MC}}{\approx} \frac{1}{S} \sum_s f(x_s) \frac{\tilde p(x_s)/q(x_s)}{\frac{1}{S}\sum_{s'} \tilde p (x_s) / q(x_s) } \\
     &=: \sum_s f(x_s) \tilde{w}_s, \quad x_s \sim q(x)
-    \end{align*}$$
+    \end{align*}
   </div>
   <li>Note that with unknown $Z$ this is not an unbiased estimator anymore. To estimate $Z$ we used the expectation rewrite-tick on $f=1$ which yields $1 = \mathbb E_p(1) = \mathbb E_q( p / q) = E_q( \tilde p / q) \cdot  Z^{-1}$ which ca easily be solved for $Z$. If $Z$ is known this formula can be further simplified leading to replace $\tilde w_s$ with $w_s = p(x_s) / q(x_s)$.</li>
   <li>A flaw of importance sampling is, that $\mathrm{Var}(f\cdot p/q)$, which is important for the convergence rate of this procedure, can be unbounded, because $p(x)/q(x)$ might get very big for small $q(x)$.</li>
@@ -541,26 +550,25 @@
 
 
 <h2>Markov Chain Monte Carlo Methods</h2>
-
 <ul class="flul">
   <li>Definition of <b>Markov Chains</b>: Let $X$ be a sequence of RVs with a joint distribution $p(x_1, ..., x_N)$. Then this sequence is called a Markov chain, iff the joint PDF obeys the Markov property, i.e.</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x_i \vert x_1,...,x_2,...,x_{i-1}) = p(x_i\vert x_{i-1})\, .
-    $$
+    \end{align*}
   </div>
   <li>The idea of Markov Chain Monte Carlo (MCMC) sampling is to instead of drawing independently from $p$ to draw conditional on the previous example. This might enable us to "concentrate" on regions of $p$ with high probability and therefore leading to less "rejections" in the image of rejection sampling, i.e. it should be more likely to draw samples from areas where $p(x)$ is high.</li>
   <li>An algorithm must the <b>Detailed Balance Condition:</b> The detailed balance condition states that the algorithm reaches a stationary point of the process of drawing random numbers conditionally. It is:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x)T(x\to x') = p(x')T(x' \to x)\, ,
-    $$
+    \end{align*}
   </div>
   where $T(x_1\to x_2)$ is the probability of going from $x_1$ to $x_2$. This is sufficient to assume, that if once $p(x)$ is "reached", all following samples will also be from $p(x)$:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int p(x) T(x\to x')\, \mathrm dx = \int p(x')T(x\to x') \, \mathrm dx = p(x') \int T(x'\to x) \, \mathrm dx = p(x')\, .
-    $$
+    \end{align*}
   </div>
   In the last step we use, that the transition probability must integrate to $1$ (i.e. some point must be reached). 
 </ul>
@@ -573,9 +581,9 @@
     <li>Given a current sample instance $x_t$, draw a <i>proposal</i> $x'\sim q(x' \vert x_t)$ from a distribution $q$ - e.g. $q(x'\vert x_t) = \mathcal N (x';x_t, \sigma^2)$.</li>
     <li>Evaluate the quotient</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       a(x', x_t) := \frac{\tilde p(x')}{\tilde p(x_t)} \cdot \frac{q(x_t \vert x')}{q(x'\vert x_t)}\, .
-    $$
+    \end{align*}
   </div>
     <li>If $a \geq 1$ accept: $x_{t+1} \leftarrow x'$.</li>
     <li>Else:</li> 
@@ -586,9 +594,9 @@
   </ol> 
   To show that the detailed balance condition holds for this algorithm plug in 
   <div class='scroll'>
-    $$
+    \begin{align*}
       T(x \to x') = q(x'\vert x) \min \left[ 1, a(x', x)\right ]
-    $$
+    \end{align*}
   </div>
   into the detailed balance condition and use that $y \cdot \min[a,b] = \min[ya, yb]$ if $y > 0$.
   <li>There exist mathematical arguments for existence and uniqueness of the stationary distribution of an MCMC.</li>
@@ -601,24 +609,24 @@
 <ul class="flul">
   <li><b>Gibbs Sampling:</b> In Gibbs Sampling one assumes that for a multivariate RV $x=(x_1,...,x_n)$ there exists index sets $I \subset \{1,...,n\}=:N$ for which:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       x_t \leftarrow x_{t-1}; \quad x_{t,I} \sim p(x_{t, I} \vert x_{t, N\setminus I})\, .
-    $$
+    \end{align*}
   </div>
   The algorithm then looks like:
   <ol>
     <li>Given a current sample instance $x_t$, draw a <i>proposal</i> $x'\sim q(x' \vert x_t)$ from</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         q(x'\vert x_t) = \delta(x'_{N\setminus I} - x_{t, N\setminus I})\cdot p(x_i'\vert x_{t, N\setminus I})
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Use the assumption about $x_{t, I}$ to calculate</li>
       <div class='scroll'>
-        $$
+    \begin{align*}
           p(x') = p(x_I'\vert x'_{N\setminus I}) \cdot p(x_{N\setminus I}')=p(x_I'\vert x_{t, N\setminus I}) \cdot p(x_{t, N\setminus I}) \, ,
-        $$
-      </div>
+        \end{align*}
+  </div>
       where the latter equality holds because we only update $x_I$ in this step.
     <li>Plugging everything in the formula for $a$ of the Metropolis-Hastings algorithm and using the properties of the $\delta$-distribution $\delta(a-b)=\delta(b-a)$ one observes that $a=1$ always holds, thus the update is always executed.</li>
     <li>Continue with the rest of $N\setminus I$ and add $x'$ to the sample when all $N$ indices have been updated.</li>
@@ -633,41 +641,41 @@
   <ul>
     <li>Lets consider <b>Boltzmann distributions</b>, i.e. distributions which can be written as</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P(x) = \frac{1}{Z} \exp \big( -E(x)\big) \qquad \textsf{with a normalizing constant $Z$}
-      $$
-    </div>
+      \end{align*}
+  </div>
     which is actually a rather weak assumption because using $\log(.)$ lots of distributions can be rewritten in this way.
     <li>Next augment the state-space by an auxiliary <i>momentum</i> variable $p = \dot x$ and define a <b>Hamiltonian</b>, which resembles the sum of potential and kinetic energy, via:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         H(x, p) := E(x) + K(p) \qquad \textsf{with e.g.}\ K(p) = \frac{1}{2}p^Tp \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     The case $K(p)=p^Tp/2$ resembles classical, non-relativistic kinetic energy. Note that $K(p)$ must only be dependent of quadratic terms in $p$ (i.e. $p^Tp$) for the dynamics to be time-reversible.
     <li>Now perform Metropolis-Hastings procedures to the joint distribution of $p$ and $x$ which is given by</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         P_H(x,p)=\frac{1}{Z_H} \exp\big(-H(x,p)\big) = \frac{1}{Z_H} e^{-E(x)}\cdot e^{-K(p)}
-      $$
-    </div>
+      \end{align*}
+  </div>
     and use that the laws of Hamiltonian Mechanics provide a coupling between $p$ and $x$ given by the Hamilton Equations namely:
     <div class='scroll'>
-      $$
+    \begin{align*}
         \dot x = \frac{\partial H}{\partial p} \, , \qquad \textsf{and} \qquad \dot p = - \frac{\partial H}{\partial x}\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     This assures that $H$ is actually a constant w.r.t. time:
     <div class='scroll'>
-      $$
+    \begin{align*}
         \frac{\mathrm dH}{\mathrm dt} = \frac{\partial H}{\partial x} \frac{\partial x}{\partial t} + \frac{\partial H}{\partial p}\frac{\partial p}{\partial t} = 0 \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     This assures that $\boldsymbol{P_H(x',p')=P_H(x,p)}$ for the Metropolis-Hastings procedure when interpreting the <b>Markov Chain steps as time steps</b>.
-    <li>The proposal-part of the algorithm is thereby practically omitted, because generating a sample $(x', y')$ by time propagation given by $H$ is already the proposal of a new point. The dynamics of such a system are time-reversible (<a target="_blank" href="https://physics.stackexchange.com/questions/528020/reversibility-of-hamiltonian-dynamics">Superfast Jellyfish, StackExchange</a>), which resembles the Detailed Balance Condition to be fulfilled.</li>
+    <li>The proposal-part of the algorithm is thereby practically omitted, because generating a sample $(x', y')$ by time propagation given by $H$ is already the proposal of a new point. The dynamics of such a system are time-reversible (<a class="link" target="_blank" href="https://physics.stackexchange.com/questions/528020/reversibility-of-hamiltonian-dynamics">Superfast Jellyfish, StackExchange</a>), which resembles the Detailed Balance Condition to be fulfilled.</li>
     <li>Because the distribution $P_H(x,p)$ factorizes to $P_H(x,p) = P_E(x)P_K(p)$ we are now able to sample from $P_E(x)=p(x)$ with accepting each proposal by the cost of solving an ordinary differential equation (ODE) of the first order namely 
     <div class='scroll'>
-      $$
+    \begin{align*}
         \frac{\mathrm d}{\mathrm dt} \begin{pmatrix}
           x(t) \\ y(t)
         \end{pmatrix}
@@ -675,11 +683,11 @@
         \begin{pmatrix}
           p(t) \\ -\nabla_x E(x(t))
         \end{pmatrix}
-      $$
-    </div>
-    which can be done numerically with pretty high precision (see e.g. <a target="_blank" href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta Methods</a>). However computing these numerically introduces some "noise" to the process and forces us to keep a decision rule as before (see e.g. <a target="_blank" href="https://arxiv.org/pdf/2108.12107.pdf">Vishnoi, 2021</a>).</li>
+      \end{align*}
+  </div>
+    which can be done numerically with pretty high precision (see e.g. <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">Runge-Kutta Methods</a>). However computing these numerically introduces some "noise" to the process and forces us to keep a decision rule as before (see e.g. <a class="link" target="_blank" href="https://arxiv.org/pdf/2108.12107.pdf">Vishnoi, 2021</a>).</li>
   </ul>
-  <li>HMC has the flaw of needing us to set the step size of the ODE-integrator and the number of steps which should be propagated before a new sample is fixed. Especially with too big step sizes (but also with to long integration) the dynamics tend to move back and forth through the parameter-space and end up ending close to the start point. This is called the <b>U-Turn Problem</b>, which can be further addressed (e.g. see <a target="_blank" href="https://arxiv.org/abs/1111.4246?context=cs">Hoffman and Gelman, 2011</a>).</li>
+  <li>HMC has the flaw of needing us to set the step size of the ODE-integrator and the number of steps which should be propagated before a new sample is fixed. Especially with too big step sizes (but also with to long integration) the dynamics tend to move back and forth through the parameter-space and end up ending close to the start point. This is called the <b>U-Turn Problem</b>, which can be further addressed (e.g. see <a class="link" target="_blank" href="https://arxiv.org/abs/1111.4246?context=cs">Hoffman and Gelman, 2011</a>).</li>
   <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
     <tr>
@@ -698,61 +706,62 @@
 <ul class="flul">
   <li><b>Univariate Gaussian Distribution:</b> Let $X$ be gaussian distributed with mean $\mu$ and Variance $\sigma^2$, i.e. $X\sim \mathcal N (\mu, \sigma^2)$ then its PDF is given by:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathcal N (x; \mu, \sigma^2)=\frac{1}{\sigma\sqrt{2\pi}} \exp \left(-\frac{(x-\mu)^2}{2\sigma^2}\right) \, .
-    $$
+    \end{align*}
   </div>
   
   <li><b>Closeness under multiplication</b>: The product of two gaussian PDFs is still a gaussian PDF, therefore it is convenient to set up a model assuming $X\sim \mathcal N (\mu, \sigma^2)$ and $Y\vert X\sim \mathcal N(x,\nu^2)$ because then it follows:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       X \vert Y \sim \mathcal N(m, s^2) \qquad \textsf{with} \quad s^2 = \frac{1}{\sigma^{-2}+\nu^{-2}}, \quad m = \frac{\sigma^{-2}\mu + \nu^{-2}y}{\sigma^{-2}+\nu^{-2}}\, ,
-    $$
+    \end{align*}
   </div>
   which can easily be extended to $Y$ consisting of iid samples $Y_1, ..., Y_n$. For parameter estimation it is then useful to rewrite the above terms to $s^{-2}$ and $s^{-2}m$ because then estimation can be done via summation of the so called <i>sufficient statistics</i> of this problem, namely $\sum_i \nu_i^{-2}$ and $\sum_i \nu_i^{-2}y_i$.
   <li><b>Multivariate Gaussian Distribution:</b> Let $X$ be gaussian distributed with mean $\mu \in \mathbb R^{n}$ and Covariance-Matrix $\Sigma\in \mathbb R^{n\times n}$ which is symmetric and positive definite (therefore invertible), i.e. $X\sim \mathcal N (\mu, \Sigma)$ then its PDF is given by:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathcal N(x; \mu, \Sigma)=\frac{1}{(2\pi)^{n/2}\vert \Sigma \vert^{1/2}} \exp \left(-\frac{1}{2} (x-\mu)^T\Sigma^{-1}(x-\mu) \right) \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Algebraic Trick:</b> The Gaussian PDF obeys the following algebraic rule, which can be useful when solving Integrals to leverage the normalization condition:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathcal N(a; b, C) = \mathcal N(b; a, C)\, .
-    $$
+    \end{align*}
   </div>
-  <li>For the <b>product of two gaussian distributions</b> one gets:</li>
+  <li class="cr"><b>Product of two Gaussian distributions:</b> One gets:</li>
   <div class='scroll'>
-    $$
+    \begin{align}
       \mathcal N(x; a, A) \cdot \mathcal N(x; b, B) = \mathcal N(x; c, C)\cdot Z \quad \textsf{with} \quad C=(A^{-1}+B^{-1})^{-1} \, ,\ \ c = C(A^{-1}a+B^{-1}b)\, , \ \ Z=\mathcal N(a; b, A+B) \, .
-    $$
+      \label{eq:gauss_prod}
+    \end{align}
   </div>
   This leads to an analogous implication as stated corresponding to "closeness" above. Combining this (exactly: that $Z$ is normalized) with the algebraic trick from above this also yields:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int \mathcal N(y; Qx, \Sigma) \cdot  \mathcal N(x; \mu, \Lambda) \, \mathrm dx = \mathcal N (y; Q\mu, Q\Lambda Q^T + \Sigma)\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Affine Transformations of Gaussians:</b> Transform a RV $X$ by $AX+b$ where $A$ is a matrix of necessary size, one gets: </li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       AX+b \sim \mathcal N (A\mu+b, A\Sigma A^T) \, .
-    $$
+    \end{align*}
   </div>
   <li><b>The Central Limit Theorem</b> states that for a lot of distributions $D(\theta)$ (which have to obey certain criterions) the sum of iid $X_i \sim D(\theta)$ is normally distributed. This is the reason why in nature many observables are indeed gaussian distributed when measured.</li>
-  <li><b>Maximum Entropy:</b> Of all probability distributions over $\mathbb R$ with a specified mean $\mu$ and variance  $\sigma^2$, the normal distribution $\mathcal N(\mu, \sigma^2)$ is the one with maximum entropy $H=\int p(x) \log p(x) \, \mathrm dx$. Given some knowledge of variational calculus the proof for this property is surprisingly straightforward (see it incomplete on <a target="_blank" href="https://en.wikipedia.org/wiki/Normal_distribution#Maximum_entropy">Wikipedia</a>).</li>
+  <li><b>Maximum Entropy:</b> Of all probability distributions over $\mathbb R$ with a specified mean $\mu$ and variance  $\sigma^2$, the normal distribution $\mathcal N(\mu, \sigma^2)$ is the one with maximum entropy $H=\int p(x) \log p(x) \, \mathrm dx$. Given some knowledge of variational calculus the proof for this property is surprisingly straightforward (see it incomplete on <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Normal_distribution#Maximum_entropy">Wikipedia</a>).</li>
   <li>Besides the two reasons above, the Gaussian Distribution is also widely used because of its nice properties according conditionals and marginals.</li>
   <li><b>Matrix Inversion and Determinant Lemma:</b> When working with multivariate gaussian distributions two very useful results from Linear Algebra are:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \big(Z+UWV^T \big)^{-1} &= Z^{-1} - Z^{-1} U \big(W^{-1}+V^TZ^{-1}U\big)^{-1}V^TZ^{-1} \\
       \big\vert Z+UWV^T \big\vert &= \vert Z\vert \cdot \vert W\vert \cdot \big\vert W^{-1} + V^T Z^{-1}U\big\vert\, .
-    \end{align*}$$
+    \end{align*}
   </div>
   <li><b>Block Matrix Inversion:</b> For inverting block covariance matrices also the following property from Linear Algebra is useful. If $P$ and $M$ (see below) are invertible then:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       A = \begin{pmatrix}
         P & Q \\
         R & S
@@ -763,11 +772,11 @@
         P^{-1}+P^{-1} Q M R P^{-1} & -P^{-1}QM \\
         -M R P^{-1} & M
       \end{pmatrix}
-    \end{align*}$$
+    \end{align*}
   </div>
   There exist different forms if instead of $P$ one of the other three blocks is invertible but they can be transformed into each other by using equations of the form 
   <div class='scroll'>
-    $$
+    \begin{align*}
       \begin{pmatrix}
         0 & \boldsymbol 1 \\
         \boldsymbol 1 & 0
@@ -787,11 +796,11 @@
         P & Q \\
         R & S
       \end{pmatrix} \, .
-    $$
+    \end{align*}
   </div>
   To calculate the inverse then calculate the inverse of the left side and use $(ABC)^{-1} = C^{-1}B^{-1}A^{-1}$ with. 
   <div class='scroll'>
-    $$
+    \begin{align*}
       \begin{pmatrix}
         0 & \boldsymbol 1 \\
         \boldsymbol 1 & 0
@@ -801,12 +810,12 @@
         0 & \boldsymbol 1 \\
         \boldsymbol 1 & 0
       \end{pmatrix} \, .
-    $$
+    \end{align*}
   </div>
   <li>The last two properties can be used to derive the following "theorems" (although they are not formulated as proper theorems here &#128521).</li>
-  <li><b>Marginals of a Gaussian:</b> The marginal of a gaussian distribution is again a gaussian distribution, i.e. (full <a href="https://aalexan3.math.ncsu.edu/articles/gaussian_marginals.pdf" target="_blank">derivation</a>):</li>
+  <li><b>Marginals of a Gaussian:</b> The marginal of a gaussian distribution is again a gaussian distribution, i.e. (full <a class="link" href="https://aalexan3.math.ncsu.edu/articles/gaussian_marginals.pdf" target="_blank">derivation</a>):</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       Z = \begin{pmatrix}
         X_1 \\ X_2
       \end{pmatrix} 
@@ -821,11 +830,11 @@
         \end{pmatrix}
       \right] 
       \qquad \Rightarrow \qquad X_1 \sim \mathcal N(\mu_1, \Sigma_{11})
-    $$
+    \end{align*}
   </div>
-  <li><b>Conditionals of a Gaussian:</b> The conditional of a gaussian distribution is again a gaussian distribution, i.e. (full <a href="https://stats.stackexchange.com/a/392664" target="_blank">derivation</a>):</li>
+  <li class="cr"><b>Conditionals of a Gaussian:</b> The conditional of a gaussian distribution is again a gaussian distribution, i.e. (full <a class="link" href="https://stats.stackexchange.com/a/392664" target="_blank">derivation</a>):</li>
   <div class='scroll'>
-    $$
+    \begin{align}\begin{split}
       Z = \begin{pmatrix}
         X_1 \\ X_2
       \end{pmatrix} 
@@ -840,34 +849,38 @@
         \end{pmatrix}
       \right] 
       \qquad \Rightarrow \qquad X_1\vert X_2=a \sim \mathcal N \Big( \underbrace{\mu_1 + \Sigma_{12}\Sigma_{22}^{-1}(a-\mu_2)}_{\mu_{1\vert 2}}, \ \ \underbrace{\Sigma_{11}-\Sigma_{12}\Sigma_{22}^{-1} \Sigma_{21}}_{\Sigma_{1\vert 2}} \Big)
-    $$
+    \end{split}
+    \label{eq:conditionals_gaussian}
+    \end{align}
   </div>
   with a special case being $X_2 = AX_1$:
   <div class='scroll'>
-    $$
+    \begin{align*}
       X\vert AX=a \sim \mathcal N\Big( \mu + \Sigma A^T (A\Sigma A^T)^{-1}(a-A\mu), \ \ \Sigma - \Sigma A^T (A\Sigma A^T)^{-1}A\Sigma \Big)
-    $$
+    \end{align*}
   </div>
-  <li><b>Bayesian Inference with Gaussians:</b> 
+  <li class="cr"><b>Bayesian Inference with Gaussians:</b> 
     <ul>
       <li>Using the two rules above one can summarize: If $X \sim \mathcal N(\mu, \Sigma)$ and $Y\vert X=x \sim \mathcal N(Ax+b, \Lambda)$, then</li>
       <div class='scroll'>
-        $$\begin{align}
+        \begin{align}\begin{split}
           Y &\sim \mathcal N\Big(A\mu + b, \ \ \Lambda + A\Sigma A^T\Big) \qquad \textsf{and} \\
           X\vert Y=y &\sim \mathcal N \Big( \mu + \underbrace{\Sigma A^T \big( A\Sigma A^T + \Lambda^{-1}\big)^{-1}}_{\textsf{gain}}  \underbrace{\big(y - (A\mu +b)\big)}_{\textsf{residual}} , \ \ \Sigma - \Sigma A^T \big(\underbrace{A\Sigma A^T + \Lambda}_{\textsf{Gram matrix}}\big)^{-1} A\Sigma \Big) \\
           &= \mathcal N \Big( \big(\underbrace{\Sigma^{-1} + A^T\Lambda^{-1}A}_{\textsf{precision matrix}}\big)^{-1}   \big( A^T\Lambda^{-1}(y-b)+\Sigma^{-1}\mu \big) , \ \ \big(\underbrace{\Sigma^{-1} + A^T\Lambda^{-1}A}_{\textsf{precision matrix}}\big)^{-1} \Big) \, .
-        \end{align}$$
+        \end{split}
+        \label{eq:bayes_gaussian}
+        \end{align}
       </div>
       <li><b>This maps the complicated task of probabilistic inference with the calculations of integrals (exponentially hard in the number of parameters) to a linear algebra problem (at most cubic complexity in the number of parameters). Both formulations of $X \vert Y=y$ are useful, depending of the sizes of $X$ and $Y$ to save computational costs.</b></li>
       <li>A special case of this is $X\sim \mathcal N(\mu, \Sigma)$ and $Y\vert X \sim \mathcal N (A^Tx + b, \Lambda)$ with</li>
       <div class='scroll'>
-        $$
+    \begin{align*}
           B^TX +c \vert Y=y \sim  \mathcal N \Big( B^T\mu + c + B^T \Sigma A \big( A^T \Sigma A + \Lambda \big)^{-1}(y-A^T\mu-b), \ \ B^T\Sigma B - B^T \Sigma A \big(A^T \Sigma A + \Lambda \big)^{-1} A^T \Sigma B \Big) \, .
-        $$
-      </div>
+        \end{align*}
+  </div>
     </ul>
   </li>
-  <li>In <a target="_blank" href="https://www.youtube.com/watch?v=FIheKQ55l4c&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=7&ab_channel=T%C3%BCbingenMachineLearning&t=57m56s" style="color: #BB86FC;">Lecture 6</a> Prof. Hennig provides practical examples (including nice tricks) on how to use this machinery.</li>
+  <li>In <a class="link" target="_blank" href="https://www.youtube.com/watch?v=FIheKQ55l4c&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=7&ab_channel=T%C3%BCbingenMachineLearning&t=57m56s" style="color: #BB86FC;">Lecture 6</a> Prof. Hennig provides practical examples (including nice tricks) on how to use this machinery.</li>
   <li><b>Reading Marginal and Conditional Independence from Gaussians:</b> Given a multivariate RV $X=(X_1,...,X_n)$ with $X\sim \mathcal N (\mu, \Sigma)$. Let $i,k \in \{1,..., n\}, \ i\neq k$ and let $X_{\setminus i}$ be the RV containing all $X_j$ except $X_i$. Then:
     <ol>
       <li>The marginal distributions of $X_i$ and $X_k$ are independent if $\Sigma_{ik}=\Sigma_{ki}=0$.</li>
@@ -883,26 +896,26 @@
     <ul>
       <li>Given is a dataset  
       <div class='scroll'>
-        $$
+    \begin{align*}
           \left\{(x_i, y_i)\, \vert \, x_i \in \mathbb R^{d-1}, \ y_i \in \mathbb R^F, \ i=1,\dots ,N\right\} \, , 
-        $$
-      </div>
+        \end{align*}
+  </div>
       with $d, F\in \mathbb N$, for which the following model is proposed: 
       <div class='scroll'>
-        $$
+    \begin{align*}
           Y\vert f \sim \mathcal N (f(X), \sigma^2\boldsymbol 1) \, . 
-        $$
-      </div>
+        \end{align*}
+  </div>
       Let $X$ denote the complete dataset of $x_i$'s and analogous for $Y$ and $y_i$'s. For $d=2, \ F=1$ this reduces to good ol' Linear Regression.</li>
       <li>Assume that $d$ is a linear function, i.e. 
       <div class='scroll'>
-        $$
+    \begin{align*}
           f(x_i)=f_{x_i}=w_0 + x_i^TW_1, \quad \textsf{with} \quad w_0 \in \mathbb R^F \ \ \textsf{and} \ \ W_1 \in \mathbb R^{(d-1) \times F}
-        $$
-      </div>
+        \end{align*}
+  </div>
       and use the notation
       <div class='scroll'>
-        $$
+    \begin{align*}
           \phi(X) = \begin{pmatrix}
             1 & 1 & \dots & 1 \\ 
             x_{11} & x_{21} & \dots & x_{N, 1} \\
@@ -913,33 +926,33 @@
           W = \begin{pmatrix}
           w_0^T \\ W_1
           \end{pmatrix} \in \mathbb R^{d \times F}
-        $$
-      </div>
+        \end{align*}
+  </div>
       then 
       <div class='scroll'>
-          $$
+    \begin{align*}
           f_X = \phi_X^TW \in \mathbb R^{N\times F}
-        $$
-      </div>
+        \end{align*}
+  </div>
       contains the "somewhat prediction" for each $y_i$ row-wise.
-      <li>Choose a gaussian prior for $W$, i.e. $\tilde W\sim \mathcal N(\mu, \Sigma)$, where $\tilde W$ is an unrolled version of $W$ with all elements of $\tilde W$ in an $d\cdot F$-dimensional vector and $\Sigma \in \mathbb R^{d\cdot F\times d\cdot F}$. Going on from here without restricting the dimensions or some assumption about independence of certain dimensions of $Y$ gets verbose because therefore we would need to construct a matrix distribution for $W$, which can be done using the <a target="_blank" href="https://en.wikipedia.org/wiki/Matrix_normal_distribution">Matrix Normal Distribution</a> though. <b>Nevertheless let from now be $\boldsymbol{F=1}$</b> which yields $\Sigma \in \mathbb R^{d \times d}$ and $f_X\in \mathbb R^N$ and therefore $f_X \sim \mathcal N (\phi_X^T\mu, \ \phi_X^T \Sigma \phi_X)$.</li>
+      <li>Choose a gaussian prior for $W$, i.e. $\tilde W\sim \mathcal N(\mu, \Sigma)$, where $\tilde W$ is an unrolled version of $W$ with all elements of $\tilde W$ in an $d\cdot F$-dimensional vector and $\Sigma \in \mathbb R^{d\cdot F\times d\cdot F}$. Going on from here without restricting the dimensions or some assumption about independence of certain dimensions of $Y$ gets verbose because therefore we would need to construct a matrix distribution for $W$, which can be done using the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Matrix_normal_distribution">Matrix Normal Distribution</a> though. <b>Nevertheless let from now be $\boldsymbol{F=1}$</b> which yields $\Sigma \in \mathbb R^{d \times d}$ and $f_X\in \mathbb R^N$ and therefore $f_X \sim \mathcal N (\phi_X^T\mu, \ \phi_X^T \Sigma \phi_X)$.</li>
       <li>For inference of $f$ all that is left is to calculate the posterior of $W$ using what is given:</li>
         <div class="scroll">
-          $$
+          \begin{align*}
             P(W\vert Y, \phi_X) \propto P(Y\vert W, \phi_X) \cdot P(W) \, .
-          $$
+          \end{align*}
         </div>
-      We use the second formulation of the formula from "Bayesian Inference with Gaussians" because then only $d \times d$ matrices need to be inverted whereas in the other formulation $N\times N$ matrices would need to be inverted:
+      We use the second formulation of \eqref{eq:bayes_gaussian} because then only $d \times d$ matrices need to be inverted whereas in the other formulation $N\times N$ matrices would need to be inverted:
       <div class="scroll">
-        $$
+        \begin{align*}
           \Rightarrow \quad W\vert Y=y, \phi_X \sim \mathcal N \Big( \big(\Sigma^{-1}+\sigma^{-2}\phi_X\phi_X^T\big)^{-1}\big( \Sigma^{-1}\mu + \sigma^{-2}\phi_X y\big), \ \ \big(\Sigma^{-1}+\sigma^{-2}\phi_X\phi_X^T\big)^{-1} \Big) \, , 
-        $$
+        \end{align*}
       </div>
       <li>The posterior for $W$ can be easily translated to a posterior in $f$ by applying $\phi_x$, where $x$ can be any data-instance that is to be evaluated.</li>
       <div class='scroll'>
-        $$
+        \begin{align*}
           f_x \vert Y=y, \phi_X \sim \mathcal N \big( \phi_x^T \mu_{W\vert Y=y; \phi_X}, \ \phi_x^T \Sigma_{W\vert Y=y; \phi_X}  \phi_x\big)
-        $$
+        \end{align*}
       </div>
       where mean and covariance matrix from above are used.
     </ul>
@@ -949,18 +962,18 @@
       <li>In practice it is typically not a good idea to try to invert matrices directly when building an algorithm because often the actual numerically evaluated matrices are not invertible (e.g. because of rounding and numerical instabilities).</li>
       <li>What is therefore done instead is to rewrite the problem: Let $A$ be an (invertible) matrix and $X$ and $Y$ be matrices of suitable size. If one has to compute $X=A^{-1}Y$ in a computation this can be done without directly computing $A^{-1}$ by solving the linear system of Equations $AX=Y$ for $X$.</li>
       <li>If instead $X=YA^{-1}$ needs to be computed, solve $A^TX^T$=Y^T for $X^T$ and transpose the result yet again.</li>
-      <li>If $A$ is symmetric positive definite it is useful to use the <a target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky Decomposition</a> $LL^T=A$, where $L$ is a (upper) triangular matrix. Then first solve $LZ=Y$ for $Z$ and then $L^TX=Z$ for $X$. For example in <a target="_blank" href="docs.scipy.opg">scipy</a> this can be done in one step using <a target="_blank" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.cho_solve.html" style="font-family: 'CaskaydiaCove NF', 'Cascadia Code', Consolas, monospace;">cho_solve</a>. This is especially efficient if the matrix $A$ needs to be used in this fashion multiple times, because then precomputing the Cholesky decomposition saves computational costs.</li>
-      <li>Computing the Cholesky decomposition can be done pretty straightforward with e.g. the <a target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition#The_Cholesky%E2%80%93Banachiewicz_and_Cholesky%E2%80%93Crout_algorithms">Banachiewicz and Cholesky Algorithm</a> with the complexity of $\mathcal{O}(n^3)$ where $A\in \mathbb R^{n\times n}$.</li>
+      <li>If $A$ is symmetric positive definite it is useful to use the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky Decomposition</a> $LL^T=A$, where $L$ is a (upper) triangular matrix. Then first solve $LZ=Y$ for $Z$ and then $L^TX=Z$ for $X$. For example in <a class="link" target="_blank" href="docs.scipy.opg">scipy</a> this can be done in one step using <a class="link" target="_blank" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.cho_solve.html" style="font-family: 'CaskaydiaCove NF', 'Cascadia Code', Consolas, monospace;">cho_solve</a>. This is especially efficient if the matrix $A$ needs to be used in this fashion multiple times, because then precomputing the Cholesky decomposition saves computational costs.</li>
+      <li>Computing the Cholesky decomposition can be done pretty straightforward with e.g. the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition#The_Cholesky%E2%80%93Banachiewicz_and_Cholesky%E2%80%93Crout_algorithms">Banachiewicz and Cholesky Algorithm</a> with the complexity of $\mathcal{O}(n^3)$ where $A\in \mathbb R^{n\times n}$.</li>
     </ul>
   </li>
   <li><b>Polynomial Regression:</b> Suppose $f=2 \ \Rightarrow x_i \in \mathbb R$. For polynomial regression replace $\phi_x = (1, \, x)^T$ with:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \phi_x = (1,\, x,\, x^2,\,...,\,x^d), \quad d \in \mathbb N \, .
-    $$
+    \end{align*}
   </div>
   <li><b>"Underestimation" of Uncertainty:</b> In the way we used Bayesian gaussian regression so far, the variance of the posterior $W\vert Y=y; \phi_X$ or $f_x\vert Y=y; \phi_X$ does not depend on the observed data $y$. This leads to an overconfident prediction of the "area" in which $f(x)$ should be for "new" observations $x$.</li>
-  <li><b>Generalized Regression:</b> Nothing in the Bayesian Regression framework hinders us from choosing arbitrary functions in $\phi_X$, which is pretty cool. Choosing e.g. $\phi_x=(\cos x,\, \sin x,\, \cos(2x), \, \sin (2x),\,...)^T$ or step-functions (using the <a target="_blank" href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heaviside Step Function</a>) is also valid, and even only requires minimal modifications in a program which does the job!</li>
+  <li><b>Generalized Regression:</b> Nothing in the Bayesian Regression framework hinders us from choosing arbitrary functions in $\phi_X$, which is pretty cool. Choosing e.g. $\phi_x=(\cos x,\, \sin x,\, \cos(2x), \, \sin (2x),\,...)^T$ or step-functions (using the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heaviside Step Function</a>) is also valid, and even only requires minimal modifications in a program which does the job!</li>
   <li><b>Multivariate Outputs:</b> Above we restricted the general discussion to $y\in \mathbb R$ when we noticed wo would have to use the somewhat unhandy Matrix normal distribution to go on if we want higher dimensional outputs. Otherwise one can also <i>do gaussian regression for each output feature separately</i> to cover multivariate output.</li>
   <li><b style="color: #03DAC6">The Toolbox:</b></li>
   <table class="mdtbl">
@@ -985,37 +998,37 @@
 <ul class="flul">
   <li><b>Feature Selection:</b> There is an infinite-dimensional space of feature functions to choose from. One approach is to restrict oneself to a finite-dimensional sub-space and search in there, e.g.</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \phi_i(x; \theta) = \frac{1}{1 + \exp \left(-\frac{x-\theta_1}{\theta_2}\right)}
-    $$
+    \end{align*}
   </div>
   <li><b>Hierarchical Bayesian Inference:</b> The generalization of the approach above is to restrict the feature space to some function $\phi_i(x; \theta)$ and make $\theta$ part of the inference, i.e. assume a prior for them and infer them via Bayesian inference. Note that if the features are do not depend linearly on $\theta$ - which would not be a good choice anyway because linear dependence can be absorbed in the $W$'s from before - it is not possible to leverage the properties of gaussian distributions again to reduce the inference to linear algebra operations. This is because all the machinery from above was derived from the affine transformation relation of gaussian distributed RVs and here $\phi(x; \theta)$ is not affine w.r.t. $\theta$.</li>
   <li><b>Maximum Likelihood Estimation (ML / MLE):</b> Because inference then might be intractable in many cases one therefore instead can reduce oneself to not do a full inference including a prior and a posterior for $\theta$ but instead for some given data $(x, \, y)$ maximize the likelihood of observing the data $y$ given $x$ and the parameters $\theta$ in $\theta$:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \hat \theta = \underset{\theta}{\mathrm{argmax}} \big( p(y \vert x, \theta) \big)
       = \underset{\theta}{\mathrm{argmax}} \int p(y\vert f, x, \theta) p(f \vert x, \theta)\, \mathrm df 
-    $$
+    \end{align*}
   </div>
   where integration over $f$ can be transferred to an integration over $W$ as before.
   <li>For the gaussian setting from the closeness of the gaussian PDF under multiplication one can conclude:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \underbrace{\mathcal N(y; {\phi_X^\theta}^T W, \Lambda)}_{P(y\vert f, x, \theta)} \cdot 
       \underbrace{\mathcal N(f; {\phi_X^\theta}^T\mu, \Sigma)}_{P(f\vert x, \theta)}  = 
       \underbrace{\mathcal N(f; \tilde m_{\textsf{post}}^\theta, \tilde V_{\textsf{post}}^\theta)}_{P(f\vert y, x,\theta)} 
       \cdot \mathcal N(y; {\phi_X^\theta}^T\mu, \ {\phi_X^\theta}^T \Sigma \phi_X^\theta + \Lambda)
-    $$
+    \end{align*}
   </div>
   Where the equality can be shown by using $\mathcal N(x; y, C) = \mathcal N(y; x, C)$. Applying Bayes theorem in reverse to this formula lets us identify:
   <div class='scroll'>
-    $$
+    \begin{align*}
       Y\vert \theta, X \sim \mathcal N ({\phi_X^\theta}^T\mu, \ {\phi_X^\theta}^T \Sigma \phi_X^\theta + \Lambda)
-    $$
+    \end{align*}
   </div>
   <li>This leads to the MLE-problem:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \hat \theta &= \underset{\theta}{\mathrm{argmax}} \, \mathcal N(y; {\phi_X^\theta}^T\mu, \ {\phi_X^\theta}^T \Sigma \phi_X^\theta + \Lambda) \\
       & = \underset{\theta}{\mathrm{argmin}} \, \frac{1}{2} \left( 
         \underbrace{
@@ -1029,18 +1042,18 @@
         }_{\textsf{model complexity / Occam factor}}
         \right)
         <!-- + \frac{N}{2} \log (2\pi) ! -->
-    \end{align*}$$
+    \end{align*}
   </div>
   where the following common trick is used:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \underset{\theta}{\mathrm{argmax}}\, f(\theta) = \underset{\theta}{\mathrm{argmin}}\, \Big( - \log f(\theta)  \Big) \, .
-    $$
+    \end{align*}
   </div>
-  <li>The model complexity / <a target="_blank" href="https://en.wikipedia.org/wiki/William_of_Ockham">Occam</a> factor acts as a regularization term.</li>
-  <li><b>Maximum Aposteriori Estimation (MAP):</b> When one wants to include prior information about $\theta$ in the model, one does so by assuming some prior distribution. $\hat \theta$ is then estimated as the <a target="_blank" href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the <i>posterior distribution</i> $p(\theta\vert y, x)$:</li>
+  <li>The model complexity / <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/William_of_Ockham">Occam</a> factor acts as a regularization term.</li>
+  <li><b>Maximum Aposteriori Estimation (MAP):</b> When one wants to include prior information about $\theta$ in the model, one does so by assuming some prior distribution. $\hat \theta$ is then estimated as the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Mode_(statistics)">mode</a> of the <i>posterior distribution</i> $p(\theta\vert y, x)$:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \hat \theta = \underset{\theta}{\mathrm{argmax}} \, \Big( p(\theta \vert y, x)\Big) =
       \underset{\theta}{\mathrm{argmax}} \, \Big( p(y\vert x, \theta)p(\theta)\Big) = 
       \underset{\theta}{\mathrm{argmin}} \, 
@@ -1048,7 +1061,7 @@
         - \underbrace{\log p(y\vert x, \theta)}_{\textsf{Log-Likelihood}}  
         - \underbrace{\log p(\theta)}_{\textsf{Log-Prior}} 
       \Big) \, .
-    $$
+    \end{align*}
   </div>
   where typically the <b>Log-Prior takes the role of a regularization</b>. The first equality holds because the marginal $p(y\vert x) = \int p(y \vert \theta, x) p(\theta) \, \mathrm d\theta$ does not depend on $\theta$.
   <li><b style="color: #03DAC6">The Toolbox:</b></li>
@@ -1071,19 +1084,19 @@
     </tr>
   </table>
   <li>A linear Gaussian regressor is actually equivalent to a <b>single (hidden) layer neural network</b> with quadratic output loss, and fixed input layer.</li>
-  <li><b>The optimization Process</b> can be done by building a computation graph for all the computations necessary to compute the Log-Likelihood - or more general the target function - and using automatic differentiation (autodiff) which is basically the chain rule applied to the graph by a computer. A more detailed description of autodiff and especially reverse mode autodiff (which is <i>very similar to backpropagation</i>) can be found <a target="_blank" href="https://www.youtube.com/watch?v=Zb0K_S5JJU4&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=9&ab_channel=T%C3%BCbingenMachineLearning&t=52m40s" style="color: #BB86FC;">in this Lecture-Part</a>. </li>
+  <li><b>The optimization Process</b> can be done by building a computation graph for all the computations necessary to compute the Log-Likelihood - or more general the target function - and using automatic differentiation (autodiff) which is basically the chain rule applied to the graph by a computer. A more detailed description of autodiff and especially reverse mode autodiff (which is <i>very similar to backpropagation</i>) can be found <a class="link" target="_blank" href="https://www.youtube.com/watch?v=Zb0K_S5JJU4&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=9&ab_channel=T%C3%BCbingenMachineLearning&t=52m40s" style="color: #BB86FC;">in this Lecture-Part</a>. </li>
   <li><b>Connection to Deep Learning:</b> In the single layer picture the Bayesian linear regression setting is similar to the optimization problem for a regression neural network when using MAP. Given that the samples $y_i$ are drawn iid it is (omitting the $x$'s)</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(y \vert W, \phi^\theta) = \prod p(y_i\vert W, \phi^{\theta}_i) = \prod \mathcal N(y_i; {\phi^{\theta}}^TW, \sigma^2)
-      $$
-    </div>
+      \end{align*}
+  </div>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \underset{\theta, W}{\mathrm{argmax}} \, P(W, \theta \vert y) &=  \underset{\theta, W}{\mathrm{argmin}} \Big(- \log P(W, \theta \vert y) \Big) \\
       &= \underset{\theta, W}{\mathrm{argmin}} \Big(- \log P(y\vert W, \theta)\cdot P(W, \theta) \Big)\\
       &= \underset{\theta, W}{\mathrm{argmin}} \left(- \log P(W, \theta) + \frac{1}{2\sigma^2} \sum \big\vert\big\vert y_i - {\phi^{\theta}}^TW \big\vert\big\vert^2  \right)
-    \end{align*}$$
+    \end{align*}
   </div>
   which resembles minimizing the mean squared error ans some regularization. Note that for e. g. $\theta_i \overset{\mathrm{iid}}{\sim} \mathcal N (0, 1)$ it would be $-\log P(\theta) = \sum \theta_i^2$ which leads to L2-regularization.
 </ul>
@@ -1094,51 +1107,51 @@
   <li>In the last part we explicitly chose feature by defining feature functions which depended on parameters $\theta$ which were determined via ML or MAP estimation. In this part we will use another approach by increasing the number of features.</li>
   <li>We shorten the notation by introducing the <i>mean function</i> and the <i>covariance function</i> a. k. a. <b>kernel</b>:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       m_x: \mathbb X \to \mathbb R ,\  x \mapsto \phi_x^T \mu   \, , \qquad 
       k_{ab}: \mathbb X \times \mathbb X \to \mathbb R , \ (a, b) \mapsto \phi_a^T \Sigma \phi_b
-    $$
+    \end{align*}
   </div> 
   which yields (compare "Gaussian Linear Regression"):
   <div class='scroll'>
-    $$
+    \begin{align*}
       f_x \vert Y=y, \phi_X \sim \mathcal N \Big( m_x + k_{xX} \left(k_{XX} + \sigma^2 \boldsymbol 1\right)^{-1}(y-m_X),  \ k_{xx} - k_{xX} \left(k_{XX}+\sigma^2 \boldsymbol 1\right)^{-1}k_{Xx} \Big) \, .
-    $$
+    \end{align*}
   </div>
   <li>For two input points $x_i$ and $x_j$ the <b>kernel has the structure of a sum</b> (assuming that $\Sigma$ is diagonal). For specific feature choices one can <b>increase the number of features to infinity by transferring the sum to an integral</b>. E. g. consider the (scaled) covariance matrix </li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \Sigma = \frac{\sigma^2 (c_{\mathrm{max}}-c_{\mathrm{min}})}{F}\boldsymbol 1 \qquad \textsf{and} \qquad \phi_l(x) = \exp \left( - \frac{(x-c_l)^2}{2\lambda^2} \right)\, ,  \ \ l =1,\dots F\, .
-    $$
+    \end{align*}
   </div>
   This is placing $F$ bell-shaped features in a range $c_{\mathrm{min}}$ to $c_{\mathrm{max}}$ on the real axis. This yields:
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \phi(x_i)^T\Sigma \phi(x_j) &= \frac{\sigma^2 (c_{\mathrm{max}}-c_{\mathrm{min}})}{F}  \sum_{l=1}^F \exp \left( - \frac{(x_i-c_l)^2}{2\lambda^2} \right) \exp \left( - \frac{(x_j-c_l)^2}{2\lambda^2} \right) = \dots  \\
       &= \frac{\sigma^2 (c_{\mathrm{max}}-c_{\mathrm{min}})}{F}  \exp \left( - \frac{(x_i-x_j)^2}{4\lambda^2} \right) \sum_{l=1}^F \exp \left( - \frac{\left(c_l - \frac{1}{2}(x_i+x_j)\right)^2}{\lambda^2} \right) \, .
-    \end{align*}$$
+    \end{align*}
   </div>
   When one not increasing $F$ and decreasing the distance between to $c$'s such that $F\cdot \delta c / (c_{\mathrm{max}}-c_{\mathrm{min}})$ remains constant this can be transferred to the integral:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \phi(x_i)^T\Sigma \phi(x_j) = \sigma^2 \exp \left(-\frac{(x_i-x_j)^2}{4\lambda^2}\right) \int_{c_{\mathrm{min}}}^{c_{\mathrm{max}}}\exp \left( - \frac{\left(c_l - \frac{1}{2}(x_i+x_j)\right)^2}{\lambda^2} \right) \, \mathrm dc\, .
-    $$
+    \end{align*}
   </div>
   <li>Typically one then sets $\mu=0$ (assuming one has subtracted the mean from the data, which can be done easily) and redefines $m_x=0$ and $k_{ab}$ to the kernel chosen. For gaussian (bell-shaped) feature function solving the integral above for $c_{\mathrm{max}} \to \infty$ and $c_{\mathrm{min}} \to -\infty$ this takes the form (also called the RBF kernel):</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       k_{x_ix_j} = \sqrt{2\pi}\lambda \sigma^2 \exp \left( - \frac{(x_i-x_j)^2}{4\lambda^2}\right)\, .
-    $$
+    \end{align*}
   </div>
-  <li>This procedure can be abstracted to the formal definition of <a target="_blank" href="https://www.youtube.com/watch?v=s2_L86D4kUE&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=10&ab_channel=T%C3%BCbingenMachineLearning&t=33m43s" style="color: #BB86FC;">(Mercer) Kernels</a> which can then be used to define Gaussian Processes:</li>
+  <li>This procedure can be abstracted to the formal definition of <a class="link" target="_blank" href="https://www.youtube.com/watch?v=s2_L86D4kUE&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=10&ab_channel=T%C3%BCbingenMachineLearning&t=33m43s" style="color: #BB86FC;">(Mercer) Kernels</a> which can then be used to define Gaussian Processes:</li>
   <ul>
     <li><b>(Mercer / positive definite) Kernel</b> $k : \mathbb X \times \mathbb X \to \mathbb R$ is a (Mercer / positive definite) kernel if, for any finite collection $X=[x_1,..., x_N]$, the matrix $k_{XX} \in \mathbb R^{N\times N}$ with $[k_{XX}]_{ij} = k(x_i, x_j)$ is positive semidefinite.</li>
     <li><b>Every kernel which is constructed as in the example above is symmetric</b> and can easily shown to be a Mercer kernel:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         v^Tk_{XX} v = v^T \left[\sum_l \phi_l(x_i) \phi_l(x_j) \right]_{ij} v = \sum_l \sum_{i=1}^N v_i\phi_l(x_i) \sum_{i=1}^N \phi_l(x_j) v_j = \sum_l \left( \sum_{i=1}^N v_i\phi_l(x_i) \right)^2 \geq 0\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li><b>Gaussian Process:</b> Let $\mu: \mathbb X \to \mathbb R$ be any function and $k:\mathbb X \times \mathbb X \to \mathbb R$ be a Mercer kernel. A Gaussian Process $p(f) = \mathcal G \mathcal P(f; \mu , k)$ is a probability distribution over the function $f:\mathbb X \to \mathbb R$, such that every finite restriction to function values $f_X:=[f_{X_1},..., f_{X_N}]$ is a Gaussian distribution $p(f_X) = \mathcal N (f_X; \mu_X, k_{XX})$.</li>
   </ul>
   <li>When choosing normalization constants for the kernel (or choosing a bound kernel directly) each feature contributes only an infinitely small amount to the overall posterior.</li>
@@ -1149,7 +1162,7 @@
     <li>$\alpha \cdot k_1(a,b)$ for $\alpha \in \mathbb R_+$</li>
     <li>$k_1 \big( \phi(c), \phi(d) \big)$ for $c, d \in \mathbb Y$</li>
     <li>$k_1(a,b) + k_2(a,b)$</li>
-    <li>$k_1(a,b) \cdot k_2(a,b)$ (also known as <a target="_blank" href="https://en.wikipedia.org/wiki/Schur_product_theorem">Schur Product Theorem</a>)</li>
+    <li>$k_1(a,b) \cdot k_2(a,b)$ (also known as <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Schur_product_theorem">Schur Product Theorem</a>)</li>
   </ul>
   are Mercer kernels as well.
   <li>Note that also parameters of kernels can be learned analogous as in "Learning Representations", e. g. by using ML or MAP estimation.</li>
@@ -1185,61 +1198,61 @@
   <ul>
     <li><b>Spectral Theorem:</b> A symmetric positive definite matrix $A$ has positive eigenvalues $\lambda_a >0 \ \forall \ a = 1,...,n$ and can be written a a Gramian (outer product) of the eigenvectors:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         [A]_{ij} = \sum_{a=1}^n \lambda a [v_a]_i [v_a]_j\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Let $V = (v_1,..., v_n)$ and $\Lambda = \mathrm{diag} (\lambda_1,...,\lambda_n)$, then the following properties hold</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         A = V\Lambda V^{-1} \, ,\qquad \Lambda = V^{-1} A V \, , \qquad A^{-1} = V^{-1}\Lambda^{-1}V \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Every function which can be written as a power series $f(A) = \sum \alpha_k A^k$ can then be applied to $A$ as follows:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         f(A) = V f(\Lambda) V^{-1} \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>With $\mathrm{det} (AB) = \mathrm{det}(A)\mathrm{det}(B)$ and $\mathrm{tr}(ABC) = \mathrm{tr}(CAB) = \mathrm{tr}(BCA)$ it is easy to show:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \mathrm{det}(A) = \prod_{i=1}^n \lambda_i \, , \qquad \mathrm{tr}(A) = \sum_{i=1}^n \lambda_i \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
   </ul>
   <li><b>Eigenfunctions on Measure Spaces:</b> Let $(\Omega, \nu)$ be a measure space and $f: \Omega \times \Omega \to \mathbb R$. A function $\phi: \Omega \to \mathbb R$ and a scalar $\lambda \in \mathbb C$ which obey</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \int f(x, y) \phi(y) \, \mathrm d\nu(y) = \lambda \phi(x)
-    $$
+    \end{align*}
   </div>
   are called eigenfunction and eigenvalue of $f$ with respect to $\nu$.
   <li><b>Mercers Theorem / Spectral Theorem of Mercer Kernels:</b> Let $(\mathbb X, \nu)$ be a finite measure space and $k:\mathbb X\times \mathbb X \to \mathbb R$ a continuous (Mercer) kernel. Then there exist eigenvalues/functions $(\lambda_i, \phi_i)_{i\in I}$ w. r. t. $\nu$ such that $I$ is countable,, all $\lambda_i$ are real and non-negative, the eigenfunction can be made orthonormal, and the following series converges absolutely and uniformly $\nu^2$-almost-everywhere:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       k(a, b) = \sum_{i\in I} \lambda_i \phi_i(a)\phi_i(b)\quad \forall \quad a, b \in \mathbb X
-    $$
+    \end{align*}
   </div>
-  <li>It is not coincidence that this resembles very much the spectral theorem for <a target="_blank" href="https://en.wikipedia.org/wiki/Self-adjoint_operator">self-adjoint operators</a> in quantum mechanics. All this can be seen as the generalization from countable matrices to uncountable operators.</li>
+  <li>It is not coincidence that this resembles very much the spectral theorem for <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Self-adjoint_operator">self-adjoint operators</a> in quantum mechanics. All this can be seen as the generalization from countable matrices to uncountable operators.</li>
   <li><b>Stationary Kernels:</b> A kernel $k(a,b)$ is called stationary if it can be written as $k(a,b)=k(\tau)$ with $\tau = a-b$.</li>
   <li><b>Borchner's Theorem:</b> A complex-valued function $k$ on $\mathbb R^d$ is the covariance function of a weakly stationary mean square continuous complex-valued random process on $\mathbb R^d$ if, and only if, its Fourier transform is a probability (i. e. finite positive) measure $\mu$:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       k(\tau)  = \int_{\mathbb R^d} e^{2\pi \mathrm i s^T \tau} \, \mathrm d \mu(s) = \int_{\mathbb R^d} \left(e^{2\pi \mathrm i s^T a} \right) \left(e^{2\pi \mathrm i s^T b} \right)^*\, \mathrm d \mu(s)\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Connection to Least-Squares Estimate:</b> The least-squares estimate of a function $f$ given data $X$ can be seen as the point estimation of a gaussian posterior. To show this, one need the posterior PDF $p(p_X\vert Y=y)$ and to simplify the calculations, the easiest approach is not to use the full $m_X, k_{ab}$-rewritten expression from above, but instead to take one step back. The whole gaussian regression (and thus also gaussian process) framework is based on the assumptions $Y\vert f_X \sim \mathcal N(f_X, \sigma^2\boldsymbol 1)$ and $W\sim \mathcal N (\mu, \Sigma)$ which is equivalent to $f_X \sim \mathcal N(\phi_X^T \mu, \phi_X^T \Sigma \phi_X) = \mathcal N(m_X, k_{XX})$. Therefore we have</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(f_X\vert Y=y) = \frac{p(Y=y\vert f_X) \cdot p(f_X)}{p(Y=y)} \propto \mathcal N(y; f_X, \sigma^2 \boldsymbol 1) \cdot \mathcal N(f_X; m_X, k_{XX})\, ,
-    $$
+    \end{align*}
   </div>
   where the denominator is independent of $f_X$. Using this it is fairly easy to derive:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathbb E_{p(f_X\vert Y = y)}(f_X) = \underset{f_X}{\mathrm{argmax}} \, p(f_X \vert y) = \underset{f_X}{\mathrm{argmin}} \left( \frac{1}{2\sigma^2} \vert \vert y-f_X\vert \vert^2 + \frac{1}{2} \vert \vert f_X - m_X \vert \vert^2_k \right)\, ,
-    $$
+    \end{align*}
   </div>
   where $\vert \vert \xi \vert \vert_k^2 = \xi^T k^{-1}_{XX}\xi$. The first equality holds, because $f_X\vert Y=y$ is normally distributed such that the expectation is equal to the mode.
   <li><b>Reproducing kernel Hilbert Space (RKHS):</b> Let $\mathcal H = (\mathbb X, \langle \cdot, \cdot \rangle )$ be a Hilbert space of function $f: \mathbb X \to \mathbb R$. Then $\mathcal H$ is called a reproducing kernel Hilbert space if there exists a kernel $k: \mathbb X \times \mathbb X \to \mathbb R$ such that</li>
@@ -1249,15 +1262,15 @@
   </ol>
   Such a Hilbert Space $\mathcal H_k$ can be represented as the space of linear combinations of kernel functions: Let $(x_i)_{i\in I}$ be a countable collection of points in $\mathbb X$, then:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mathcal H_k = \left\{ f(x) := \sum_{i\in I}\tilde \alpha_i k(x_i, x) \, \Big \vert\,  \tilde \alpha_i \in \mathbb R \ \forall \ i \in I \right\} \qquad \textsf{with} \qquad \langle f, g\rangle_{\mathcal H_k} := \sum_{i\in I} \frac{\tilde \alpha_i \tilde \beta_i}{k(x_i, x_i)}\, .
-    $$
+    \end{align*}
   </div>
   <li>That being said, for a Gaussian Process with $p(f)=\mathcal G\mathcal P(0,k)$ and likelihood $p(y\vert f, X)=\mathcal N(y;f_X, \sigma^2\boldsymbol 1)$ the RKHS os the space of all possible posterior mean function:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \mu(X) = k_{xX} \underbrace{\left( k_{XX} +\sigma^2\boldsymbol 1 \right)^{-1}y}_{:=w} = \sum_{i=1}^n w_ik(x,x_i)\quad \textsf{with} \quad x_i \in X\, .
-    $$
+    \end{align*}
   </div>
   Therefore the RKHS can be viewed as the span of posterior mean functions of Gaussian Process regressors. The posterior mean is equivalent to the point estimator for the function in kernel (ridge) regression.
   <li>A similar argument connects the gaussian process expected square error (deviation of the posterior mean from the true function) and the square error in the RKHS point estimate (deviation of the estimate from the true function).</li>
@@ -1269,7 +1282,7 @@
 
 <h2>Example of Gaussian Process Regression</h2>
 <p>
-  The <a target="_blank" href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a> presents an actual hands-on example on how to apply the framework presented in the last parts, including prior information etc. to infer a future prediction. It is not really practical to try to follow the whole example in these notes, so follow the video (again) if searching for details. There are just some general notes, hints and best practices one can extract from the worked through example.
+  The <a class="link" target="_blank" href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a> presents an actual hands-on example on how to apply the framework presented in the last parts, including prior information etc. to infer a future prediction. It is not really practical to try to follow the whole example in these notes, so follow the video (again) if searching for details. There are just some general notes, hints and best practices one can extract from the worked through example.
 </p>
 <ul class="flul">
   <li>It is a good idea to include known quantities in the model, e. g. known standard errors of measure instruments etc.</li>
@@ -1277,84 +1290,84 @@
   <li>Often it is not possible to do reasonably good extrapolations or modelling in general if no further information is included to the model (e. g. via the priors).</li>
   <li>It might be the case, that some "unknown" parameters are actually present in the model, which might be (typically) set to $1$ or $0$. This is for example the case when defining a kernel: it can be scaled arbitrarily and still be a kernel.</li>
   <li>When constructing additional features, one also has to decide for parameter choices.</li>
-  <li>When using generative models it might be a good idea to (if possible) draw some samples from the prior before actually fitting the model and compare these with the real data. For Gaussian (Process) Regression this would be sampling from the prior $f(X) \sim \mathcal N (m_X, k_{XX})$. Remember that to sample from this distribution because of the transformation properties of the gaussian distribution on can transform some $Y\sim\mathcal N(0, \boldsymbol 1)$ which is $N$-dimensional via $Z = AY+m_X$ where $A$ is some matrix with $AA^T=k_{XX}$ to get $N (m_X, k_{XX})$ (full derivation by myself on <a target="_blank" href="https://math.stackexchange.com/a/4539314/1089018">math.stackexchange</a>).</li>
+  <li>When using generative models it might be a good idea to (if possible) draw some samples from the prior before actually fitting the model and compare these with the real data. For Gaussian (Process) Regression this would be sampling from the prior $f(X) \sim \mathcal N (m_X, k_{XX})$. Remember that to sample from this distribution because of the transformation properties of the gaussian distribution on can transform some $Y\sim\mathcal N(0, \boldsymbol 1)$ which is $N$-dimensional via $Z = AY+m_X$ where $A$ is some matrix with $AA^T=k_{XX}$ to get $N (m_X, k_{XX})$ (full derivation by myself on <a class="link" target="_blank" href="https://math.stackexchange.com/a/4539314/1089018">math.stackexchange</a>).</li>
   <li>Adding a small diagonal matrix (e. g. $10^{-9}\boldsymbol 1$) can assure a matrix to be positive definite.</li>
-  <li><b>Linear Combination of Kernels:</b> In the <a href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a> (also see <a href="http://gaussianprocess.org/gpml/">Rasmussen & Williams, 2006</a>) the overall process $f$ is assumed to be the additive result of sub-processes $f^{(i)}$ and features $\phi^{(l)}$. Each of the processes has its own kernel $k^{(i)}$ and the regression model becomes:
+  <li><b>Linear Combination of Kernels:</b> In the <a class="link" href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a> (also see <a class="link" href="http://gaussianprocess.org/gpml/">Rasmussen & Williams, 2006</a>) the overall process $f$ is assumed to be the additive result of sub-processes $f^{(i)}$ and features $\phi^{(l)}$. Each of the processes has its own kernel $k^{(i)}$ and the regression model becomes:
   <div class='scroll'>
-    $$
+    \begin{align*}
       f(x) = \sum_i f^{(i)} + \sum_k w_k\phi^{(l)} = \sum_i f^{(i)} + \underbrace{w^T\Phi}_{=\Phi^T w}
-    $$
+    \end{align*}
   </div>
   where the <b>weights</b> <i>can</i> be modelled with a prior $w\sim (0, \Sigma_w)$. Together this is a sum of GPs and Gaussians which results in following overall GP for $f$:
   <div class='scroll'>
-    $$
+    \begin{align*}
       f \sim \mathcal{GP}\big(0, k\big) \qquad \textsf{with} \qquad k = \sum_{i} k^{(i)} + \Phi^T \Sigma_w \Phi\, .
-    $$
+    \end{align*}
   </div>
   <ul>
     <li>To include $\Sigma_w$ by its own prior might be intractable. In the lecture the approach is to assume $\Sigma_w = \mathrm{diag}(\theta_1^2,\theta_2^2,...):=\Theta$ which results in the overall kernel to be</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         k(\psi) = \sum_{i} k^{(i)}(\varphi) + \Phi^T \Theta \Phi = \sum_{i} k^{(i)}(\varphi) + \sum_k \theta_l^2 {\phi^{(l)}}^T \phi^{(l)}  \, ,
-      $$
-    </div>
+      \end{align*}
+  </div>
     where additional possible hyperparameters are included in the $k^{(i)}$'s, and the set of all hyperparameters $\varphi_i$ and $\theta_i$ is abbreviated with $\psi$. 
     <li>The model then proceeds as in usual Gaussian Parametric Regression to model $Y\vert f \sim \mathcal N (f, \sigma^2 \boldsymbol 1)$. The $\psi$'s can be viewed as hyperparameters and using the same calculations as in "Learning Representations" $w\sim \mathcal N \big(0, \mathrm{diag}(\theta_i^2)\big)$ yields $Y\vert \psi \sim \mathcal N (0, k+\sigma^2\boldsymbol 1)$. One can search for optimal hyperparameters e. g. using MLE:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \hat \psi = \underset{\psi}{\mathrm{argmin}} \big( -2\log p(y\vert \psi) \big) = \underset{\psi}{\mathrm{argmin}} \Big( y^T \big( \underbrace{k_{XX}(\psi) + \sigma^2 \boldsymbol 1}_{=:G} \big)^{-1} y+\log \mathrm{det}\, G \Big) \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>The <b>posterior for $\boldsymbol f$</b> can be evaluated by standard Gaussian Process Regression:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         f_x\vert Y=y \sim \mathcal N \Big(k_{xX}G^{-1}y, k_{xX}-k_{xX}G^{-1}k_{Xx}\Big)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li><b>Posterior estimates of single processes and features:</b> We use the notation $f^{(l)} := w_k\phi^{(l)}$ such that these can be viewed as</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         f^{(l)} := w_k\phi^{(l)} \qquad \Rightarrow \qquad f^{(l)} \sim \mathcal{GP}\Big(0, \underbrace{\theta_l^2{\phi^{(l)}}^T \phi^{(l)}}_{:=k^{(l)}} \Big) = \mathcal{GP}\big(0, k^{(l)} \big) \, .
-      $$
-    </div>
-    To construct the posterior for individual features consider <span class="tip">$\mathbf{f} \, = (f^{(1)},f^{(2)},\dots )^T $<span>Explicitly formatted as bold-vector here.</span></span>. Therefore $\mathbf{f}\sim \mathcal{GP}(\mathbf{0}, K)$, where $K = \mathrm{diag}\, (k^{(1)}, k^{(2)}, \dots )$ is a (block)-diagonal matrix. The Gaussian Process Regression is then carried out by the assumption $Y \vert \mathbf f \sim \mathcal N (\vec 1 ^T \mathbf f, \sigma^2 \boldsymbol 1)$ where $\vec 1$ is the vector containing only ones of suitable size. The "Bayesian Inference with Gaussians" formula in combination with the diagonal form of $K$ yields:
+      \end{align*}
+  </div>
+    To construct the posterior for individual features consider <span class="tip">$\mathbf{f} \, = (f^{(1)},f^{(2)},\dots )^T $<span>Explicitly formatted as bold-vector here.</span></span>. Therefore $\mathbf{f}\sim \mathcal{GP}(\mathbf{0}, K)$, where $K = \mathrm{diag}\, (k^{(1)}, k^{(2)}, \dots )$ is a (block)-diagonal matrix. The Gaussian Process Regression is then carried out by the assumption $Y \vert \mathbf f \sim \mathcal N (\vec 1 ^T \mathbf f, \sigma^2 \boldsymbol 1)$ where $\vec 1$ is the vector containing only ones of suitable size. Formula \eqref{eq:bayes_gaussian} in combination with the diagonal form of $K$ yields:
     <div class='scroll'>
-      $$
+    \begin{align*}
         \mathbf f_x \vert Y=y \sim \mathcal N\big(K_{xX} G^{-1}y, K_{xx}-K_{xX}G^{-1}K_{Xx}^T\big)\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     Note that when doing this one gets a really similar posterior as before. The information that is additionally added here is the independence of processes / features which are the summands of $f$.
-    <li><b>The posterior for single processes / features</b> is the marginal of this distribution which can be calculated using the "Conditionals of a Gaussian" formula:</li>
+    <li><b>The posterior for single processes / features</b> is the marginal of this distribution, which can be calculated using \eqref{eq:conditionals_gaussian}:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         f^{(i)} \vert Y \sim \mathcal N \left(k_{xX}^{(i)} G^{-1}Y, \   k_{xx}^{(i)} - k_{xX}^{(i)} G^{-1}{k_{Xx}^{(i)}}^T \right) \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li><b>Posterior estimates on Feature $\boldsymbol{\phi^{(i)}}$ Effect:</b> Converting a "process" $f^{(l)}$ which was constructed using a feature $\phi^{(l)}$ via $f^{(l)} = w_l^T \phi^{(l)}$, one can transfer the latter formula into a posterior estimate for $w_l$, which can be easily vectorized for multiple $l$:</li>
     <div class='scroll'>
-      $$\begin{align*}
+    \begin{align*}
         w_l\vert Y &=y \sim \mathcal N \Bigg(\, \theta_l^2 \, {\phi_X^{(l)}}^TG^{-1}y, \ \ \theta_l^2  \Big( \boldsymbol 1 - {\phi_X^{(l)}}^T G^{-1} \phi_X^{(l)}\, \theta_l^2 \Big) \Bigg) \, , \\
         w\vert Y &=y \sim \mathcal N \Big(\, \Theta \, \Phi_X^TG^{-1}y, \ \ \Theta  \big( \boldsymbol 1 - \Phi_X^T G^{-1} \Phi_X\, \Theta\big) \Big) \, .
-      \end{align*}$$
-    </div>
+      \end{align*}
+  </div>
   </ul>
   <li>Also note that it might be a good idea to store length scales (e. g. for additive features which add $\theta_i^2k_i$) to the kernel in log scale. The optimization can still easily be executed using the gradient</li> 
   <div class='scroll'>
-    $$
+    \begin{align*}
       \frac{\partial}{\partial \log \theta_i} k= \frac{\partial k}{\partial \theta_i} \frac{\partial \theta_i}{\partial \log \theta_i} = 2\theta_i k_i \frac{\partial e^{\log \theta_i}}{\partial \log \theta_i} = 2\theta_i k_i e^{\log \theta_i} = 2\theta_i^2k_i\, .
-    $$
+    \end{align*}
   </div>
   <li>To compute gradients like the one of $\hat \psi$ is is necessary to compute $\partial_\theta G^{-1}$ for a matrix $G$. To achieve this consider</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       0 = \frac{\partial}{\partial \theta} \boldsymbol 1 = \frac{\partial}{\partial \theta}\big( GG^{-1} \big) = (\partial_\theta G) G^{-1} + G \big( \partial_\theta G^{-1} \big) \qquad \Leftrightarrow \qquad \frac{\partial}{\partial \theta}G^{-1} = -K^{-1} \left(\frac{\partial}{\partial \theta} G\right) K^{-1}\, .
-    $$
+    \end{align*}
   </div>
-  <li>The derivative of $\log \det G$ can be calculated using <a target="_blank" href="https://en.wikipedia.org/wiki/Jacobi's_formula">Jacobi's Formula</a> and for invertible $G$'s it is:</li>
+  <li>The derivative of $\log \det G$ can be calculated using <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Jacobi's_formula">Jacobi's Formula</a> and for invertible $G$'s it is:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
     \frac{\partial}{\partial \theta} \log \det  G = \mathrm{tr} \left(G^{-1} \frac{\partial G}{\partial \theta} \right)\, .
-    $$
+    \end{align*}
   </div>
 </ul>
 
@@ -1364,66 +1377,66 @@
   <li>The following part is about connecting chain DAGS - $A\to B\to C$ or $P(A, B, C) = P(C\vert B)\cdot P( B\vert A)\cdot P(A)$ - with the notion of Gaussian Processes. These models work on time series.</li>
   <li><b>Time Series:</b> A time series is a sequence $[y(t_i)]_{i\in \mathbb N}$ of observations $y_i:= x(t_i) \in \mathbb Y$, indexed by a scalar variable $t\in \mathbb R$. In many applications the time points $t_i$ are equally spaced $t_i = t_0 + i \cdot \delta_t$. Models that account for all values $t\in \mathbb R$ are called continuous tie, while models that only consider $[t_i]_{i \in \mathbb N}$ are called discrete time.</li>
   <li>To keep inference (in real time) feasible, a common assumption is, that the next time step is only dependent on the current time step (Markov Chain, see below).</li>
-  <li>In a $\mathcal{GP}$-setting the Markov Chain Assumption resembles a kernel matrix, which is of <a target="_blank" href="https://en.wikipedia.org/wiki/Tridiagonal_matrix">tridiagonal</a> form.</li>
+  <li>In a $\mathcal{GP}$-setting the Markov Chain Assumption resembles a kernel matrix, which is of <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Tridiagonal_matrix">tridiagonal</a> form.</li>
   <li><b>(Latent) State Space Models:</b> Observations of $y_1,...,y_N$ with $y_i \in \mathbb R^D$ at times $[t_1,...,t_N]$ with $t_i \in \mathbb R$ and assume a <b>latent state</b> $x_i \in \mathbb R^M$ with $y_i \approx Hx(t_i)$.</li>
   <li><b>Markov Chain:</b> A joint distribution $p(X)$ over a sequence of random variables $X:=[x_0,...,x_N]$ is said to have the <b>Markov property</b> if</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x_i \vert x_0, x_1, ..., x_{i-1}) = p(x_i \vert x_{i-1})
-    $$
+    \end{align*}
   </div>
   and the sequence is then called a <b>Markov Chain</b>.
   <li><b>Prediction Step - Chapman-Kolmogorov Equation:</b> Assuming the Markov property for $x_t$ and that the observable state at time $t$ only depends on the latent state at time $t$: $p(y_t \vert X_{0:t})=p(y_t\vert x_t)$ with using the notation $Y_{0:t}\cong y_0,y_1,\dots y_t$ one can show:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x_t \vert Y_{0:t-1}) = \int p(x_t\vert x_{t-1})p(x_{t-1} \vert Y_{0:t-1})\, \mathrm dx_{t-1} \, .
-    $$
+    \end{align*}
   </div>
   This is called the prediction step, i. e. taking all the data $Y$ up until and <i>not</i> including $t$ and inferring the latent state $x_t$ at time $t$.
   <li><b>Update Step - Including the next Datum:</b> To include the datum at the time step $t$ one can rely on Bayes theorem:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x_t\vert Y_{0:t}) = \frac{p(y_t\vert x_t) p(x_t\vert Y_{0:t-1})}{\int p(y_t\vert x_t)p(x_t\vert Y_{0:t-1}) \, \mathrm dx_t}\, .
-    $$
+    \end{align*}
   </div>
   <li><b>Smoothing Step - Looking Back through Time:</b> It might also be of interest to retrospectively infer $x_t$ at a given time $t$ including all the data $Y$ (not just up to $t-1$ or $t$). Using the Markov assumption and Bayes theorem yields:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(x_t\vert Y) = p(x_t \vert Y_{0:t}) \int p(x_{t+1}\vert x_t) \frac{p(x_{t+1}\vert Y)}{p(x_{t+1}\vert Y_{1:t})}\, \mathrm dx_{t+1}\, .
-    $$
+    \end{align*}
   </div>
   <li>The prediction and update step also get combined as the <b>Filtering Process</b> and is of complexity $\mathcal O(T)$. The smoothing step is as well of complexity $\mathcal O(T)$.</li>
   <li><b>Linear Time Invariant Gaussian Systems (LTI):</b> An algorithm performing inference on time series data under the stated assumption given a starting condition $p(x_0)$ then consists of a forward pass through time, performing filtering, and of a backward pass through time, performing smoothing. There are some annoying integrals to be solved however, so again a typical further assumption is using Gaussians:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \textsf{Assume:} \quad p(x(t_{i+1}) \vert X_{1:i}) = \mathcal N (x_{i+1}; Ax_i, Q) \, \quad p(x_0) = \mathcal N (x_0; m_0, P_0)\, , \quad p(y_i \vert X) = \mathcal N (y_i ; Hx_i, R)\, ,
-    $$
+    \end{align*}
   </div>
   where the <i>continuous time $t$</i> has been sliced into pieces $i\in I\subset \mathbb N$ for clarity. $A, Q, H$ and $R$ could be time dependent.
   <li><b>Prediction and Smoothing of an LTI - Kalman Filtering:</b> Going forward through time resembles an induction, meaning at each timestep $t$ the quantities $m_{t-1}$ and $P_{t-1}$ are already known. The prediction and update steps can then be shown to be:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       \textsf{Prediction}: \quad p(x_t\vert Y_{1:t-1}) &= \mathcal N (x_t; \underbrace{Am_{t-1}}_{=m_t^{-}}, \underbrace{AP_{t-1}A^T + Q}_{=P_t^{-}}) \\
       \textsf{Update}: \qquad p(x_t\vert Y_{1:t}) &= \mathcal N (x_t; \underbrace{m_t^{-}+Kz}_{=m_t}, \underbrace{(\boldsymbol 1 - KH)P_t^{-}}_{=P_t}) 
-    \end{align*}$$
+    \end{align*}
   </div>
   where $K$ and $z$ are gain and residual:
   <div class='scroll'>
-    $$
+    \begin{align*}
       K := P_t^{-}H^T(HP_t^{-}H^T + R)^{-1} \, , \qquad z:= y_t-Hm_t^-\, .
-    $$
+    \end{align*}
   </div>
   During the smoothing step (reference Rauch Tung Striebel or <b>RTS Smoothing</b>) $m_T=m_T^S$ and $P_T=P_T^S$ are known from the last step ($T$) of the forward pass and one can iterate backwarts:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \textsf{Smoothing}: \quad  p(x_t\vert Y) = \mathcal N (x_t; \underbrace{m_t+G_t(m_{t+1}^S - m_{t+1}^-)}_{=m_t^S}, \underbrace{P_t+G_t(P_{t+1}^S-P_{t+1}^-)G_t^T}_{P_t^S}) \, ,
-    $$
+    \end{align*}
   </div>
   where $G_t$ is the smoother gain:
   <div class='scroll'>
-    $$
+    \begin{align*}
       G_t := P_tA^T(P_t^-)^{-1}\, .
-    $$
+    \end{align*}
   </div>
   Note that $m_T=m_T^S$ and for $P$ respectively only holds for the last timestep.
   <li><b>Generalization from Discrete to Continuous Time:</b> Until now, it is only possible to make predictions at discrete timesteps. The generalization is possible by approaching $\delta t \to 0$ (infinitesimal small timesteps) while reducing the introduced variance at each step by the same factor. This gives rise to a whole new field and introduces a new probability measure called the <i>Wiener Measure</i>. The resulting processes can be described with <i>Stochastic Differential Equations</i> which also connects Gaussian Processes to discrete Gauss-Markov Models.</li>
@@ -1464,88 +1477,88 @@
   <li><b>Classification:</b> Given supervised data $(X, Y) := (x_i, c_i)_{i=1,\dots, n}$ with $x_i \in \mathbb X$ and $c_i \in \{1, \dots, d\}$ find a function $\pi:\mathbb X\to \mathbb U^d$, where $U^d = \big\{p\in [0,1]^d: \sum_{i=1}^d p_i = 1\big\}$ such that $\pi$ "models" $y_i \sim \pi_{x_i}$.</li>
   <li><b>The Simplex:</b> Given that $\pi$ as stated above must be a probability distribution, the following object named $n$-simplex (sometimes denoted with $S_n$ or $\Delta^n$) will play a role in the following:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       S_n = \left\{ (t_0,\dots t_n) \in \mathbb R^{n+1} \Bigg \vert \sum_{i=0}^n t_i = 1 \ \ \wedge \ \ t_i\geq 0 \ \ \forall \ \ i=0,\dots n \right\}\, .
-    $$
+    \end{align*}
   </div>
   Fur $n=1$ this is just the interval $[0, 1]$.
   <li><b>Binary Classification:</b> Lets first consider discriminative binary classification, i. e. $y\in \{-1, +1\}$ and $\pi(x) = \pi_x \in [0,1]$ with</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(y\vert x) = 
       \begin{cases}
         \pi(x) , & y=1 \\
         1-\pi(x), & y=-1
       \end{cases} 
       \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Constructing Priors and Likelihoods:</b> Because the output domain and image of the function that is to predict (namely $\pi(x)$) are different from the regression setting, the Likelihood and Prior must be constructed differently. One approach is to start with a Gaussian Process $f\sim \mathcal{GP}(m, k)$ and transforming it through a so called <b>Link Function</b>, which should be invertible and maps $\mathbb R \to [0,1]$. A common choice is the <b>sigmoid function</b>:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \textsf{Sigmoid Function:} \quad \pi_f = \sigma(f) = \frac{1}{1+e^{-f}}\, .
-    $$
+    \end{align*}
   </div>
   which obeys the following properties:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \sigma(f) = 1- \sigma(-f) \, ,\qquad f = \log \sigma (f) - \log \big(1-\sigma(f)\big)\, , \qquad \frac{\mathrm d\sigma(f)}{\mathrm d f} = \sigma(f)\cdot (1-\pi(f))\, .
-    $$
+    \end{align*}
   </div>
   The setting in total is then:
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(f) = \mathcal{GP}(f; m, k)\, , \qquad p(y\vert f_x) = \sigma(yf_x) = 
       \begin{cases}
         \sigma(x) , & y=1 \\
         1-\sigma(x), & y=-1
       \end{cases} 
       \, .
-    $$
+    \end{align*}
   </div>
   <li><b>Constructing the Posterior:</b> The straightforward application of Bayes Theorem to this setting yields</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(f_X\vert Y) = \frac{\mathcal N(f_X;m, k) \prod_{i=1}^n \sigma(y_if_{x_i})}{\int \mathcal N(f_X;m, k) \prod_{i=1}^n \sigma(y_if_{x_i}) \, \mathrm df_X}
-    $$
+    \end{align*}
   </div>
   which is basically intractable. A commonly used trick is to look at the logarithm instead:
   <div class='scroll'>
-    $$
+    \begin{align*}
       \log p(f_X\vert Y) = -\frac{1}{2} f^T_Xk_{XX}^{-1}f_X + \sum_{i=1}^n \log \sigma(y_if_{x_i}) + \mathrm{const.}
-    $$
+    \end{align*}
   </div>
   <li>The process above is also called <b>Logistic Regression</b> and another name for the sigmoid function ist <b>Logistic Function</b>.</li>
   <li><b>Limiting to Moments:</b> Aiming at keeping track of all the data by explicitly constructing the posterior completely is intractable. Instead one focusses on deriving or at least approximate moments of $p(f,y) = p(y\vert f)p(f)$:</li>
   <div class='scroll'>
-    $$\begin{align*}
+    \begin{align*}
       E_{p(f,y)}(1) &= \int p(y,f)\,\mathrm df = Z \qquad \textsf{The Evidence} \\
       E_{p(f\vert y)}(f) &= \int f\cdot p(f\vert y)\,\mathrm df = \frac{1}{Z}\int f\cdot p(f,y)\, \mathrm df = \bar{f} \qquad \textsf{The Mean} \\
       E_{p(f\vert y)}\big(f^2\big) - {\bar{f}}^2 &= \int f^2\cdot p(f\vert y)\,\mathrm df  - {\bar{f}}^2= \frac{1}{Z}\int f^2\cdot p(f,y)\, \mathrm df - {\bar{f}}^2 = \mathrm{var} f \qquad \textsf{The Variance}\, .
-    \end{align*}$$
+    \end{align*}
   </div>
   <li><b>Laplace Approximation:</b> Because these integrals are intractable, because the posterior is intractable, one uses the approach, to approximate the curvature of the logarithm of the posterior. That is to approximate $\log p(f\vert y)$ around its maximum (which is the mode of $p(f\vert y)$) as a second order power series &ndash; lets call that $\log\tilde p(f\vert Y))= \mathcal{O}(f^2)$ &ndash; and then regard $\exp(\log \tilde p(f\vert Y))$ as an approximation for the posterior, which is then a gaussian. More formally:</li>
   <ul>
     <li>Consider a probability distribution $p(\theta)$ (which might be a posterior $p(\theta\vert D)$.</li>
     <li>Find a (local) maximum of $p(\theta)$ or equivalently $\log p(\theta)$:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \hat \theta = \underset{\theta}{\mathrm{argmax}}\, \log p(\theta) \qquad \Rightarrow \qquad \nabla p(\hat \theta)=0\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Find a second order Taylor expansion around $\hat \theta$ and denote $\delta = \theta-\hat \theta$</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \log p(\delta) = \log p(\hat \theta) + \frac{1}{2}\delta^T \Big( \underbrace{\nabla^2\log p(\theta) \Big\vert_{\theta=\hat\theta} }_{=:\Psi} \Big) \delta + \mathcal O(\delta^3)
-      $$
-    </div>
-    where $\nabla^2 g$ is the <a href="https://en.wikipedia.org/wiki/Hessian_matrix">Hessian Matrix</a> of the function $g$.
+      \end{align*}
+  </div>
+    where $\nabla^2 g$ is the <a class="link" href="https://en.wikipedia.org/wiki/Hessian_matrix">Hessian Matrix</a> of the function $g$.
     <li>Obtain the Laplace Approximation $q$ to $p$:</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         q(\theta) = \mathcal N(\theta; \hat \theta, -\Psi^{-1}) \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Note that if $p(\theta)=\mathcal N(\theta; m, \Sigma)$, then $p(\theta) = q(\theta)$. </li>
     <li><b></b>This technique is not only applicable in this classification setting but in lots of intractable posterior estimations.</b> But note that it can be <b>arbitrarily wrong,</b> because it is a <b>local</b> approximation.</li>
   </ul>
@@ -1578,25 +1591,25 @@
   </table>
   <li>Applying the Laplace Approximation to the GP-Classification Problem (not yet restricted to sigmoid-link functions) yields:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       q(f_x\vert y) = \mathcal N \Big(f_x; \ \underbrace{m_x + k_{xX}k^{-1}_{XX}(\hat f-m_X)}_{=\bar f_x}, \ \underbrace{k_{xx}- k_{xX}k_{XX}^{-1}k_{Xx}+k_{xX}k_{XX}^{-1}\hat \Sigma k_{XX}^{-1} k_{Xx}}_{=\overline{\Sigma_x}} \Big)\, , 
-    $$
+    \end{align*}
   </div>
   where $\hat f = \mathrm{argmax}\, \log p(f_X\vert y)$ and $\Sigma = -\nabla^2 \big(\log p(f_X\vert y)\big\vert_{f_X=\hat f} \big)^{-1}$. 
   <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ w. r. t. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} f_X$) with the approximations $\hat f$ and $\hat \Sigma$.</li>
   <li>Note that for this setting the Laplace approximation yields at $f_X = \hat f_X$:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       k_{XX}^{-1}(\hat f_X - m_X) = \nabla \log p(y\vert \hat f_X):= r\, .
-    $$
+    \end{align*}
   </div>
   <li>When using the sigmoid link function, these quantities are relatively easy to compute and the problem even results tp be <i>convex</i>, i. e. the Hessian $\nabla^2 \big(\log p(f_X\vert y)\big)$ is negative definite.</li>
-  <li>The implementation can be followed in more detail in the <a href="https://youtu.be/iatPLQd7qcg?t=4462">lecture</a>.
+  <li>The implementation can be followed in more detail in the <a class="link" href="https://youtu.be/iatPLQd7qcg?t=4462">lecture</a>.
   <li>Note that to actually predict labels or label-probabilities instead of "latent" functions, one can use</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \bar{\pi}_i = \E_{p(f\vert y)}[\pi_x] \approx \int \sigma (f_i) \cdot \mathcal N (f_i; \bar f_i, [\overline{\Sigma_x}]_{ii})\, \mathrm df_i \qquad \textsf{or} \qquad \hat \pi_i = \sigma(\bar f_i )
-    $$
+    \end{align*}
   </div>
   where $\sigma (\cdot)$ can be the logistic link function, but does not have to.
 </ul>
@@ -1608,21 +1621,21 @@
   <ul>
     <li>Assuming the identical setting as in the last part we know, that (in Laplace approximation):</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \mathbb E_q(f_x) = m_x + \underbrace{k_{xX}k^{-1}_{XX} (\hat f_X - m_X)}_{:= r} := m_x + k_{xX}r\, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>Using the properties of the likelihood on can obtain that the only main contributions to $r$ originate from the datapoints close to the decision-boundary.</li>
     <li>These datapoints are called <b>support points</b> and their contributions to $r$ are called <b>support vectors.</b></li>
     <li><b>Support-Vector-Machine:</b>  To approximate the Log-Likelihood using only the support vectors one chooses a loss-function, which sets the gradient of each contribution $y_if_i$ to zero if $ f_i>1$ which can be achieved using the <b>Hinge-Loss:</b></li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         \mathcal l (y_i; f_i) =  [1-y_if_i]_+ = \max\{ 0, \ 1-y_if_i \} = \cases{
           1-y_if_i\, ,  & y_if_i \leq 1 \\
           0\, ,         & y_if_i > 1
         } \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     to use instead of "$-\log \sigma (y_if_i)$" for each individual datum. This is basically the SVM-algorithm.
     <li><b>Problem:</b> Using the Hinge-Loss breaks the interpretability of "$\exp \log p(f_x\vert y)$" as a posterior distribution, because the terms do not sum to $1$ (or a constant, which would be sufficient when rescaling). There are ways to reintroduce the interpretability though (e. g. introducing a third implicit class). The SVM can therefore interpreted as a fundamentally non-probabilistic model.</li>
   </ul>
@@ -1630,22 +1643,22 @@
   <ul>
     <li>Assume now $C$ classes $[c_1,\dots c_C]$. Therefore for each training datum $k$, each class must have its own latent function, where a high value of the latent function $f_k^{(l)}$ resembles a high probability of $k$ belonging to class $c_l$. Therefore the latent function becomes vector-valued and the training data becomes</li>
     <div class='scroll'>
-      $$
+    \begin{align*}
         f_X = \left[f_1^{(1)}, \dots f_n^{(1)}, \ f_1^{(2)}, \dots , f_n^{(2)}, \ f_1^{(C)} \dots f_n^{(C)}  \right] \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     The sigmoid link-function then typically gets replaced by the <b>Softmax</b>:
     <div class='scroll'>
-      $$
+    \begin{align*}
         p\left( y_i^{(c)} \big\vert f_i \right) = \pi_i^{(c)} = \frac{\exp f_i^{(c)}}{\sum\limits_{\tilde c=1}^C\exp f_{i}^{(\tilde c)}} \, .
-      $$
-    </div>
+      \end{align*}
+  </div>
     <li>The derivations and calculations are completely analogous to the binary case.</li>
   </ul>
   <li>The two examples showed, that the key element to address different kinds of output scenarios is the link function. This gives rise to Generalized Linear Models.</li>
   <li><b>Generalized Linear Model</b> (Working Definition): A Generalized Linear Model (GLM) is a probabilistic regression model for a function $f$ with a Gaussian Process prior $p(f)$ and a non-Gaussian likelihood $p(y\vert f_x)$. Note the distinction to a general linear model (GP prior but also GP likelihood, with non-linear kernel $k$).</li>
   <li>Due to the fact that in GLMs the likelihood is non-Gaussian, the posterior needs to be approximated, which can be done by e. g. the Laplace Approximation.</li>
-  <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
+  <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="link" class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
 </ul>
 
 
@@ -1653,51 +1666,84 @@
 <ul class="flul">
   <li>Lets first take a few steps back to the Gaussian Parametric Regression Framework in the following sense. Assume we have an arbitrary number of inputs $X$ (i. e. $x_1,x_2, \dots$), which shall be mapped to a general output $y\in \mathbb Y$ which might be of any kind (including e. g. classifications). These inputs get transformed into $d\in \N$ features $\phi_1^\theta,\dots, \phi_d^\theta$ which might depend on an arbitrary number of (hyper-)parameters $\theta$. To predict $y$ these get concatenated via some function $f$ which we model as a Gaussian Process.</li>
   <li>Still the likelihood $Y\vert f$ is not assumed to be Gaussian here.</li>
-  <li>In Laplace Approximation one can show that <a href="http://gaussianprocess.org/gpml/" target="_blank">(Rasmussen & Williams, 2006, pp. 41-43)</a>:</li>
+  <li>In Laplace Approximation one can show that <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">(Rasmussen & Williams, 2006, pp. 41-43)</a>:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       \log q(y\vert X) = \log p(y\vert f) - \frac{1}{2} (\hat f - m_X)^Tk_{XX}^{-1}(\hat f-m_X) - \frac{1}{2}\log\big( \abs{k_{XX}} \cdot \abs{k_{XX}^{-1}+W} \big) \, ,
-    $$ 
+    \end{align*}
   </div>
   where $W = -\nabla_f^2 \log p(y\vert f)$.
   <li>Applying this result to the typical Neural Network setting where $f(x) = v^T \phi_x^\theta$ with some weights $v$ for which a gaussian prior is assumed is possible straightforward just like in the Gaussian Parametric Regression part.</li>
   <li>Now lets generalize this to multi-layer networks. At each layer there is a link function $\psi_l$ applied and the final link function is denoted by $\sigma$. This results in:</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(y_i \vert W) = \prod_{i=1}^n \sigma(f_W(x_i))\, , \qquad f_W(x) = w_L^T \psi_L\Big( w_{L-1}^T \psi_{L-1} \big(\dots (w_1x) \dots \big) \Big)\, .
-    $$
+    \end{align*}
   </div>
   "Standard" deep learning models proceed in modelling this in a MAP fashion by using the point estimate:
   <div class='scroll'>
-    $$
+    \begin{align*}
       W^* = \argmax W p(W\vert y) = \argmin{W} \left( - \sum_{i=1}^n \sigma(f_W(x_i)) - \log p(W) \right) := \argmin{W}J(W)
-    $$
+    \end{align*}
   </div>
   where $\log p(W)$ is a regularizer which results from some prior assumption on $W$.
-  <li>Doing this can have some flaws though when viewed through the lens of probability theory as discussed in this <a href="https://youtu.be/V93pFwd4fiI?t=4409" target="_blank">lecture part</a>.</li>
-  <li>However one can use a Laplace Approximation and a linear approximation for $f$ - this time for deep networks - to integrate out the Uncertainty over the $W$'s. This leads to e. g. the classification probability approximation (MacKay, 1992, cited as in the <a href="https://youtu.be/V93pFwd4fiI?t=4960" target="_blank">lecture</a>)</li>
+  <li>Doing this can have some flaws though when viewed through the lens of probability theory as discussed in this <a class="link" href="https://youtu.be/V93pFwd4fiI?t=4409" target="_blank">lecture part</a>.</li>
+  <li>However one can use a Laplace Approximation and a linear approximation for $f$ - this time for deep networks - to integrate out the Uncertainty over the $W$'s. This leads to e. g. the classification probability approximation (MacKay, 1992, cited as in the <a class="link" href="https://youtu.be/V93pFwd4fiI?t=4960" target="_blank">lecture</a>)</li>
   <div class='scroll'>
-    $$
+    \begin{align*}
       p(y=1\vert x) \approx \sigma \left( \frac{m(x)}{\sqrt{1+\pi v(x)/8}}\right)
-    $$
+    \end{align*}
   </div>
   where
   <div class='scroll'>
-    $$
+    \begin{align*}
       m(x) = f_{W^*}(x) \, , \qquad v(x) = - \Big(\nabla f \Big\vert_{W^*}\Big)^T \Big(\nabla_W^2 J\Big\vert_{W^*}\Big)^{-1} \Big(\nabla f \Big\vert_{W^*}\Big)
-    $$
+    \end{align*}
   </div>
-  <li>Note that extending neural networks to this kind of notion of Uncertainty might be computationally pretty expensive despite all of the approximations used, because still one would need the inverse of the Hessian $\nabla_W^2 J(W)$ which is of size "number of weights"$\, \times \,$ "number of weights". This can be made more lightweight if instead only approximations to the Hessian are used. There is software out there which extend known deep learning frameworks to a notion of uncertainty, e. g. <a href="http://backpack.pt" target="_blank">backpack for pytorch</a>.</li>
+  <li>Note that extending neural networks to this kind of notion of Uncertainty might be computationally pretty expensive despite all of the approximations used, because still one would need the inverse of the Hessian $\nabla_W^2 J(W)$ which is of size "number of weights"$\, \times \,$ "number of weights". This can be made more lightweight if instead only approximations to the Hessian are used. There is software out there which extend known deep learning frameworks to a notion of uncertainty, e. g. <a class="link" href="http://backpack.pt" target="_blank">backpack for pytorch</a>.</li>
 </ul>
 
 
 <h2>Exponential Families</h2>
 <ul class="flul">
+  <li>By now we have discovered quite some methods of Bayesian modelling which mainly are based on the normal distribution and its properties to some extend. Most of the extension to the Gaussian Framework have been performed by point estimates (MLE / MAP) without taking into account further distributions (e. g. estimation of the $\theta$ parameters in Gaussian Process Regression). The following part is all about working out the framework for other kinds of distributions namely distributions from the Exponential Family. This leads to the concept of Conjugate Priors. One example was the modelling of the <a href="#glasses_example">fraction of people wearing glasses</a>. </li>
   <li></li>
+
+  <li><b style="color: #03DAC6">The Toolbox:</b></li>
+  <table class="mdtbl">
+    <tr>
+      <td><b>Model</b></td>
+      <td><b>Computation Technique</b></td>
+    </tr>
+    <tr>
+      <td>Directed Graphical Models (representable by a DAG)</td>
+      <td>Monte Carlo Sampling and extensions</td>
+    </tr>
+    <tr>
+      <td>Gaussian Distributions</td>
+      <td>Gaussian Inference by Linear Algebra</td>
+    </tr>
+    <tr>
+      <td>(Deep) Learnt Representations</td>
+      <td>Maximum Likelihood / Maximum Aposteriori</td>
+    </tr>
+    <tr>
+      <td>Kernels</td>
+      <td>Laplace Approximation</td>
+    </tr>
+    <tr>
+      <td>Markov Chains</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td>Exponential Families / Conjugate Priors</td>
+      <td></td>
+    </tr>
+  </table>
 </ul>
 
 <br> <br>
-<a target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=391" style="color: #BB86FC;">Current Video</a>
+<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=391" style="color: #BB86FC;">Current Video</a>
 
 
 </div> <!-- content -->

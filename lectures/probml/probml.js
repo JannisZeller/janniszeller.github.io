@@ -10,13 +10,18 @@ var scrolls = document.getElementsByClassName('scroll');
 var mathjax_scale = 1.0;
 check = window.mobileCheck();
 
-MathJax = {
+window.MathJax = {
+  loader: {
+    load: ['[tex]/tagformat', '[tex]/color']
+  },
   chtml: {
     scale: mathjax_scale,
   },
   tex: {
-    inlineMath: [['$', '$']]
-  }
+    inlineMath: [['$', '$']],
+    packages: {'[+]': ['tagformat', 'href']},
+    tags: 'ams',
+  },
 };
 
 console.log(MathJax.version);
@@ -69,6 +74,17 @@ window.onload = function() {
     var content = document.getElementsByClassName('content')[0];
     content.style.visibility = 'visible';
     content.style.opacity = 0.88;
+
+    var crs = document.getElementsByClassName('cr');
+    for (let cr of crs) {
+        var fstc = cr.firstChild;
+        // console.log('debugging');
+        // console.log(fstc);
+        // console.log(fstc.tagName);
+        if (fstc.tagName == 'B') {
+            fstc.style.color = '#ff4444';
+        }
+    }
 
     console.log(content)
 }
