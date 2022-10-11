@@ -61,10 +61,10 @@
 
 
       <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1>
-
       <p>
         Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" target="_blank" ref="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
       </p>
+
       <h3><i>Notation</i></h3>
       <ul class="flul">
         <li id="here">External links are formatted as <a class="link" href="#here">links</a> and cross references are formatted as <a href="#here">crossrefs</a>. Other emphasized parts are <span class="tip">emphasized</span>.
@@ -107,7 +107,9 @@
       </ul>
 
       <h3><i>The Toolbox</i></h3>
-      <p>Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:</p>
+      <p>
+        Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:
+      </p>
       <table class="mdtbl">
         <tr>
           <td><b>Modelling Techniques</b></td>
@@ -118,6 +120,8 @@
           <td></td>
         </tr>
       </table>
+
+
 
 
       <h2><i>Preface:</i> A Short Primer on Measure Theory</h2>
@@ -541,7 +545,7 @@
             \end{align*}
           </div>
         </li>
-        <li>Let $\phi = \int f(x)p(x) \, \mathrm d x = \mathbb E_p(f)$. let $x_s \sim p, \ s=1,..., S$ be iid. Then the
+        <li>Let $\phi = \int f(x)p(x) \, \mathrm d x = \mathbb E_p [f]$. let $x_s \sim p, \ s=1,..., S$ be iid. Then the
           <b>Monte Carlo estimator</b> for $\phi$ is given by:
 
           <div class='scroll'>
@@ -550,7 +554,7 @@
             \end{align*}
           </div>
         </li>
-        <li>The Monte Carlo estimator is an <b>unbiased estimator</b>, meaning $\mathbb E\hat \phi = \phi$.</li>
+        <li>The Monte Carlo estimator is an <b>unbiased estimator</b>, meaning $\mathbb E [\hat \phi] = \phi$.</li>
         <li>The <b>variance</b> of the MC-Estimator drops as $\mathcal O(S^{-1})$:
           <div class='scroll'>
             \begin{align*}
@@ -607,14 +611,14 @@
       <h2>Importance Sampling</h2>
       <ul class="flul">
         <li>For the next method the <b>Expectation Rewrite-Trick</b> is needed. Suppose a PDF $p(x)$ and a function
-          $f(x)$ with the expectation $\mathbb E_p(f) = \int f(x)p(x) \, \mathrm dx$ (works also in the discrete case) is to be calculated. Assume another PDF $q(x)$. Then this can be rewritten:
+          $f(x)$ with the expectation $\mathbb E_p[f] = \int f(x)p(x) \, \mathrm dx$ (works also in the discrete case) is to be calculated. Assume another PDF $q(x)$. Then this can be rewritten:
           <div class='scroll'>
             \begin{align*}
-            \mathbb E_p(f) = \int f(x)p(x) \, \mathrm dx = \int q(x) \cdot f(x)\frac{p(x)}{q(x)} \, \mathrm dx = \mathbb E_q \left( f\cdot \frac{p}{q} \right)
+            \mathbb E_p[f] = \int f(x)p(x) \, \mathrm dx = \int q(x) \cdot f(x)\frac{p(x)}{q(x)} \, \mathrm dx = \mathbb E_q \left[ f\cdot \frac{p}{q} \right]
             \end{align*}
           </div>
         </li>
-        <li>The latter expectation $\mathbb E_q$ can then be estimated using e.g. MC sampling, meaning reducing it to a sum: $\mathbb E_q(h) \approx S^{-1}\sum_s h(x_s), \ x_s \sim q(x)$.</li>
+        <li>The latter expectation $\mathbb E_q$ can then be estimated using e.g. MC sampling, meaning reducing it to a sum: $\mathbb E_q[h] \approx S^{-1}\sum_s h(x_s), \ x_s \sim q(x)$.</li>
         <li>An improved version of Rejection Sampling is <b>Importance Sampling</b>: Assume $q(x) > 0$ if $p(x) >0$. Then use the following estimator for a function $f$ (which is the goal of sampling):
           <div class='scroll'>
             \begin{align*}
@@ -625,7 +629,7 @@
             \end{align*}
           </div>
         </li>
-        <li>Note that with unknown $Z$ this is not an unbiased estimator anymore. To estimate $Z$ we used the expectation rewrite-tick on $f=1$ which yields $1 = \mathbb E_p(1) = \mathbb E_q( p / q) = E_q( \tilde p / q)
+        <li>Note that with unknown $Z$ this is not an unbiased estimator anymore. To estimate $Z$ we used the expectation rewrite-tick on $f=1$ which yields $1 = \mathbb E_p[1] = \mathbb E_q [ p / q ] = E_q[ \tilde p / q]
           \cdot Z^{-1}$ which ca easily be solved for $Z$. If $Z$ is known this formula can be further simplified leading to replace $\tilde w_s$ with $w_s = p(x_s) / q(x_s)$.</li>
         <li>A flaw of importance sampling is, that $\mathrm{Var}(f\cdot p/q)$, which is important for the convergence rate of this procedure, can be unbounded, because $p(x)/q(x)$ might get very big for small $q(x)$.</li>
       </ul>
@@ -1436,7 +1440,7 @@
           where the denominator is independent of $f_X$. Using this it is fairly easy to derive:
           <div class='scroll'>
             \begin{align*}
-            \mathbb E_{p(f_X\vert Y = y)}(f_X) = \underset{f_X}{\mathrm{argmax}} \, p(f_X \vert y) =
+            \mathbb E_{p(f_X\vert Y = y)} [f_X] = \underset{f_X}{\mathrm{argmax}} \, p(f_X \vert y) =
             \underset{f_X}{\mathrm{argmin}} \left( \frac{1}{2\sigma^2} \vert \vert y-f_X\vert \vert^2 + \frac{1}{2}
             \vert
             \vert f_X - m_X \vert \vert^2_k \right)\, ,
@@ -1857,7 +1861,7 @@
           </div>
           where $\hat f = \mathrm{argmax}\, \log p(f_X\vert y)$ and $\Sigma = -\nabla^2 \big(\log p(f_X\vert y)\big\vert_{f_X=\hat f} \big)^{-1}$.
         </li>
-        <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ w. r. t. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} f_X$) with the approximations $\hat f$ and $\hat
+        <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ w. r. t. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} [f_X]$) with the approximations $\hat f$ and $\hat
           \Sigma$.</li>
         <li>Note that for this setting the Laplace approximation yields at $f_X = \hat f_X$:
           <div class='scroll'>
@@ -1887,7 +1891,7 @@
           <li>Assuming the identical setting as in the last part we know, that (in Laplace approximation):
             <div class='scroll'>
               \begin{align*}
-              \mathbb E_q(f_x) = m_x + \underbrace{k_{xX}k^{-1}_{XX} (\hat f_X - m_X)}_{:= r} := m_x + k_{xX}r\, .
+              \mathbb E_q[f_x] = m_x + \underbrace{k_{xX}k^{-1}_{XX} (\hat f_X - m_X)}_{:= r} := m_x + k_{xX}r\, .
               \end{align*}
             </div>
           </li>
@@ -1928,7 +1932,7 @@
         <li><b>Generalized Linear Model</b> (Working Definition): A Generalized Linear Model (GLM) is a probabilistic regression model for a function $f$ with a Gaussian Process prior $p(f)$ and a non-Gaussian likelihood
           $p(y\vert f_x)$. Note the distinction to a general linear model (GP prior but also GP likelihood, with non-linear kernel $k$).</li>
         <li>Due to the fact that in GLMs the likelihood is non-Gaussian, the posterior needs to be approximated, which can be done by e. g. the Laplace Approximation.</li>
-        <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="link" class="tip" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture<span>Note that there is an error in the calculation of the second derivative, which is corrected in the updated lecture notes.</span></a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. Note the error in the lecture when calculating the second derivative which is corrected in the updated lecture notes.</li>
+        <li>Note that to create fast approximation algorithms the toolbox is flexible. In the <a class="link" href="https://youtu.be/V93pFwd4fiI?t=2534">lecture</a> it is shown how to <b>apply Laplace Approximation already on the likelihood</b> instead on the posterior using an exponential link function to restrict predictions to $\R^+$. <i>Note the error in the lecture</i> when calculating the second derivative which is corrected in the updated lecture notes.</li>
       </ul>
 
 
@@ -2206,20 +2210,20 @@
   </div> <!-- wrapper -->
 
 
-<script>
-  // Development switch
-  var devel = true;
-  if (devel) {
-    var bg2 = document.getElementById('bg2');
-    if (devel) {bg2.style.transition = "none";}
-    bg2.style.opacity = 0.5;
+  <script>
+    // Development switch
+    var devel = true;
+    if (devel) {
+      var bg2 = document.getElementById('bg2');
+      if (devel) {bg2.style.transition = "none";}
+      bg2.style.opacity = 0.5;
 
-    var content = document.getElementsByClassName('content')[0];
-    if (devel) {content.style.transition = "none";}
-    content.style.visibility = 'visible';
-    content.style.opacity = 0.88;
-}
-</script>
+      var content = document.getElementsByClassName('content')[0];
+      if (devel) {content.style.transition = "none";}
+      content.style.visibility = 'visible';
+      content.style.opacity = 0.88;
+  }
+  </script>
 </body>
 
 </html>

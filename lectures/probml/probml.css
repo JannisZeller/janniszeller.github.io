@@ -209,6 +209,7 @@ span.tip span {
 a.tip span {
     background: #d8b7ff; 
     color:      #000000; 
+    box-shadow: 0 0 0.5em 0em #000000;
 }
 .tip {
     position: relative;
