@@ -681,11 +681,11 @@
         <li>To show that the detailed balance condition holds for this algorithm plug in
           <div class='scroll'>
             \begin{align*}
-            T(x \to x') = q(x'\vert x) \min \left[ 1, a(x', x)\right ]
+            T(x \to x') = q(x'\vert x) \min \big\{ 1, a(x', x)\big\}
             \end{align*}
           </div>
         </li>
-        into the detailed balance condition and use that $y \cdot \min[a,b] = \min[ya, yb]$ if $y > 0$.
+        into the detailed balance condition and use that $y \cdot \min\{a,b\} = \min\{ya, yb\}$ if $y > 0$.
         <li>There exist mathematical arguments for existence and uniqueness of the stationary distribution of an MCMC.
         </li>
         <li><b>Mixing Problem:</b> Choosing the parameter $\sigma$ of $q$ is not trivial and there is a tradeoff between lots of acceptances and coverage of the complete probability mass of $p$.</li>
@@ -1598,13 +1598,11 @@
       <h2>Gauss-Markov Models</h2>
       <ul class="flul">
         <li>The following part is about connecting chain DAGS - $A\to B\to C$ or $P(A, B, C) = P(C\vert B)\cdot P( B\vert A)\cdot P(A)$ - with the notion of Gaussian Processes. These models work on time series.</li>
-        <li><b>Time Series:</b> A time series is a sequence $[y(t_i)]_{i\in \mathbb N}$ of observations $y_i:= x(t_i)
-          \in \mathbb Y$, indexed by a scalar variable $t\in \mathbb R$. In many applications the time points $t_i$ are equally spaced $t_i = t_0 + i \cdot \delta_t$. Models that account for all values $t\in \mathbb R$ are called continuous tie, while models that only consider $[t_i]_{i \in \mathbb N}$ are called discrete time.</li>
+        <li><b>Time Series:</b> A time series is a sequence $[y(t_i)]_{i\in \mathbb N}$ of observations $y_i:= x(t_i) \in \mathbb Y$, indexed by a scalar variable $t\in \mathbb R$. In many applications the time points $t_i$ are equally spaced $t_i = t_0 + i \cdot \delta_t$. Models that account for all values $t\in \mathbb R$ are called continuous tie, while models that only consider $[t_i]_{i \in \mathbb N}$ are called discrete time.</li>
         <li>To keep inference (in real time) feasible, a common assumption is, that the next time step is only dependent on the current time step (Markov Chain, see below).</li>
         <li>In a $\mathcal{GP}$-setting the Markov Chain Assumption resembles a kernel matrix, which is of <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Tridiagonal_matrix">tridiagonal</a> form.
         </li>
-        <li><b>(Latent) State Space Models:</b> Observations of $y_1,...,y_N$ with $y_i \in \mathbb R^D$ at times
-          $[t_1,...,t_N]$ with $t_i \in \mathbb R$ and assume a <b>latent state</b> $x_i \in \mathbb R^M$ with $y_i
+        <li><b>(Latent) State Space Models:</b> Observations of $y_1,...,y_N$ with $y_i \in \mathbb R^D$ at times $[t_1,...,t_N]$ with $t_i \in \mathbb R$ and assume a <b>latent state</b> $x_i \in \mathbb R^M$ with $y_i
           \approx Hx(t_i)$.</li>
         <li><b>Markov Chain:</b> A joint distribution $p(X)$ over a sequence of random variables $X:=[x_0,...,x_N]$ is said to have the <b>Markov property</b> if
           <div class='scroll'>
@@ -1908,8 +1906,7 @@
         </ul>
         <li><b>Multiple Class Classification:</b> In the following part the transition from binary to multiclass classification is shown.
           <ul>
-            <li>Assume now $C$ classes $[c_1,\dots c_C]$. Therefore for each training datum $k$, each class must have its own latent function, where a high value of the latent function $f_k^{(l)}$ resembles a high probability of
-              $k$ belonging to class $c_l$. Therefore the latent function becomes vector-valued and the training data becomes
+            <li>Assume now $C$ classes $[c_1,\dots c_C]$. Therefore for each training datum $k$, each class must have its own latent function, where a high value of the latent function $f_k^{(l)}$ resembles a high probability of $k$ belonging to class $c_l$. Therefore the latent function becomes vector-valued and the training data becomes
               <div class='scroll'>
                 \begin{align*}
                 f_X = \left[f_1^{(1)}, \dots f_n^{(1)}, \ f_1^{(2)}, \dots , f_n^{(2)}, \ f_1^{(C)} \dots f_n^{(C)}
@@ -2211,7 +2208,7 @@
 
 <script>
   // Development switch
-  var devel = false;
+  var devel = true;
   if (devel) {
     var bg2 = document.getElementById('bg2');
     if (devel) {bg2.style.transition = "none";}
