@@ -15,9 +15,6 @@ color_scroll_divs = function(scrolls) {
     for (let div of scrolls) {
         k++;
         var parent = div.parentElement;
-        if (parent.tagName == "LI") {
-            parent = parent.parentElement;
-        }
         if (div.scrollWidth / mathjax_scale > parent.clientWidth) {
             div.style.overflowX = "auto";
             div.style.overflowY = "hidden";

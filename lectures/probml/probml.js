@@ -72,6 +72,13 @@ document.load_effect = function() {
 }
 
 
+/* Date (props https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript)*/
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+var yyyy = today.getFullYear();
+today = dd + '-' + mm + '-' + yyyy;
+
 
 /* "Main" */
 /* -------------------------------------------------------------------------- */
@@ -89,6 +96,10 @@ window.onload = function() {
 
     // Responsive Scroll-Formulas
     responsive_formulas(scrolls);
+
+    // Date
+    var date_span = document.getElementById("date");
+    date_span.innerHTML = today
 
     // Load Effect (After scroll-formulas!)
     document.load_effect();

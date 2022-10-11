@@ -46,6 +46,7 @@
     \newcommand{\alignn}[1]{{\begin{align}\begin{split}#1\end{split}\end{align}}}
     \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
     \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
+    \newcommand{\dkl}[2]{D_{\textsf{KL}}\left(#1\vert\vert#2\right)}
     $$
   </div>
 
@@ -62,7 +63,10 @@
 
       <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1>
       <p>
-        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" target="_blank" ref="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>.
+        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" ref="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd" target="_blank">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>. I personally also found the <a class="link" ref="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/index.html" target="_blank">Statistics 260 Lecture by Michael Jordan</a> at Berkeley EECS helpful, which I last checked 11-10-2022 (European format).
+      </p>
+      <p>
+        Latest Changes:  <span id="date"></span> (European format).
       </p>
 
       <h3><i>Notation</i></h3>
@@ -108,7 +112,7 @@
 
       <h3><i>The Toolbox</i></h3>
       <p>
-        Throughout the lecture and these notes we keep track of a <b style="color: #03DAC6">"Toolbox"</b> for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:
+        Throughout the lecture and these notes we keep track of a "Toolbox" for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:
       </p>
       <table class="mdtbl">
         <tr>
@@ -299,7 +303,7 @@
           $X$ is not zero:
           <div class='scroll'>
             \begin{align*}
-            \mathrm{supp}\, X = \big\{ x\in \X \ \vert \ P_X(\{x\} \neq 0 \big\}\, .
+            \mathrm{supp}\, X = \big\{ x\in \X \ \vert \ P_X(\{x\}) \neq 0 \big\}\, .
             \end{align*}
           </div>
         </li>
@@ -2085,7 +2089,7 @@
           <ul>
             <li>the <b>sufficient statistics</b> $\phi: \X \to \R^d$ the,</li>
             <li>the <b>natural parameters</b> $w\in \R^d$,</li> 
-            <li>the <b>partition function</b> $Z(w):\R^d\to \R$ amd</li>
+            <li>the <b>partition function</b> $Z(w):\R^d\to \R$ and</li>
             <li>the <b>base measure</b> $h(x):\X\to \R_+$.</li>
           </ul>
           Note that lots of distributions can be transferred in this form (mainly by using $x^y=\exp(y\log x)$ and rules for $\exp$ and $\log$) and therefore actually are in this family (see <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=2126">lecture</a> and a long list on <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Exponential_family#Table_of_distributions">Wikipedia</a>).
@@ -2119,12 +2123,14 @@
               F(\alpha, \nu) = \int \exp \Big(\alpha^Tw - \nu \log Z(w) \Big)\, \d w\, .
             \end{align*}
           </div>
-          For $n$ iid draws $x_i$ from $p_w(x_i\vert w)$ this yields the posterior
+          For $n$ iid draws $x_i$ from $p_w(x_i\vert w)$ this yields the <b>full posterior</b>
           <div class='scroll'>
             \begin{align*}
-              p_{\alpha, \nu} (w;\alpha,\nu) \cdot \prod_{i=1}^np_w(x_i\vert w) \propto p_{\tilde \alpha,\tilde \nu } \left(w \, \Bigg\vert \, \alpha + \sum_{i=1}^n \phi(x_i), \ \nu +n \right)\, .
+              p_{\tilde \alpha,\tilde \nu }(w\vert X) = \frac{p_{\alpha, \nu} (w;\alpha,\nu) \cdot \overbrace{\prod_{i=1}^np_w(x_i\vert w)}^{p_w(X\vert w)}}{\displaystyle \int p_{\alpha, \nu} (w;\alpha,\nu) \cdot p_w(X\vert w) \, \d w} 
+              = p_{\tilde \alpha,\tilde \nu } \left(w \, \Bigg\vert \, \alpha + \sum_{i=1}^n \phi(x_i), \ \nu +n \right)\, .
             \end{align*}
           </div>
+          To actually use this full posterior, one needs to know the $F(\alpha, \beta)$ integral which might be intractable, which is why we discuss approximation methods below.<br>          
           The <b>predictive</b> $p(x)$ for a single observation results to be
           <div class='scroll'>
             \begin{align*}
@@ -2149,9 +2155,10 @@
         </li>
         <li><b>Expectation of Sufficient Statistics:</b> Similar to the last discovery one can show that
           <div class='scroll'>
-            \begin{align*}
+            \begin{align}
               \E _{p_w(x\vert w)}[\phi(x)] = \nabla_w \log Z(W)\, . 
-            \end{align*}
+              \label{eq:exp_family_mle}
+            \end{align}
           </div>
         </li>
         <li><b>Additivity of Exponential Families:</b> Given two probability distributions over the same variable $x$ which are of an exponential family with $h(x)=1$ (not a strong restriction because $h(x)$ is irrelevant for most inference procedures) the product
@@ -2163,12 +2170,46 @@
           </div>
           where the proportionality is according to $x$.
         </li>
-
-
-
-
-
-
+        <li><b>Learning of Probability Distributions:</b> Exponential families provide a framework which enables the learning of probability distributions. Like the Gaussian Regression framework fitted a function to (somewhat) minimize
+          <div class='scroll'>
+            \begin{align*}
+              \int \abs{\abs{f(x)-\phi(x)^Tw}}^2\, \d \mathcal P(x)\, , 
+            \end{align*}
+          </div>
+          exponential families minimize the so called Kullback-Leibler-Divergence.
+        </li>
+        <li><b>Kullback-Leibler-Divergence:</b> Given 2 probability distributions $P$ and $Q$ over $\X$ with PDFs $p(x)$ and $q(x)$ the <i>KL-divergence from $Q$ to $P$</i> is defined as
+          <div class='scroll'>
+            \begin{align*}
+              \dkl P Q := \dkl p q := \int \log \left( \frac{p(x)}{q(x)}\right) \, \d p(x) = \int \log \left( \frac{p(x)}{q(x)}\right) p(x) \, \d x \, .
+            \end{align*}
+          </div>
+          Note that $\dkl P Q$ is not symmetric in $P$ and $Q$ but positive (<i>Gibbs' inequality)</i>).Additionally 
+          <div class='scroll'>
+            \begin{align*}
+              \dkl P Q = 0 \quad \Leftrightarrow \quad p \equiv q \ \ \textsf{almost everywhere.}
+            \end{align*}
+          </div>
+          "Almost everywhere" means up to a set of measure $0$ (in $\R$ this would be e. g. a set of discrete points).
+        </li>
+        <li>Assuming some data $X=[x_i]_{i=1,\dots n}$ with $x_i\sim p(x)$ we assume that this data is generated by an exponential family distribution parameterized by some $w$:
+          <div class='scroll'>
+            \begin{align*}
+              p(x) \approx \hat p(x\vert w) = \exp\left(\phi(x)^T w - \log Z(w)\right)\, .
+            \end{align*}
+          </div>
+          On can then show (<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=4520">lecture</a>) that <i>minimizing $\dkl{p(x)}{\hat p(x\vert w)}$ w. r. t. $w$ is equivalent to finding the MLE point estimate \eqref{eq:exp_family_mle} of $w$.</i> 
+        </li>
+        <li><b>MAP inference with Exponential Families:</b> Analogously one can show that minimizing $\dkl{p(x)}{\hat p(x, w)}$ or $\dkl{p(x)}{\hat p(w, x)}$ - constructed with the conjugate prior - which resembles a MAP inference yields:
+          <div class='scroll'>
+            \begin{align*}
+              \E_p[\phi(x)] \approx \frac{1}{n} \sum_{i=1}^n \phi(x_i) = \frac{n+\nu}{n}\nabla_w\log Z(w) - \frac{1}{n}\alpha\, ,
+            \end{align*}
+          </div>
+          where $\nu$ and $\alpha$ are the parameters from the conjugate prior. For $n\gg\max\{\alpha, \nu\}$ this converges to the MLE.
+        </li>
+        <li>Also one can show, that the <b>full posterior concentrates at the MAP / MLE estimate for large $n$</b>.</li>
+        <li><b>Toy Example:</b> Prof. Hennig shows a worked toy example with MLE estimation in the <a href="https://youtu.be/BdtlrPA5hrs?t=5283" target="_blank" class="link">lecture</a>.</li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -2202,7 +2243,7 @@
       </ul>
 
       <br> <br>
-      <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=3712">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70">Current Video</a>
 
 
     </div> <!-- content -->
@@ -2212,7 +2253,7 @@
 
   <script>
     // Development switch
-    var devel = true;
+    var devel = false;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
