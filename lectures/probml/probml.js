@@ -21,6 +21,7 @@ window.MathJax = {
   tex: {
     inlineMath: [['$', '$']],
     packages: {'[+]': ['tagformat', 'href']},
+    processEscapes: true,
     tags: 'ams',
   },
 };
