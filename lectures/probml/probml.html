@@ -2151,10 +2151,10 @@
             \end{align*}
           </div>
         </li>
-        <li><b>Additivity of Exponential Families:</b> Given two probability distributions over the same variable $x$ the product
+        <li><b>Additivity of Exponential Families:</b> Given two probability distributions over the same variable $x$ which are of an exponential family with $h(x)=1$ (not a strong restriction because $h(x)$ is irrelevant for most inference procedures) the product
           <div class='scroll'>
             \begin{align*}
-              p_w(x\vert w_1)\cdot p_w(x\vert w_1) &= h(x)^2 \exp \Big( \phi(x)^T(w_1+w_2) - \log \big(Z(w_1)\cdot Z(w_2)\big) \Big) \\
+              p_w(x\vert w_1)\cdot p_w(x\vert w_1) &= \exp \Big( \phi(x)^T(w_1+w_2) - \log \big(Z(w_1)\cdot Z(w_2)\big) \Big) \\
               &\propto p_w(x\vert w_1+w_2)
             \end{align*}
           </div>
@@ -2209,7 +2209,7 @@
 
 <script>
   // Development switch
-  var devel = true;
+  var devel = false;
   if (devel) {
     var bg2 = document.getElementById('bg2');
     if (devel) {bg2.style.transition = "none";}
