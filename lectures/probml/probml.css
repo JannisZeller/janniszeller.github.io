@@ -179,11 +179,12 @@ table.mdtbl tr:last-child td:last-child  {border-bottom-right-radius: 0.3em;}
 /* -------------------------------------------------------------------------- */
 
 div.scroll {
-    margin: 4px, 4px;
-    padding: 4px;
-    width: 100%;    
+    margin: 0.5em, 0.5em;
+    padding: 0.5em;
+    width: calc(100%-1em);    
     border-radius: 0.5em;
     transition: background-color 0.325s, color 0.325s, margin-top 0.325s;
+    /* display: inline-block; */
 }
 
 span.tip {

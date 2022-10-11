@@ -31,9 +31,6 @@ color_scroll_divs = function(scrolls) {
     for (let div of scrolls) {
         k++;
         var parent = div.parentElement;
-        while (parent.tagName == "LI") {
-            parent = parent.parentElement;
-        }
         if (div.scrollWidth  > parent.clientWidth) {
             div.style.overflowX = "auto";
             div.style.overflowY = "hidden";
@@ -47,11 +44,13 @@ color_scroll_divs = function(scrolls) {
             div.style.marginTop = "0";
         }
         // Debugging
-        // if (k==1) {
-        //     console.log(div.scrollWidth);
-        //     console.log(parent);
-        //     console.log(parent.clientWidth);
-        // }
+        if (div.id == "testformula") {
+            console.log(div);
+            console.log(div.offsetWidth);
+            console.log(div.scrollWidth);
+            console.log(parent);
+            console.log(parent.clientWidth);
+        }
     }   
     console.log("Scanning and Converting Formula-Divs.");
     console.log("Numbers of Formulas " + k.toString());
