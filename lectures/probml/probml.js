@@ -81,7 +81,7 @@ window.onload = function() {
         // console.log(fstc);
         // console.log(fstc.tagName);
         if (fstc.tagName == 'B') {
-            fstc.style.color = '#ff4444';
+            fstc.style.color = '#ffa5a5';
         }
     }
 

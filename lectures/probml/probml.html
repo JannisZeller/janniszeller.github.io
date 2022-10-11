@@ -380,7 +380,6 @@
           </div>
         </li>
         <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -787,7 +786,6 @@
           </li>
         </ul>
         <li>HMC has the flaw of needing us to set the step size of the ODE-integrator and the number of steps which should be propagated before a new sample is fixed. Especially with too big step sizes (but also with to long integration) the dynamics tend to move back and forth through the parameter-space and end up ending close to the start point. This is called the <b>U-Turn Problem</b>, which can be further addressed (e.g. see <a class="link" target="_blank" href="https://arxiv.org/abs/1111.4246?context=cs">Hoffman and Gelman, 2011</a>).</li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1121,7 +1119,6 @@
         <li><b>Generalized Regression:</b> Nothing in the Bayesian Regression framework hinders us from choosing arbitrary functions in $\phi_X$, which is pretty cool. Choosing e.g. $\phi_x=(\cos x,\, \sin x,\, \cos(2x), \,
           \sin (2x),\,...)^T$ or step-functions (using the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heaviside Step Function</a>) is also valid, and even only requires minimal modifications in a program which does the job!</li>
         <li><b>Multivariate Outputs:</b> Above we restricted the general discussion to $y\in \mathbb R$ when we noticed wo would have to use the somewhat unhandy Matrix normal distribution to go on if we want higher dimensional outputs. Otherwise one can also <i>do gaussian regression for each output feature separately</i> to cover multivariate output.</li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1218,7 +1215,6 @@
           </div>
           where typically the <b>Log-Prior takes the role of a regularization</b>. The first equality holds because the marginal $p(y\vert x) = \int p(y \vert \theta, x) p(\theta) \, \mathrm d\theta$ does not depend on $\theta$.
         </li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1339,7 +1335,6 @@
         </ul>
         are Mercer kernels as well.
         <li>Note that also parameters of kernels can be learned analogous as in "Learning Representations", e. g. by using ML or MAP estimation.</li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1682,7 +1677,6 @@
           Note that $m_T=m_T^S$ and for $P$ respectively only holds for the last timestep.
         </li>
         <li><b>Generalization from Discrete to Continuous Time:</b> Until now, it is only possible to make predictions at discrete timesteps. The generalization is possible by approaching $\delta t \to 0$ (infinitesimal small timesteps) while reducing the introduced variance at each step by the same factor. This gives rise to a whole new field and introduces a new probability measure called the <i>Wiener Measure</i>. The resulting processes can be described with <i>Stochastic Differential Equations</i> which also connects Gaussian Processes to discrete Gauss-Markov Models.</li>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1827,7 +1821,6 @@
           <li><b></b>This technique is not only applicable in this classification setting but in lots of intractable posterior estimations.</b> But note that it can be <b>arbitrarily wrong,</b> because it is a <b>local</b>
             approximation.</li>
         </ul>
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -1992,9 +1985,48 @@
       <h2>Exponential Families</h2>
       <ul class="flul">
         <li>By now we have discovered quite some methods of Bayesian modelling which mainly are based on the normal distribution and its properties to some extend. Most of the extension to the Gaussian Framework have been performed by point estimates (MLE / MAP) without taking into account further distributions (e. g. estimation of the $\theta$ parameters in Gaussian Process Regression). The following part is all about working out the framework for other kinds of distributions namely distributions from the Exponential Family. This leads to the concept of Conjugate Priors. One example was the modelling of the <a href="#glasses_example">fraction of people wearing glasses</a>. </li>
-        <li></li>
+        <li><b>Conjucate Priors:</b> Given a likelihood $p(x\vert y)$ and a prior $p(y; \theta) = \mathcal P_\theta(y)$. Then the prior is called conjugate to the likelihood iff the resulting posterior $p(y\vert x)$ is of the same form as the prior, i. e.
+          <div class='scroll'>
+            \begin{align*}
+              p(y\vert x) = \mathcal P_{\tilde\theta}(y)\, ,
+            \end{align*}
+          </div>
+        where only the parameters $\theta$ might change.
+        </li>
+        <li>E. g. the Gaussian Distribution is a conjugate prior of itself and the Beta-Distribution is conjugate to the Bernoulli Distribution.</li>
+        <li><b>The Dirichlet Prior:</b> The Dirichlet Distribution is the conjugate prior for a categorical experiment in the following sense. Given $K\in \N$ categories which occur with the probabilities $f_k$. Assume a dataset $X\in \{0,\dots, K\}^n$ is given, i. e. a set of $n$ outcomes of an experiment with these probabilities. Let
+          <div class='scroll'>
+            \begin{align*}
+              n_k := \left\vert \{ x_i \in X \vert x_i = k \} \right\vert\, , 
+            \end{align*}
+          </div>
+        i. e. the number of times the outcome was $k$. Then the likelihood to observe $x$ given th $f$'s is 
+          <div class='scroll'>
+            \begin{align*}
+              p(X\vert f) = \mathrm{Cat}\, (X;f) = \prod_{i=1}^n f_{x_i} = \prod_{k=1}^K f_k^{n_k} \, .
+            \end{align*}
+          </div>
+        One can show that the <i>Dirichlet Distribution</i>
+        <div class='scroll'>
+          \begin{align*}
+            p(f; \alpha) = \mathcal D(f; \alpha) = \frac{1}{B(\alpha)}\prod_{k=1}^K f_l^{\alpha_k-1}
+          \end{align*}
+        </div>
+        is a conjugate prior to this likelihood. The normalization constant $B(\alpha)$ is called the multivariate Beta function and can be expressed by the <span class="tip">Gamma Function $\Gamma(z)$<span>\begin{align*}\Gamma(z) &= \displaystyle\int_0^\infty t^{z-1}e^{-t}\, \d t\, ,\newline \Gamma(z) &= z\Gamma(z-1)\, , \\ \Gamma(n)&=(n-1)!\ \textsf{for} \ n\in \N \end{align*}</span></span>:
+          <div class='scroll'>
+            \begin{align*}
+              B(\alpha) = \frac{\displaystyle \prod_{k=1}^K\Gamma (\alpha_k)}{\Gamma \left(\displaystyle\sum_{k=1}^K \alpha_k\right)}\, .
+            \end{align*}
+          </div>
+        The Posterior then clearly becomes:
+          <div class='scroll'>
+            \begin{align*}
+              p(f\vert X) = \mathcal D(f, \alpha+n)\, , \qquad (\alpha+n)_k = \alpha_k+ n_k\, .
+            \end{align*}
+          </div>
+        </li>
 
-        <li><b style="color: #03DAC6">The Toolbox:</b></li>
+
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -2028,7 +2060,7 @@
       </ul>
 
       <br> <br>
-      <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=391" style="color: #BB86FC;">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=1285" style="color: #BB86FC;">Current Video</a>
 
 
     </div> <!-- content -->
