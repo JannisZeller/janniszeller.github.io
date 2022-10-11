@@ -39,9 +39,8 @@ body {
     width:      100vw;
     height:     100vh; 
     z-index:    2;
-    opacity:    1;
+    opacity:    0; 
     background-color: #1b1f22;
-    -webkit-transition: opacity 1s ease-in-out;
     transition:         opacity 1s ease-in-out;
 }
 
@@ -79,6 +78,17 @@ div.content {
     transition:         visibility 0s, opacity 0.325s linear;
 }
 
+
+/* Development Purposes */
+
+div.dev {
+    visibility: visible;
+    opacity: 1;
+}
+
+div.devbg {
+    opacity: 0;
+}
 
 
 
@@ -133,8 +143,8 @@ table.mdtbl {
     border-collapse: collapse;
     margin-left:    auto;
     margin-right:   auto;
-    margin-top:     0.5em;
-    margin-bottom:  0.5em;
+    margin-top:     1em;
+    margin-bottom:  1em;
     width: 75%;
     box-shadow: 0 0 0.5em 0em #000000;
 }

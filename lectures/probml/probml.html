@@ -1985,19 +1985,19 @@
       <h2>Exponential Families</h2>
       <ul class="flul">
         <li>By now we have discovered quite some methods of Bayesian modelling which mainly are based on the normal distribution and its properties to some extend. Most of the extension to the Gaussian Framework have been performed by point estimates (MLE / MAP) without taking into account further distributions (e. g. estimation of the $\theta$ parameters in Gaussian Process Regression). The following part is all about working out the framework for other kinds of distributions namely distributions from the Exponential Family. This leads to the concept of Conjugate Priors. One example was the modelling of the <a href="#glasses_example">fraction of people wearing glasses</a>. </li>
-        <li><b>Conjucate Priors:</b> Given a likelihood $p(x\vert y)$ and a prior $p(y; \theta) = \mathcal P_\theta(y)$. Then the prior is called conjugate to the likelihood iff the resulting posterior $p(y\vert x)$ is of the same form as the prior, i. e.
+        <li><b>Conjugate Priors:</b> Given data $D$, a likelihood $p(D\vert x):=\ell(D;x)$ and a prior $p(x) = \pi(x, \theta)$. Then the prior is called conjugate to the likelihood iff the resulting posterior $p(x\vert D)$ is of the same form as the prior, i. e.
           <div class='scroll'>
             \begin{align*}
-              p(y\vert x) = \mathcal P_{\tilde\theta}(y)\, ,
+              p(x\vert D) = \frac{\ell(D;x)\pi(x;\theta)}{\displaystyle \int \ell(D;x)\pi(x;\theta)\, \d x} = \pi (x; \tilde\theta)\, ,
             \end{align*}
           </div>
-        where only the parameters $\theta$ might change.
+        where only the parameters $\theta$ might change to $\tilde \theta$.
         </li>
         <li>E. g. the Gaussian Distribution is a conjugate prior of itself and the Beta-Distribution is conjugate to the Bernoulli Distribution.</li>
         <li><b>The Dirichlet Prior:</b> The Dirichlet Distribution is the conjugate prior for a categorical experiment in the following sense. Given $K\in \N$ categories which occur with the probabilities $f_k$. Assume a dataset $X\in \{0,\dots, K\}^n$ is given, i. e. a set of $n$ outcomes of an experiment with these probabilities. Let
           <div class='scroll'>
             \begin{align*}
-              n_k := \left\vert \{ x_i \in X \vert x_i = k \} \right\vert\, , 
+              n_k := \big\vert \{ x_i \in X \vert x_i = k \} \big\vert\, , 
             \end{align*}
           </div>
         i. e. the number of times the outcome was $k$. Then the likelihood to observe $x$ given th $f$'s is 
@@ -2021,10 +2021,148 @@
         The Posterior then clearly becomes:
           <div class='scroll'>
             \begin{align*}
-              p(f\vert X) = \mathcal D(f, \alpha+n)\, , \qquad (\alpha+n)_k = \alpha_k+ n_k\, .
+              p(f\vert X) = \mathcal D(f; \alpha+n)\, , \qquad (\alpha+n)_k = \alpha_k+ n_k\, .
             \end{align*}
           </div>
         </li>
+        <li><b>Conjugate Prior for Gaussian Variance:</b> Assume the likelihood
+          <div class='scroll'>
+            \begin{align*}
+              p(x\vert \sigma) = \prod_{i=1}^n \mathcal N(x_i; \mu , \sigma^2)\, .
+            \end{align*}
+          </div>  
+          By using the log-space (looking at log-prior and log-likelihood) on can obtain the following conjugate prior which is called the <b>Gamma Distribution</b>:
+          <div class='scroll'>
+            \begin{align*}
+              p(\sigma; \alpha, \beta) = \frac{\beta}{\Gamma(\alpha)} \left(\sigma^2\right)^{\alpha+1}\exp \left( - \frac{\beta}{\sigma^2} \right) \, 1_{\R_+}(\sigma) := \mathcal G(\sigma^{-2}; \alpha, \beta) \, .
+            \end{align*}
+          </div>
+          It is often denoted with $\Gamma(x; \alpha, \beta)$ but we choose $\mathcal G$ here to not confuse it with the Gamma function. The posterior then takes the form 
+          <div class='scroll'>
+            \begin{align*} 
+              p(\sigma\vert x; \alpha, \beta) = \mathcal G\left(\sigma^{-2}; \ \alpha + \frac{n}{2}, \ \beta + \frac{1}{2} \sum_{i=1}^n (x_i-\mu)^2\right)\, .
+            \end{align*}
+          </div>
+        </li>
+        <li><b>Combined Prior for Gaussian Mean and Variance:</b> Analogously assuming 
+          <div class='scroll'>
+            \begin{align*}
+              p(x\vert \sigma, \mu) = \prod_{i=1}^n \mathcal N(x_i; \mu , \sigma^2)\, .
+            \end{align*}
+          </div>
+          the combined prior
+          <div class='scroll'>
+            \begin{align*}
+              p(\mu, \sigma; \mu_0, \nu, \alpha, \beta) = \mathcal N\left( \mu; \ \mu_0, \ \frac{\sigma^2}{\nu}\right) \cdot \mathcal G \left( \sigma^{-2}; \ \alpha, \ \beta\right)
+            \end{align*}
+          </div>
+          yields the posterior
+          <div class='scroll'>
+            \begin{align*}
+              &p(\mu, \sigma\vert x; \mu_0, \nu, \alpha, \beta)  = 
+              \mathcal N \left( \mu; \ \frac{\nu \mu_0 + n\bar x}{\nu + n}, \ \frac{\sigma^2}{\nu+n}\right) \cdot \\
+              &\quad\,   \cdot \, \mathcal G \left( \sigma^{-2}; \ \alpha + \frac{n}{2}, \ \beta + \frac{1}{2}(n-1)\hat \sigma^2 + \frac{n \nu}{2(n+\nu)}(\bar x - \mu_0)^2 \right)
+            \end{align*}
+          </div>
+          where $\bar x$ is the average and $\hat \sigma^2$ is the empirical variance of $x$:
+          <div class='scroll'>
+            \begin{align*}
+              \bar x = \frac{1}{n}\sum_{i=1}^n x_i\, , \qquad \hat\sigma^2  = \frac{1}{n-1}\sum_{i=1}^n (x_i-\bar x)^2
+            \end{align*}
+          </div>
+        </li>
+        <li>Though the last two results where kind of verbose the procedure of how to get there is pretty easy: Just transform the likelihood, which was of an exponential form, to its log and check which terms need to be added to construct a conjugate prior. This hints, that these kinds of analysis might be feasible for all probability distributions of exponential form.</li>
+        <li><b>Exponential Family of Distributions:</b> Consider a random variable $X$ taking values $x\in \X \subset \R^n$. A probability distribution for $X$ with a PDF of the functional form: 
+          <div class='scroll'>
+            \begin{align*}
+              p_w(x) = h(x)\exp \Big(\phi(x)^Tw - \log Z(w)\Big)= \frac{h(x)}{Z(w)} e^{\phi(x)^Tw} = p(x\vert w)
+            \end{align*}
+          </div>
+          is called an exponential family of probability measures. It consists of:
+          <ul>
+            <li>the <b>sufficient statistics</b> $\phi: \X \to \R^d$ the,</li>
+            <li>the <b>natural parameters</b> $w\in \R^d$,</li> 
+            <li>the <b>partition function</b> $Z(w):\R^d\to \R$ amd</li>
+            <li>the <b>base measure</b> $h(x):\X\to \R_+$.</li>
+          </ul>
+          Note that lots of distributions can be transferred in this form (mainly by using $x^y=\exp(y\log x)$ and rules for $\exp$ and $\log$) and therefore actually are in this family (see <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=2126">lecture</a> and a long list on <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Exponential_family#Table_of_distributions">Wikipedia</a>).
+        </li>
+        <li>The support of different exponential families can be viewed as a <b>"data-type" for modelling prior assumptions</b>, e. g. a Dirichlet Distribution for categorical variables or a $\Gamma$ distribution for modelling (co-)variances.</li>
+        <li><b>Constructing Conjugate Priors for Exponential Families:</b> Consider the likelihood
+          <div class='scroll'>
+            \begin{align*}
+              \ell (x\vert w) = p_w(x\vert w) = h(x)\exp \Big(\phi(x)^Tw - \log Z(w)\Big)
+            \end{align*}
+          </div>
+          which is in an exponential family. Then its conjugate prior is the exponential family
+          <div class='scroll'>
+            \begin{align*}
+              p_{\alpha, \nu}(w;\alpha, \nu) = \exp \left( 
+              \begin{pmatrix}
+                w \\
+                -\log Z(w)
+              \end{pmatrix}^T
+              \begin{pmatrix}
+                \alpha \\
+                \nu
+              \end{pmatrix}
+              - \log F(\alpha, \nu)
+              \right)
+            \end{align*}
+          </div>
+          where $F(\alpha, \nu)$ is a normalization constant:
+          <div class='scroll'>
+            \begin{align*}
+              F(\alpha, \nu) = \int \exp \Big(\alpha^Tw - \nu \log Z(w) \Big)\, \d w\, .
+            \end{align*}
+          </div>
+          For $n$ iid draws $x_i$ from $p_w(x_i\vert w)$ this yields the posterior
+          <div class='scroll'>
+            \begin{align*}
+              p_{\alpha, \nu} (w;\alpha,\nu) \cdot \prod_{i=1}^np_w(x_i\vert w) \propto p_{\tilde \alpha,\tilde \nu } \left(w \, \Bigg\vert \, \alpha + \sum_{i=1}^n \phi(x_i), \ \nu +n \right)\, .
+            \end{align*}
+          </div>
+          The <b>predictive</b> $p(x)$ for a single observation results to be
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = \int p_w(x\vert w)p_{\alpha, \nu}(w; \alpha, \nu) \, \d w = \dots = h(x) \frac{F\big(\phi(x)+\alpha, \ \nu+1 \big)}{F(\alpha, \nu)}\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>Constructing the normalization constant $F$ is <b>the key challenge</b> when construction exponential families which act as conjugate priors.</li>
+        <li><b>MLE for Exponential Families:</b> Consider yet again the same exponential family likelihood and observe that for iid data it is:
+          <div class='scroll'>
+            \begin{align*}
+              \log p_w(X\vert w) = \log\left( \prod_{i=1}^n p_w(x_i\vert w) \right) = \sum_{i=1}^n \log h(x_i) +  \sum_{i=1}^n \phi^T(x_i)w - n\log Z(w) \, .
+            \end{align*}
+          </div>
+          Therefore the maximum likelihood estimate for $w$ is given by the equation (independent of $h$):
+          <div class='scroll'>
+            \begin{align*}
+              \nabla_w \log Z(w) = \frac{1}{n} \sum_{i=1}^n \phi(x_i)
+            \end{align*}
+          </div>
+          which for known $Z(w)$ includes an operation of only linear cost in $n$. 
+        </li>
+        <li><b>Expectation of Sufficient Statistics:</b> Similar to the last discovery one can show that
+          <div class='scroll'>
+            \begin{align*}
+              \E _{p_w(x\vert w)}[\phi(x)] = \nabla_w \log Z(W)\, . 
+            \end{align*}
+          </div>
+        </li>
+        <li><b>Additivity of Exponential Families:</b> Given two probability distributions over the same variable $x$ the product
+          <div class='scroll'>
+            \begin{align*}
+              p_w(x\vert w_1)\cdot p_w(x\vert w_1) = h(x)^2 \exp \Big( \phi(x)^T(w_1+w_2) - \log \big(Z(w_1)\cdot Z(w_2)\big) \Big) \propto p_w(x\vert w_1+w_2)
+            \end{align*}
+          </div>
+          where the proportionality is according to $x$.
+        </li>
+
+
+
+
 
 
         <table class="mdtbl">
@@ -2060,13 +2198,28 @@
       </ul>
 
       <br> <br>
-      <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=1285" style="color: #BB86FC;">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=3712" style="color: #BB86FC;">Current Video</a>
 
 
     </div> <!-- content -->
 
   </div> <!-- wrapper -->
 
+
+<script>
+  // Development switch
+  var devel = true;
+  if (devel) {
+    var bg2 = document.getElementById('bg2');
+    if (devel) {bg2.style.transition = "none";}
+    bg2.style.opacity = 0.5;
+
+    var content = document.getElementsByClassName('content')[0];
+    if (devel) {content.style.transition = "none";}
+    content.style.visibility = 'visible';
+    content.style.opacity = 0.88;
+}
+</script>
 </body>
 
 </html>

@@ -1,3 +1,4 @@
+/* Checking for mobile screen */
 window.mobileCheck = function() {
     console.log("Checking for mobile browser.")
     let check = false;
@@ -5,11 +6,11 @@ window.mobileCheck = function() {
     console.log(check)
     return check;
   };
+check_mobile = window.mobileCheck();
 
-var scrolls = document.getElementsByClassName('scroll');
+
+/* Mathjax settings */
 var mathjax_scale = 1.0;
-check = window.mobileCheck();
-
 window.MathJax = {
   loader: {
     load: ['[tex]/tagformat', '[tex]/color']
@@ -23,10 +24,12 @@ window.MathJax = {
     tags: 'ams',
   },
 };
-
 console.log(MathJax.version);
 
-color_scroll_divs = function(scrolls) {
+
+/* Responsive Scroll-Formula Elements */
+var scrolls = document.getElementsByClassName('scroll');
+responsive_formulas = function(scrolls) {
     var k = 0;
     for (let div of scrolls) {
         k++;
@@ -44,56 +47,68 @@ color_scroll_divs = function(scrolls) {
             div.style.marginTop = "0";
         }
         // Debugging
-        if (div.id == "testformula") {
-            console.log(div);
-            console.log(div.offsetWidth);
-            console.log(div.scrollWidth);
-            console.log(parent);
-            console.log(parent.clientWidth);
-        }
+        // if (div.id == "testformula") {
+        //     console.log(div);
+        //     console.log(div.offsetWidth);
+        //     console.log(div.scrollWidth);
+        //     console.log(parent);
+        //     console.log(parent.clientWidth);
+        // }
     }   
     console.log("Scanning and Converting Formula-Divs.");
     console.log("Numbers of Formulas " + k.toString());
 }
 
-window.onload = function() {
-    if (check) {
-        var bg1 = document.getElementById("bg1");
-        bg1.style.transform = "scale(1.125, 1.125)";
-        var bg2 = document.getElementById("bg2");
-        bg2.style.transform = "scale(1.125, 1.125)";
-        console.log("Transformed Background image to fit url-bar hiding mobile browsers.")
-    }
 
-    color_scroll_divs(scrolls);
-
+/* Loading Effect (off if devel) */
+document.load_effect = function() {
     var bg2 = document.getElementById('bg2');
     bg2.style.opacity = 0.5;
 
     var content = document.getElementsByClassName('content')[0];
     content.style.visibility = 'visible';
     content.style.opacity = 0.88;
+}
 
+
+
+/* "Main" */
+/* -------------------------------------------------------------------------- */
+
+window.onload = function() {
+
+    // Mobile check (first!)
+    if (check_mobile) {
+        var bg1 = document.getElementById("bg1");
+        bg1.style.transform = "scale(1.125, 1.125)";
+        var bg2 = document.getElementById("bg2");
+        bg2.style.transform = "scale(1.125, 1.125)";
+        console.log("Transformed Background image to fit url-bar hiding mobile browsers.");
+    }
+
+    // Responsive Scroll-Formulas
+    responsive_formulas(scrolls);
+
+    // Load Effect (After scroll-formulas!)
+    document.load_effect();
+
+    // Coloring Cross-References
     var crs = document.getElementsByClassName('cr');
     for (let cr of crs) {
         var fstc = cr.firstChild;
-        // console.log('debugging');
-        // console.log(fstc);
-        // console.log(fstc.tagName);
         if (fstc.tagName == 'B') {
             fstc.style.color = '#ffa5a5';
         }
     }
-
-    console.log(content)
 }
 
+/* Responsive Scroll-Formula Elements onresize */
 var delay;
 window.onresize = function() {
     // Optimizing with Debouncing: Run color_scroll_divs only when resize ended 
     clearTimeout(delay);
     delay = setTimeout(function() {
-        color_scroll_divs(scrolls);
+        responsive_formulas(scrolls);
     }, 1000);
 }
 
