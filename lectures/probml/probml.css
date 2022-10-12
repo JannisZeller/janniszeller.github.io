@@ -78,16 +78,16 @@ div.content {
     transition:         visibility 0s, opacity 0.325s linear;
 }
 
-
-/* Development Purposes */
-
-div.dev {
-    visibility: visible;
-    opacity: 1;
+div.imgContainer {
+    width: 100%; 
+    text-align: center; 
+    padding-bottom: 0.5em
 }
 
-div.devbg {
-    opacity: 0;
+img.light {
+    box-shadow: 0 0 0.5em 0em black;
+    background-color: white;
+    border-radius: 0.5em;
 }
 
 

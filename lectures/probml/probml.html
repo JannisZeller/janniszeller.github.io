@@ -358,49 +358,50 @@
           <li>Define the joint probability for the <b>generative model</b></strong></li>
           <li>Mechanically using Bayes Theorem and computing marginals.</li>
         </ol>
-      </ul>
-
-
-      <h2>Graphical Models</h2>
-      <p>
-        Directed Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in this <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture part</a>.
-      </p>
-      <ul class="flul">
-        <li><b>Directed Graphical Model (DGM) aka. Bayesian network</b> is a probability distribution over variables
-          $\{X_1,\dots , X_D\}$ that can be written as
-          <div class='scroll'>
-            \begin{align*}
-            P(X_1, X_2, \dots X_D) = \prod_{i=1}^D p(X_i\vert \mathrm{pa}(X_i)) \, ,
-            \end{align*}
-          </div>
-        </li>
-        where $\mathrm{pa}(X_i)$ are the parental variables of $X_i$. A DGM can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>
-        with the propositional variables as nodes and arrows from parents to children.
-        <li>An example of such a model in a pictorial view is:
-          <div style="width: 100%; text-align: center; padding-bottom: 0.5em">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Graph_model.svg" alt="Image of a DGM represented by a DAG." width="30%" style="background-color: white;">
-            <br>
-            "Graph model" CC-BY-SA 4.0 <a class="link" href="https://commons.wikimedia.org/wiki/User:IkamusumeFan">IkamusumeFan</a> on <a class="link" href="https://en.wikipedia.org/wiki/File:Graph_model.svg">Wikipedia</a>.
-          </div>
-          In this case e. g. $\mathrm{pa}(D) = \{ A, B, C \}$ and $\mathrm{pa}(A) = \emptyset$. The full model becomes:
-          <div class='scroll'>
-            \begin{align*}
-            P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
-            \end{align*}
-          </div>
-        </li>
-        <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
-        <table class="mdtbl">
-          <tr>
-            <td><b>Model</b></td>
-            <td><b>Computation Technique</b></td>
-          </tr>
-          <tr>
-            <td>Directed Graphical Models (representable by a DAG)</td>
-            <td></td>
-          </tr>
-        </table>
-      </ul>
+        <li class="cr" id="gmod_1"><b>Graphical Models:</b> Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in the <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture</a>.</li>
+        <ul>
+          <li><b>Directed Graphical Model (DGM) aka. Bayesian network:</b> A DGM is a probability distribution over variables
+            $\{X_1,\dots , X_D\}$ that can be written as
+            <div class='scroll'>
+              \begin{align*}
+              P(X_1, X_2, \dots X_D) = \prod_{i=1}^D p(X_i\vert \mathrm{pa}(X_i)) \, ,
+              \end{align*}
+            </div>
+            where $\mathrm{pa}(X_i)$ are the parental variables of $X_i$. A DGM can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>
+            with the propositional variables as nodes and arrows from parents to children.
+          </li>
+          <li>An example of such a model in a pictorial view is:
+            <div class="imgContainer">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/3/39/Graph_model.svg" 
+                class="light"
+                style="width: 33%;"
+                alt="Image of a DGM represented by a DAG."
+              >
+              <br>
+              "Graph model" CC-BY-SA 4.0 <a class="link" href="https://commons.wikimedia.org/wiki/User:IkamusumeFan">IkamusumeFan</a> on <a class="link" href="https://en.wikipedia.org/wiki/File:Graph_model.svg">Wikipedia</a>.
+            </div>
+            In this case e. g. $\mathrm{pa}(D) = \{ A, B, C \}$ and $\mathrm{pa}(A) = \emptyset$. The full model becomes:
+            <div class='scroll'>
+              \begin{align*}
+              P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
+              \end{align*}
+            </div>
+          </li>
+          <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
+          <li>There is more to follow on DGMs <a href="#gmod_2">later</a>.</li>
+          <table class="mdtbl">
+            <tr>
+              <td><b>Model</b></td>
+              <td><b>Computation Technique</b></td>
+            </tr>
+            <tr>
+              <td>Directed Graphical Models (representable by a DAG)</td>
+              <td></td>
+            </tr>
+          </table>
+        </ul>
+      </ul>      
 
 
       <h2>Continuous Random Variables</h2>
@@ -2242,8 +2243,43 @@
         </table>
       </ul>
 
+
+      <h2 id="gmod_2">Graphical Models</h2>
+      <ul class="flul">
+        <li>We have already seen a short introduction on Graphical Models (DGMs) <a href="#gmod_1">before</a>. Using the notion introduced there one can use the following routine to build DGMs with and from their corresponding DAGs:
+          <ol>
+            <li>For each variable in the joint distribution, draw a circle.</li>
+            <li>For each term $p(x_1,\dots \vert x_2, \dots )$ in the joint distribution, draw an arrow <i>from</i> the parent (right side) node to every child (left side) node.</li>
+            <li>Fill in all observed variables (variables on which we want to <i>condition</i>).</li>
+          </ol>
+        </li>
+        <li><b>Extending the Notion of Graphical Models:</b> There are some convenient extension to DGMs in the pictorial which are presented in the image below. First a <b>box or plate</b> with a natural number (typically $n$) represents $n$ identical copies of the box, in the case below this is $n$ iid $y_i$'s. Also (hyper-)parameters, which are not modelled in a fully probabilistic manner (i. e. being searched by MLE or MAP) are added through arrows with <b>small circles</b> and the parameters names on the siede ($\mu, \Sigma$ and $\sigma$ in the image below. The image below could therefor e. g. represent
+        <div class='scroll'>
+          \begin{align*}
+            w \sim \mathcal N(\mu, \Sigma) \qquad \textsf{with} \qquad  y_i \overset{\mathrm{iid}}{\sim} \mathcal N( \phi(x_i)^T w, \sigma^2)\, , \quad i=1,\dots n
+          \end{align*}
+        </div>
+        which has the joint distribution
+        <div class='scroll'>
+          \begin{align*}
+            p(y, w) = \prod_{i=1}^n \mathcal N(y_i; \phi(x_i)^T w, \sigma^2)\, \mathcal N(w; \mu, \Sigma) \, .
+          \end{align*}
+        </div>
+        </li>
+        <div class="imgContainer" style="padding-top: -1em;">
+          <img 
+            class="light"
+            src="../../images/dag1.png"
+            style="width: 66%;"
+            alt="Image of a more nuanced DGM represented by a DAG."
+          > 
+          <br>
+          Own image after the one shown in the <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=993">lecture</a>.
+        </div>
+
+
       <br> <br>
-      <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=1423">Current Video</a>
 
 
     </div> <!-- content -->
@@ -2253,7 +2289,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
