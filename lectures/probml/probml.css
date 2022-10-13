@@ -95,9 +95,33 @@ img.light {
 /* Styling general Elements */
 /* -------------------------------------------------------------------------- */
 
-h2, h3 {
+h1 {
+    text-align: center;
+    display: block;
+    border-bottom: 1px solid white;
+    box-shadow: 0 0.5em 0.5em -0.5em black;
+    letter-spacing: 0.1em;
+}
+
+h2 {
+    text-align: center;
+    display: block;
+    margin: 1em;
+    margin-top: 2em;
+    border-bottom: 1px solid white;
+    box-shadow: 0 0.5em 0.5em -0.5em black;
+    letter-spacing: 0.1em;
+}
+
+h3 {
+    text-align: center;
+    display: block;
     padding-top: 0.5em;
     margin-bottom: -0.5em;
+    border-bottom: 1px solid white;
+    margin-left: 3em;
+    margin-right: 3em;
+    letter-spacing: 0.1em;
 }
 
 li {
@@ -158,7 +182,7 @@ table.mdtbl td {
 }
 
 table.mdtbl tr:first-child td {
-    background-color: #90fff4;
+    background-color: #e0c7ff; /* #90fff4; */
     color: #000000;
     font-weight: bold;
     border: none;
@@ -193,7 +217,7 @@ div.scroll {
 }
 
 span.tip {
-    color: #8afff3;
+    color: #e0c7ff /* #8afff3;*/
 }
 .tip span {
     display:    none; 
@@ -202,7 +226,7 @@ span.tip {
     border-radius: 0.5em;
 }
 span.tip span {   
-    background: #90fff4; 
+    background: #e0c7ff; /* #90fff4; */
     color:      #000000;
     box-shadow: 0 0 0.5em 0em #000000;
 }

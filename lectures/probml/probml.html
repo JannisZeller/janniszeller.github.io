@@ -30,6 +30,7 @@
 <body>
 
   <!-- MathJax Macros -->
+  <!-- "\sumint": Primarily for block math mode -->
   <div style="width:0;height:0;position:fixed;opacity:0;">
     $$
     \newcommand{\abs}[1]{{\left\vert #1 \right\vert}}
@@ -47,6 +48,9 @@
     \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
     \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
     \newcommand{\dkl}[2]{D_{\textsf{KL}}\left(#1\vert\vert#2\right)}
+    \newcommand{\indep}{\perp\!\!\!\perp}
+    \newcommand{\nindep}{\centernot\indep}
+    \newcommand{\sumint}{\ \ \ \mathclap{\int}\mathclap{\sum} \ \ \ } 
     $$
   </div>
 
@@ -250,8 +254,8 @@
         <li><b>Chain Rule of Probability:</b> Let $A_i \in \Sigma$, $i=1,...,n$ be a set of events, then
           <div class='scroll'>
             \begin{align}
-            P \left( \bigcap_{i=1}^n A_i \right) = \prod_k P\left( A_k \Big{\vert} \bigcap_{j=1}^{k-1}A_j \right) = P(A_n\vert A_{n-1} \cap ... \cap A_1) \cdot P(A_{n-1}\vert A_{n-2} \cap...\cap A_1) \cdot ... \cdot P(A_1)
-            \label{eq:chain_prob}
+              P \left( \bigcap_{i=1}^n A_i \right) = \prod_k P\left( A_k \Big{\vert} \bigcap_{j=1}^{k-1}A_j \right) = P(A_n\vert A_{n-1} \cap ... \cap A_1) \cdot P(A_{n-1}\vert A_{n-2} \cap...\cap A_1) \cdot ... \cdot P(A_1)
+              \label{eq:chain_prob}
             \end{align}
           </div>
         </li>
@@ -335,14 +339,19 @@
             \end{align*}
           </div>
         </li>
-        <li>Introducing <b>Conditional Independence</b>: Two RVs $X$ and $Y$ are conditionally independent given RV $Z$, iff their conditional distribution factorizes:
+        <li class="cr" id="conditional_independence"><b>Conditional Independence</b>: Two RVs $X$ and $Y$ are conditionally independent given RV $Z$, iff their conditional distribution factorizes:
           <div class='scroll'>
             \begin{align*}
             P(X, Y \vert Z) = P(X\vert Z) \cdot P(Y\vert Z) \quad \overset{(I)}{ \Rightarrow} \quad P(X \vert Y, Z) = P(X \vert Z)
             \end{align*}
           </div>
         </li>
-        i. e. "given information about $Z$, $Y$ does not provide any further information about $X$."
+        i. e. "given information about $Z$, $Y$ does not provide any further information about $X$." A common notation is:
+        <div class='scroll'>
+          \begin{align*}
+            X  \indep Y \vert Z\, .
+          \end{align*}
+        </div>
         <li>Calculation of the implication $(I)$: Let $X, Y, Z$ be RVs with $P(X, Y \vert Z) = P(X\vert Z) \cdot P(Y\vert Z)$. Then:
           <div class='scroll'>
             \begin{align*}
@@ -358,7 +367,7 @@
           <li>Define the joint probability for the <b>generative model</b></strong></li>
           <li>Mechanically using Bayes Theorem and computing marginals.</li>
         </ol>
-        <li class="cr" id="gmod_1"><b>Graphical Models:</b> Graphical Models are models of probabilistic settings where the dependency structure can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in the <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture</a>.</li>
+        <li class="cr" id="gmod_1"><b>Directed Graphical Models:</b> Directed Graphical Models are models of probabilistic settings where the factorization of a joint probability can be represented by a <a class="link" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph" target="_blank">Directed Acyclic Graph (DAG)</a>. To present these a pictorial view is helpful and can be found in the <a class="link" href="https://youtu.be/YWK74ZNPrHc?t=4091" target="_blank">lecture</a>.</li>
         <ul>
           <li><b>Directed Graphical Model (DGM) aka. Bayesian network:</b> A DGM is a probability distribution over variables
             $\{X_1,\dots , X_D\}$ that can be written as
@@ -384,7 +393,7 @@
             In this case e. g. $\mathrm{pa}(D) = \{ A, B, C \}$ and $\mathrm{pa}(A) = \emptyset$. The full model becomes:
             <div class='scroll'>
               \begin{align*}
-              P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
+                P(A, B, C, D) = P(D\vert A, B, C)\cdot P(C\vert B, D)\cdot P(A)\cdot P(B)
               \end{align*}
             </div>
           </li>
@@ -2244,7 +2253,7 @@
       </ul>
 
 
-      <h2 id="gmod_2">Graphical Models</h2>
+      <h2 id="gmod_2">Directed Graphical Models</h2>
       <ul class="flul">
         <li>We have already seen a short introduction on Graphical Models (DGMs) <a href="#gmod_1">before</a>. Using the notion introduced there one can use the following routine to build DGMs with and from their corresponding DAGs:
           <ol>
@@ -2276,9 +2285,98 @@
           <br>
           Own image after the one shown in the <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=993">lecture</a>.
         </div>
+        <li>For tri-variate sub-graphs there are three <b>Atomic Structures</b> which resemble three <a href="#conditional_independence">Conditional Independence</a> Structures (images in the <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=1425">lecture</a>), which can be called the linear shape ($A\rightarrow B\rightarrow C$), the "angle"-shape ($A \leftarrow  B \rightarrow C$) and the "V"-shape ($A \rightarrow B \leftarrow C$) and:
+          <div class='scroll'>
+            \begin{align*}
+              \textsf{linear} \qquad A\rightarrow B\rightarrow C \qquad & A \indep C\vert B \\
+              \textsf{angle}  \qquad A\leftarrow  B\rightarrow C \qquad & A \indep C\vert B \ \ \textsf{but} \ \ A \nindep C \\
+              \textsf{V}      \qquad A\rightarrow B\leftarrow C \qquad & A \indep C  \ \ \textsf{but} \ \ A \nindep C\vert B
+            \end{align*}
+          </div>
+          To generalize these atomic graphs to graphs with more nodes the notion of $d$-separation is needed.
+        </li>
+        <li><b>Directed "$\boldsymbol d$"-Separation</b> (Pearl, 1988; Bishop, 2006 as cited in the <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=1726">lecture</a>): Consider a general DAG in which $A$, $B$ and $C$ are nonintersecting sets of nodes whose union may be smaller than the complete graph. To ascertain wether <span class="tip">$A\indep C\vert B$<span>Note that B and C are switched compared to the lecture, to keep accordance to the atomic graphs.</span></span>, consider all possible paths (connections along lines in the graph, regardless of the direction) from any node in $A$ to any node in $C$. Any such path is considered <b>blocked</b> if it includes a nude such that either
+          <ul>
+            <li>the arrows on the one path meet either head-to-tail or tail-to-tail at the node, and the node is in $B$ (<i>like linear and angle atomic graph</i>), or</li>
+            <li>the arrows meet head-to-head at the node, and neither the node, nor any of its descendants is in $B$.</li>
+          </ul>
+          If all paths are blocked, then $A$ is said to be $d$-separated from $C$ by $B$, and $A\indep C\vert B$.
+        </li>
+        <li>The notion of $d$-separation is sufficiently formal to be applied automatically by an algorithm. The interesting question is typically on which nodes one has to condition, to make a special node independent of all remaining nodes in the DAG:</li>
+        <li><b>Markov-Blanket for Directed Graphs:</b> The Markov Blanket <i>of a node</i> $X$ is the set of all parents, children and <span class="tip">co-parents<span>A co-parent Y of the node X has children with X.</span></span> of $X$. Conditioned on the blanket, $X$ is independent of the rest of the graph.</li>
+        <li>As we have seen, DAGs are practical models to define Generative Probabilistic Models, but reading of conditional independence from such graphs is somewhat tedious and not even comprehensive (there might be conditional independencies which are not encoded in the graph!). Therefore the following notation of <i>Undirected Graphical Models</i> can be used. In the latter the graph is constructed form assumptions on conditional independencies and the factorization of the joint probability is constructed afterwards.</li>
+      </ul>
+
+
+      <h2>Undirected Graphical Models</h2>
+      <ul class="flul">
+        <li><b>Undirected Graph:</b> An undirected Graph is just a set $G=(V,E)$ of nodes $V$ and edges $E$, i. e. a DAG without arrows at the end of connector lines.</li>
+        <li><b>Markov Random Field (MRF):</b> An undirected graph $G=(V,E)$ and a set of random variables $X=\{X_v\}_{v\in V}$ is a Markov Random Field if, for any subsets $A,B\subset V$ and a <span class="tip">separating set $S$<span>I. e. a set such that every path from A to B passes through S.</span></span> it holds:
+          <div class='scroll'>
+            \begin{align*}
+              X_A \indep X_B \vert X_S\, .
+            \end{align*}
+          </div>
+          This is called the <i>Global Markov Property</i>. Separating sets are not unique, but there exist unique minimal separation sets.
+        </li>
+        <li><b>Markov Property:</b> The General Markov Property stated above is a generalization of the <i>Pairwise Markov Property</i>: Any two nodes $u$ and $v$, that do not share an edge are conditionally independent given all other variables, i. e.
+          <div class='scroll'>
+            \begin{align*}
+              X_u \indep X_b \vert X_{V\setminus \{u, b\}}\, .
+            \end{align*}
+          </div>
+        </li>
+        <li><b>Markov-Blanket for Undirected Graphs:</b> The Markov Blanket <i>of a node</i> $X$ is the set of all parents, and children, i. e. direct neighbors of $X$. Conditioned on the blanket, $X$ is independent of the rest of the graph.</li>
+        <li>Now for the tricky part: Defining MRFs and connecting it to a independence structure was easy but yet we have no notion of how the <i>actual joint probability of nodes in a undirected graph</i> looks. When constructing such a joint probability, for the definition with the Markov Property to hold, nodes that do not share an edge must obey the stated independence. To get the most useful factorization of the joint probability so called <i>cliques</i> are used:</li>
+        <li><b>Cliques:</b> Given a Graph $G=(V, E)$, a clique is a subset $c\subset V$ such that there exists an edge between all pairs of nodes in $c$. A <i>maximal clique</i> is a clique such that it is impossible to include any other nodes from $V$ without it ceasing to be a clique.</li>
+        <li>The notation $C$ for all maximal cliques of the regarded graph is used.</li>
+        <li><b>Factorization of the Joint Distribution:</b> Following the discussion above, the joint PDF $p(x)$ for $x\in \R^d$ can always be written in the form:
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = \frac{1}{Z} \prod_{c\in C}\psi_c(x_c)
+            \end{align*}
+          </div>
+          with <b>potential functions</b> $\psi_c(x_c)>0$ and a <b>partition function</b> (normalization constant):
+          <div class='scroll'>
+            \begin{align*}
+              Z=\sumint \prod_{c\in C}\psi_c(x_c) 
+            \end{align*} 
+          </div>
+          where the Sum-Integral Notation (instead of measure-notation) is used because it is not stated that $\psi_c$ are measures.
+        </li>
+        <li><b>Boltzmann Distribution / Gibbs Measure:</b>A probability distribution with PDF of the form
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = e^{-E(x)}
+            \end{align*}
+          </div>
+          is called Boltzmann distribution. $E(x)$ is known as the <b>energy function</b>.
+        </li>
+        <li>The Boltzmann distribution can be applied to the $\psi_c$'x because they are positive yielding:
+          <div class='scroll'>
+            \begin{align*}
+            \textsf{Undirected Graph:} \qquad p(x) = \exp\left( -\sum_{c\in C}w_cW_c(x_c) + \log Z \right)
+            \end{align*}
+          </div>
+        </li>
+        <li>Despite therefore the joint probabilities belonging to undirected graphs are exponential families, the problem still remains though, because $Z$ is the hard thing to compute.</li> 
+        <li>The other direction of the last few bullets also holds: A Boltzmann distributed set of RVs can be expressed in form of a MRF. This is the very much non trivial Hammersley-Clifford Theorem.</li>
+        <li><b>Gaussian MRFs:</b> When assuming a gaussian distribution for a set of $x_i$'s, i. e. $x\sim \mathcal N(\mu, \Sigma)$, a MRF can be constructed using the following independence structure: If $\Sigma{-1}$ contains a zero at element $[\Sigma^{-1}]_{ij}$ Then
+          <div class='scroll'>
+            \begin{align*}
+              x_i\indep x_j \vert x_{\setminus \{i, j\}}\, .
+            \end{align*}
+          </div>
+          Therefore a MRF can be constructed by drawing a node for each $x_i$ pairwise connecting all nodes apart from the ones where $[\Sigma^{-1}]_{ij}=0$.
+        </li>
+      </ul>
+
+
 
 
       <br> <br>
+
+
       <a class="link" target="_blank" href="https://youtu.be/BosZK5E_q70?t=1423">Current Video</a>
 
 

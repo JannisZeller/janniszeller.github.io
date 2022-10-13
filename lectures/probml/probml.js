@@ -13,18 +13,19 @@ check_mobile = window.mobileCheck();
 var mathjax_scale = 1.0;
 window.MathJax = {
   loader: {
-    load: ['[tex]/tagformat', '[tex]/color']
+    load: ['[tex]/tagformat', '[tex]/color', '[tex]/centernot', '[tex]/mathtools']
   },
   chtml: {
     scale: mathjax_scale,
   },
   tex: {
     inlineMath: [['$', '$']],
-    packages: {'[+]': ['tagformat', 'href']},
+    packages: {'[+]': ['tagformat', 'href', 'centernot', 'mathtools']},
     processEscapes: true,
     tags: 'ams',
   },
 };
+console.log("MathJax Version");
 console.log(MathJax.version);
 
 
@@ -36,16 +37,18 @@ responsive_formulas = function(scrolls) {
         k++;
         var parent = div.parentElement;
         if (div.scrollWidth  > parent.clientWidth) {
-            div.style.overflowX = "auto";
-            div.style.overflowY = "hidden";
-            div.style.background = "rgba(255,255,255,.05)";
-            div.style.marginTop = "0.5em";
+            div.style.overflowX  = "auto";
+            div.style.overflowY  = "hidden";
+            div.style.background = "rgba(255, 255, 255, 0.01)";
+            div.style.marginTop  = "0.5em";
+            div.style.boxShadow  = "0 0 0.3em 0em #000000 inset";
         }
         else {
-            div.style.overflowX = "hidden";
-            div.style.overflowY = "hidden";
-            div.style.background = "rgba(255,255,255,.00)";
-            div.style.marginTop = "0";
+            div.style.overflowX  = "hidden";
+            div.style.overflowY  = "hidden";
+            div.style.background = "rgba(0, 0, 0, .0)";
+            div.style.marginTop  = "0";
+            div.style.boxShadow  = "none";
         }
         // Debugging
         // if (div.id == "testformula") {
