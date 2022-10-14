@@ -1695,7 +1695,7 @@ div.linebreak {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 .long-header {
-	font-size: 							large;
+	font-size: 							larger;
 	text-decoration: 				underline;
 	text-underline-offset: 	0.5em;
 	letter-spacing: 				0.05em;
