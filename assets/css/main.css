@@ -1702,11 +1702,12 @@ div.linebreak {
 }
 
 h3.own {
+	display: inline-block;
 	font-weight: normal;
 	text-transform: none;
 	letter-spacing: 0.05em;
-	font-size: 			large;
-	text-decoration: underline;
+	font-size: 			1.05em;
+	border-bottom: 1px solid white;
 }
 
 ul.litlist {
