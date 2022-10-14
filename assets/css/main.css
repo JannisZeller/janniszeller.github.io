@@ -1702,12 +1702,12 @@ div.linebreak {
 }
 
 h3.own {
-	display: inline-block;
-	font-weight: normal;
+	display: 				inline-block;
+	font-weight: 		normal;
 	text-transform: none;
 	letter-spacing: 0.05em;
 	font-size: 			1.05em;
-	border-bottom: 1px solid white;
+	border-bottom: 	1px solid white;
 }
 
 ul.litlist {
@@ -1728,11 +1728,11 @@ ul > ul > li {
 }
 
 div.scroll {
-	margin: 4px, 4px;
-	padding: 4px;
-	width: 100%;    
-	border-radius: 0.5em;
-	transition: background-color 0.325s, color 0.325s, margin-top 0.325s;
+	margin: 		4px, 4px;
+	padding: 		4px;
+	width: 			100%;    
+	border-radius: 	0.5em;
+	transition: 		background-color 0.325s, color 0.325s, margin-top 0.325s;
 }
 
 p.mathpar {
