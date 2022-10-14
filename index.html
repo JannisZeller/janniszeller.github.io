@@ -170,7 +170,8 @@
 										\frac{1}{n} \sum_{i=1}^n (y_i - \bar y)^2 = \hat \sigma_y^2\, .
 									$$
 								</div>
-								This gives rise to the typical interpretation of $R^2$ to be the <i>portion of variance in the data, the model can "explain"</i>, or easier: the extend to which the model performs better than just using the average for prediction. <br> <br> 
+								This gives rise to the typical interpretation of $R^2$ to be the <i>portion of variance in the data, the model can "explain"</i>, or easier: the extend to which the model performs better than just using the average for prediction.
+								<div class="linebreak"></div>
 								One can easily identify that:
 								<div class='scroll'>
 									$$
@@ -178,6 +179,17 @@
 									$$
 								</div>
 								In unregularized regression models, $R^2$ is therefore directly connected with the $\mathrm{MSE}$, i. e. for a given dataset they correspond deterministically in a linear fashion. 
+							</p>
+
+							<h3 class="own">Shrinkage in Covariance-Estimation</h3>
+							<p class="mathpar">
+								When estimating covariance matrices $\Sigma$ the natural estimator is typically the classic Maximum Likelihood Estimator (MLE) (see e. g. on <a href="https://scikit-learn.org/stable/modules/covariance.html">scikit-blog</a> ). This estimator is unbiased, though unstable and might even in some cases (mainly due to numerical instabilities) yield non-positive definite results, which in subsequent analyses can then not be used as covariance matrices directly. 
+								<div class="linebreak"></div>
+								As user Jeff Snider expresses in easy terms in a <a href="https://math.stackexchange.com/a/665549">Math StackExchange answer</a>, shrinkage can be viewed as assuring positive eigenvalues in an <a href="https://en.wikipedia.org/wiki/Eigendecomposition_of_a_matrix">eigendecomposition</a> $LDL^T$ of $\Sigma$. This resembles clipping the eigenvalues (when they emerge as zeros of the <a href="https://en.wikipedia.org/wiki/Characteristic_polynomial">characteristic polynomial</a>) to be $[D]_{ii}>\epsilon >0$, because <a href="https://en.wikipedia.org/wiki/Definite_matrix#Eigenvalues">having only positive eigenvalues is equivalent to being positive definite</a>. Because the columns of $L$ are orthonormal in an eigendecomposition this clipping actually yields an eigendecomposition of $\Sigma + E$ where $E$ is a diagonal matrix with positive entries. 
+								<div class="linebreak"></div>
+								<a href="https://scikit-learn.org/stable/modules/covariance.html#basic-shrinkage">Shrinking a covariance matrix</a> resembles applying this procedure the other way around, i. e. already adding a diagonal matrix directly to the estimator. There exist more sophisticated algorithms for shrinkage that assure e. g. that only minimal numbers are added to $\Sigma$, of which some emerge from regularized estimators for the covariance matrix.
+								<div class="linebreak"></div>
+								The discussed procedure above is also the reason why in some data analyses scripts or numerical procedures a small amount of diagonal (e. g. <span style="font-family: 'Cascadia Code', Consolas, monospace;">+1e-6*np.eye(d)</span> in numpy) might get added to a matrix $\Sigma$, which is assumed to be a covariance matrix or a positive definite matrix in general. This is especially the case, if $\Sigma$ needs to be inverted or systems of equations like $\Sigma x = y$ need to get solved for $x$ (also see <a href="./lectures/probml/probml.html#inverting_with_cholesky">in this part</a> of the "Probabilistic Machine Learning Notes").
 							</p>
 							
 

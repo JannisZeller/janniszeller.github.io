@@ -1114,13 +1114,13 @@
             </li>
           </ul>
         </li>
-        <li><b>Solving Linear System of Equations instead of Inverting:</b>
+        <li id="inverting_with_cholesky"><b>Solving Linear System of Equations instead of Inverting:</b>
           <ul>
             <li>In practice it is typically not a good idea to try to invert matrices directly when building an algorithm because often the actual numerically evaluated matrices are not invertible (e.g. because of rounding and numerical instabilities).</li>
             <li>What is therefore done instead is to rewrite the problem: Let $A$ be an (invertible) matrix and $X$ and
               $Y$ be matrices of suitable size. If one has to compute $X=A^{-1}Y$ in a computation this can be done without directly computing $A^{-1}$ by solving the linear system of Equations $AX=Y$ for $X$.</li>
-            <li>If instead $X=YA^{-1}$ needs to be computed, solve $A^TX^T$=Y^T for $X^T$ and transpose the result yet again.</li>
-            <li>If $A$ is symmetric positive definite it is useful to use the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky Decomposition</a> $LL^T=A$, where
+            <li>If instead $X=YA^{-1}$ needs to be computed, solve $A^TX^T=Y^T$ for $X^T$ and transpose the result yet again.</li>
+            <li>If $A$ is symmetric positive definite, it is useful to use the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition">Cholesky Decomposition</a> $LL^T=A$, where
               $L$ is a (upper) triangular matrix. Then first solve $LZ=Y$ for $Z$ and then $L^TX=Z$ for $X$. For example in <a class="link" target="_blank" href="docs.scipy.opg">scipy</a> this can be done in one step using <a class="link" target="_blank" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.linalg.cho_solve.html" style="font-family: 'CaskaydiaCove NF', 'Cascadia Code', Consolas, monospace;">cho_solve</a>. This is especially efficient if the matrix $A$ needs to be used in this fashion multiple times, because then precomputing the Cholesky decomposition saves computational costs.</li>
             <li>Computing the Cholesky decomposition can be done pretty straightforward with e.g. the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Cholesky_decomposition#The_Cholesky%E2%80%93Banachiewicz_and_Cholesky%E2%80%93Crout_algorithms">Banachiewicz and Cholesky Algorithm</a> with the complexity of $\mathcal{O}(n^3)$ where $A\in \mathbb R^{n\times n}$.
             </li>

@@ -1685,6 +1685,11 @@ input, select, textarea {
 /* OWN STUFF */
 /* -------------------------------------------------------------------------- */
 
+/* Custom linebreak with div */
+div.linebreak {
+	width: 100%;
+	height: 0.5em;
+}
 
 /* Literature Sections */
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
