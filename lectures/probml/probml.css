@@ -217,7 +217,8 @@ div.scroll {
 }
 
 span.tip {
-    color: #e0c7ff /* #8afff3;*/
+    color: #e0c7ff; /* #8afff3;*/
+    font-style: italic;
 }
 .tip span {
     display:    none; 

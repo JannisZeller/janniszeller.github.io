@@ -42,6 +42,7 @@
     \newcommand{\Y}{{\mathbb Y}}
     \newcommand{\d}{{\mathrm d}}
     \newcommand{\var}{{\mathrm{Var}\,}}
+    \newcommand{\supp}{{\mathrm{supp}\,}}
     \newcommand{\cases}[1]{{\begin{cases}#1\end{cases}}}
     \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
     \newcommand{\alignn}[1]{{\begin{align}\begin{split}#1\end{split}\end{align}}}
@@ -582,7 +583,9 @@
 
 
       <h2>Sampling by Transformation</h2>
-      <p>Still one open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b></p>
+      <p>
+        Still one open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b>
+      </p>
       <ul class="flul">
         <li>One can sample from the uniform distribution $U(0,1)$ pretty decent computationally using <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Pseudorandom Number Generators</a>.</li>
         <li><b>Sampling by Transformation:</b> Given that $U \sim U(0,1)$ and $X\sim P_X$ with CDF $F(x)$, then
@@ -2374,7 +2377,107 @@
 
       <h2>Factor Graphs</h2>
       <ul class="flul">
-        <li></li>
+        <li><i>Switching from Directed to Undirected Graphs and vice versa:</i> Switching from one graph type to the other is in most cases not useful and leads to a loss of interesting / useful structure in the model. The two model types are instead suited for different settings, yet though there exist settings for which neither graph type is useful (<a class="link" target="_blank" href="https://youtu.be/fXD6KJB1U20?t=780">two-coins-one-bell-example</a>).</li>
+        <li><b>"Incompleteness" of Undirected and Directed Graphs:</b> Via pretty small toy examples one can already see, that neither undirected nor directed graphs provide a fully comprehensive tool set to model arbitrary settings. This observation can be stated more formally which can be seen in the <a class='link' target='_blank' href='https://youtu.be/fXD6KJB1U20?t=1015'>lecture</a>.</li>
+        <li><b>$\boldsymbol p$-Map:</b> Just for the nomenclature - A graph which encodes all conditional independence structures of a probability distribution and alle independence properties can be read of from the graph is called a <i>perfect match or $p$-map</i> for that probability distribution (e. g. undirected or directed linear or chain graphs for Markov Processes).</li>
+        <li><b>Factor Graph:</b> A factor graph is a <span class="tip">bipartite<span>Only edges between V and F not elements of F or V directly.</span> </span> graph $G=(V, F, E)$ of variables $v_i\in V$, factors $f_i \in F$ and edges $E$, such that each edge connects a factor to a variable. The represented probability distribution takes the form
+        <div class='scroll'>
+          \begin{align*}
+            p(x) = \prod_s f_s(x_s)\, .
+          \end{align*}
+        </div>
+        </li>
+        <li>The pictorial representation of a factor graph is not as important as the underlying algorithmic idea of the <b>sum-product algorithm</b>, which will be discussed below.</li>
+      </ul>
+
+
+      <h2>The Sum-Product Algorithm</h2>
+
+      <ul class="flul">
+        <li>The sum-product algorithm or sum-product algorithms are the algorithmic, computational approach on dealing with factor graphs to compute various properties like marginals from factor graph models.</li>
+        <li>
+          <b>Base Case: Markov Chains:</b> Assume a chain factor graph of discrete random variables $x_i$ which resembles
+          <div class='scroll'>
+            \begin{align*}
+              x_0 \ \textcolor{white}{\rule{2em}{0.1em}} \ \psi_{0,1} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_1 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ \dots 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_{i-1} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ \psi_{(i-1), i} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_{i} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ \psi_{i,(i+1)} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_{i+1} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ \dots 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_{n-1}
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ \psi_{(n-1), n} 
+                  \ \textcolor{white}{\rule{2em}{0.1em}} \ x_n \, ,
+            \end{align*}
+          </div>
+          and yields the joint probability density
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = \frac 1 Z \prod_{k=1}^n \psi_{(k-1), k}(x_{k-1}, x_k)\, .
+            \end{align*}
+          </div>
+          <ul>
+            <li>
+              <b>Marginal Distributions:</b> The marginal for a specific $x_i$ can then because of this factorization be rewritten as
+              <div class='scroll'>
+                \begin{align*}
+                  p(x_i) = \sum_{x_{\neq i}}p(x) &= 
+                  \frac 1 Z 
+                    \underbrace{\left[ \sum_{x_{i-1}} \psi_{(i-1), i}(x_{i-1}, x_i) \dots \left( \sum_{x_{1}} \psi_{1, 2}(x_{1}, x_2) \Big( \sum_{x_{0}} \psi_{0, 1}(x_{0}, x_1)\Big) \right) \right]}_{\mu_{\rightarrow}(x_i)} \cdot \\
+                  &\qquad \: \cdot 
+                    \underbrace{\left[ \sum_{x_{i+1}} \psi_{i, (i+1)}(x_i, x_{i+1}) \dots \left( \sum_{x_{n}} \psi_{(n-1), n}(x_{n-1}, x_n) \right) \right]}_{\mu_{\leftarrow}(x_i)} \\
+                  &= \frac 1 Z \mu_{\rightarrow}(x_i) \cdot \mu_{\leftarrow}(x_i)\, .
+                \end{align*}
+              </div>
+              In case of discrete $x_i$'s with $\abs{\supp x_i} = K$ the $\psi_{(l-1), l}$ can be viewed as $K\times K$ matrices and the calculation become matrix-vector products and summations only. The normalization constant for a marginal can therefore instead be written as
+              <div class='scroll'>
+                \begin{align*}
+                  Z = \sum_{x_i \in \supp x_i} \mu_{\rightarrow}(x_i)\cdot  \mu_{\leftarrow}(x_i)\, .
+                \end{align*}
+              </div>
+              The <b>messages</b> $\mu_{\leftarrow}(x_i)$ and $\mu_{\rightarrow}(x_i)$ can be also constructed recursively:
+              <div class='scroll'>
+                \begin{align*}
+                  \mu_{\cases{\rightarrow \\ \leftarrow}}(x_i) = \sum_{\cases{x_{i-1} \\ x_{i+1}}}
+                  \begin{cases}
+                    \psi_{(i-1), i} (x_{i-1}, x_i) \odot \mu_{ \leftarrow}(x_{i-1}) \\
+                    \psi_{i, (i+1)} (x_i, x_{i+1}) \odot \mu_{\rightarrow}(x_{i+1}) 
+                   \end{cases}\, ,
+                \end{align*}
+              </div>
+              where $\odot$ is an element-wise product, which is applied by element-wise multiplying the column $\mu_{ \leftarrow}(x_{i-1})$ with the columns of $\psi_{(i-1), i} (x_{i-1}, x_i)$ - analogous for the lower row of the equation. By storing these messages for each timestep the overall complexity for computing all marginals is $\mathcal O(n\cdot k^2)$.
+            </li>
+            <li>The previous example shows why the algorithm is called the sum-product algorithm (one has to compute sums over products). Other names are <b>forward-backward algorithm</b> and <b>message algorithm</b>.</li>
+            <li>
+              <b>Mode:</b> Another property of the joint distribution one might be interested in is its maximum, i. e. the joint mode. Note that the joint maximum is in general different from the joint of the maxima of all marginals, which is why this is no free gift from the marginals. As usual when maximizing functions we use the $\log$ to simplify calculations end leveraging the factorization of the joint one gets:
+              <div class='scroll'>
+                \begin{align*}
+                  \max_{x} p(x) &= \max_{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \max_{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) - \log(Z) \\
+                  \argmax{x} p(x) &= \argmax{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \argmax{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) \, .
+                \end{align*}
+              </div>
+              This again can be written as recursively. In the forward pass calculate the values and keep track of the argmaxes:
+              <div class='scroll'>
+                \begin{align*}
+                  \textsf{Init:} \ \ \mu_{x_0 \to f_{01}} &= 0 \\
+                  \mu_{\psi_{(i-1), i}\to x_i}(x_i) &= \max_{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
+                  \phi(x_i) &= \argmax{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
+                  \mu_{x_i \to \psi_{i, (i+1)}}(x_i) &= \mu_{\psi_{(i-1), i}\to x_i}(x_i) \, ,
+                \end{align*}
+              </div>
+              Where $\oplus$ is the analogous object to $\odot$. I the backward pass construct the likeliest joint stats via
+              <div class='scroll'>
+                \begin{align*}
+                  x_{i-1}^{\max} = \phi(x_i^\max)\, .
+                \end{align*}
+              </div>
+              This is also known as the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Viterbi_algorithm'>Viterbi Algorithm</a> (see a great video explaining this algorithm with an example by <a class='link' target='_blank' href='https://youtu.be/IqXdjdOgXPM'>ritvikmath on YouTube</a>.).
+            </li>
+          </ul>
+        </li> 
       </ul>
 
 
@@ -2391,7 +2494,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
