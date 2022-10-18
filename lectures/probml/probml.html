@@ -43,6 +43,7 @@
     \newcommand{\d}{{\mathrm d}}
     \newcommand{\var}{{\mathrm{Var}\,}}
     \newcommand{\supp}{{\mathrm{supp}\,}}
+    \newcommand{\ne}{{\mathrm{ne}\,}}
     \newcommand{\cases}[1]{{\begin{cases}#1\end{cases}}}
     \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
     \newcommand{\alignn}[1]{{\begin{align}\begin{split}#1\end{split}\end{align}}}
@@ -2391,12 +2392,13 @@
       </ul>
 
 
-      <h2>The Sum-Product Algorithm</h2>
-
+      <h2>Discrete Variables on Factor Graphs</h2>
       <ul class="flul">
-        <li>The sum-product algorithm or sum-product algorithms are the algorithmic, computational approach on dealing with factor graphs to compute various properties like marginals from factor graph models.</li>
         <li>
-          <b>Base Case: Markov Chains:</b> Assume a chain factor graph of discrete random variables $x_i$ which resembles
+          In the following part we derive the <i>sum-product algorithm</i> and the <i>max-sum / max-product algorithm</i> using the factor graph representation of a Markov chain for discrete random variables.
+        </li>
+        <li>
+          <b>Markov Chains as Factor Graphs:</b> Assume a chain factor graph of discrete random variables $x_i$ which resembles
           <div class='scroll'>
             \begin{align*}
               x_0 \ \textcolor{white}{\rule{2em}{0.1em}} \ \psi_{0,1} 
@@ -2419,65 +2421,83 @@
               p(x) = \frac 1 Z \prod_{k=1}^n \psi_{(k-1), k}(x_{k-1}, x_k)\, .
             \end{align*}
           </div>
-          <ul>
-            <li>
-              <b>Marginal Distributions:</b> The marginal for a specific $x_i$ can then because of this factorization be rewritten as
-              <div class='scroll'>
-                \begin{align*}
-                  p(x_i) = \sum_{x_{\neq i}}p(x) &= 
-                  \frac 1 Z 
-                    \underbrace{\left[ \sum_{x_{i-1}} \psi_{(i-1), i}(x_{i-1}, x_i) \dots \left( \sum_{x_{1}} \psi_{1, 2}(x_{1}, x_2) \Big( \sum_{x_{0}} \psi_{0, 1}(x_{0}, x_1)\Big) \right) \right]}_{\mu_{\rightarrow}(x_i)} \cdot \\
-                  &\qquad \: \cdot 
-                    \underbrace{\left[ \sum_{x_{i+1}} \psi_{i, (i+1)}(x_i, x_{i+1}) \dots \left( \sum_{x_{n}} \psi_{(n-1), n}(x_{n-1}, x_n) \right) \right]}_{\mu_{\leftarrow}(x_i)} \\
-                  &= \frac 1 Z \mu_{\rightarrow}(x_i) \cdot \mu_{\leftarrow}(x_i)\, .
-                \end{align*}
-              </div>
-              In case of discrete $x_i$'s with $\abs{\supp x_i} = K$ the $\psi_{(l-1), l}$ can be viewed as $K\times K$ matrices and the calculation become matrix-vector products and summations only. The normalization constant for a marginal can therefore instead be written as
-              <div class='scroll'>
-                \begin{align*}
-                  Z = \sum_{x_i \in \supp x_i} \mu_{\rightarrow}(x_i)\cdot  \mu_{\leftarrow}(x_i)\, .
-                \end{align*}
-              </div>
-              The <b>messages</b> $\mu_{\leftarrow}(x_i)$ and $\mu_{\rightarrow}(x_i)$ can be also constructed recursively:
-              <div class='scroll'>
-                \begin{align*}
-                  \mu_{\cases{\rightarrow \\ \leftarrow}}(x_i) = \sum_{\cases{x_{i-1} \\ x_{i+1}}}
-                  \begin{cases}
-                    \psi_{(i-1), i} (x_{i-1}, x_i) \odot \mu_{ \leftarrow}(x_{i-1}) \\
-                    \psi_{i, (i+1)} (x_i, x_{i+1}) \odot \mu_{\rightarrow}(x_{i+1}) 
-                   \end{cases}\, ,
-                \end{align*}
-              </div>
-              where $\odot$ is an element-wise product, which is applied by element-wise multiplying the column $\mu_{ \leftarrow}(x_{i-1})$ with the columns of $\psi_{(i-1), i} (x_{i-1}, x_i)$ - analogous for the lower row of the equation. By storing these messages for each timestep the overall complexity for computing all marginals is $\mathcal O(n\cdot k^2)$.
-            </li>
-            <li>The previous example shows why the algorithm is called the sum-product algorithm (one has to compute sums over products). Other names are <b>forward-backward algorithm</b> and <b>message algorithm</b>.</li>
-            <li>
-              <b>Mode:</b> Another property of the joint distribution one might be interested in is its maximum, i. e. the joint mode. Note that the joint maximum is in general different from the joint of the maxima of all marginals, which is why this is no free gift from the marginals. As usual when maximizing functions we use the $\log$ to simplify calculations end leveraging the factorization of the joint one gets:
-              <div class='scroll'>
-                \begin{align*}
-                  \max_{x} p(x) &= \max_{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \max_{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) - \log(Z) \\
-                  \argmax{x} p(x) &= \argmax{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \argmax{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) \, .
-                \end{align*}
-              </div>
-              This again can be written as recursively. In the forward pass calculate the values and keep track of the argmaxes:
-              <div class='scroll'>
-                \begin{align*}
-                  \textsf{Init:} \ \ \mu_{x_0 \to f_{01}} &= 0 \\
-                  \mu_{\psi_{(i-1), i}\to x_i}(x_i) &= \max_{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
-                  \phi(x_i) &= \argmax{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
-                  \mu_{x_i \to \psi_{i, (i+1)}}(x_i) &= \mu_{\psi_{(i-1), i}\to x_i}(x_i) \, ,
-                \end{align*}
-              </div>
-              Where $\oplus$ is the analogous object to $\odot$. I the backward pass construct the likeliest joint stats via
-              <div class='scroll'>
-                \begin{align*}
-                  x_{i-1}^{\max} = \phi(x_i^\max)\, .
-                \end{align*}
-              </div>
-              This is also known as the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Viterbi_algorithm'>Viterbi Algorithm</a> (see a great video explaining this algorithm with an example by <a class='link' target='_blank' href='https://youtu.be/IqXdjdOgXPM'>ritvikmath on YouTube</a>.).
-            </li>
-          </ul>
-        </li> 
+          For the classical Markov Chain we have $\psi_{(k-1), k}(x_{k-1}, x_k) = p(x_k\vert x_{k-1})$.
+          <li><b>Marginal Distributions:</b>
+            <ul>
+              <li>
+                The marginal for a specific $x_i$ can then because of this factorization be rewritten as
+                <div class='scroll'>
+                  \begin{align*}
+                    p(x_i) = \sum_{x_{\neq i}}p(x) &= 
+                    \frac 1 Z 
+                      \underbrace{\left[ \sum_{x_{i-1}} \psi_{(i-1), i}(x_{i-1}, x_i) \dots \left( \sum_{x_{1}} \psi_{1, 2}(x_{1}, x_2) \Big( \sum_{x_{0}} \psi_{0, 1}(x_{0}, x_1)\Big) \right) \right]}_{\mu_{\rightarrow}(x_i)} \cdot \\
+                    &\qquad \: \cdot 
+                      \underbrace{\left[ \sum_{x_{i+1}} \psi_{i, (i+1)}(x_i, x_{i+1}) \dots \left( \sum_{x_{n}} \psi_{(n-1), n}(x_{n-1}, x_n) \right) \right]}_{\mu_{\leftarrow}(x_i)} \\
+                    &= \frac 1 Z \mu_{\rightarrow}(x_i) \cdot \mu_{\leftarrow}(x_i)\, .
+                  \end{align*}
+                </div>
+              </li>
+              <li>
+                In case of discrete $x_i$'s with $\abs{\supp x_i} = K$ the $\psi_{(l-1), l}$ can be viewed as $K\times K$ matrices and the calculation become matrix-vector products and summations only. The normalization constant for a marginal can therefore instead be written as
+                <div class='scroll'>
+                  \begin{align*}
+                    Z = \sum_{x_i \in \supp x_i} \mu_{\rightarrow}(x_i)\cdot  \mu_{\leftarrow}(x_i)\, .
+                  \end{align*}
+                </div>
+              </li>
+              <li>
+                The <b>messages</b> $\mu_{\leftarrow}(x_i)$ and $\mu_{\rightarrow}(x_i)$ can be also constructed recursively:
+                <div class='scroll'>
+                  \begin{align*}
+                    \mu_{\cases{\rightarrow \\ \leftarrow}}(x_i) = \sum_{\cases{x_{i-1} \\ x_{i+1}}}
+                    \begin{cases}
+                      \psi_{(i-1), i} (x_{i-1}, x_i) \odot \mu_{ \leftarrow}(x_{i-1}) \\
+                      \psi_{i, (i+1)} (x_i, x_{i+1}) \odot \mu_{\rightarrow}(x_{i+1}) 
+                    \end{cases}\, ,
+                  \end{align*}
+                </div>
+                where $\odot$ is an element-wise product, which is applied by element-wise multiplying the column $\mu_{ \leftarrow}(x_{i-1})$ with the columns of $\psi_{(i-1), i} (x_{i-1}, x_i)$ - analogous for the lower row of the equation. By storing these messages for each timestep the overall complexity for computing all marginals is $\mathcal O(n\cdot k^2)$.
+              </li>
+              <li>
+                The previous example shows why the algorithm is called the <b>sum-product algorithm</b> (one has to compute sums over products). Other names are <b>forward-backward algorithm</b> and <b>message algorithm</b>.
+              </li>
+            </ul>
+          </li>
+          <li><b>Maximum of the Joint (Mode):</b> 
+            <ul>
+              <li>
+                Another property of the joint distribution one might be interested in is its maximum, i. e. the joint mode. Note that the joint maximum is in general different from the joint of the maxima of all marginals, which is why this is no free gift from the marginals. As usual when maximizing functions we use the $\log$ to simplify calculations end leveraging the factorization of the joint one gets:
+                <div class='scroll'>
+                  \begin{align*}
+                    \max_{x} p(x) &= \max_{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \max_{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) - \log(Z) \\
+                    \argmax{x} p(x) &= \argmax{x_0,\, x_1}\Bigg( \log \psi_{0,1}(x_0, x_1) + \Big( \dots + \argmax{x_n} \log \psi_{(n-1), n} (x_{n-1}, x_n) \Big) \Bigg) \, .
+                  \end{align*}
+                </div>
+              </li> 
+              <li>
+                This again can be written as recursively. In the forward pass calculate the values and keep track of the argmaxes:
+                <div class='scroll'>
+                  \begin{align*}
+                    \textsf{Init:} \ \ \mu_{x_0 \to f_{01}} &= 0 \\
+                    \mu_{\psi_{(i-1), i}\to x_i}(x_i) &= \max_{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
+                    \phi(x_i) &= \argmax{x_{i-1}} \Big( \log \psi_{(i-1), i}(x_{i-1}, x_i)  \oplus  \mu_{x_{i-1} \to \psi_{(i-1), i}}(x_{i-1})  \Big) \\
+                    \mu_{x_i \to \psi_{i, (i+1)}}(x_i) &= \mu_{\psi_{(i-1), i}\to x_i}(x_i) \, ,
+                  \end{align*}
+                </div>
+                where $\oplus$ is the analogous object to $\odot$. 
+              </li>
+              <li>This is sometimes called the <b>max-product</b> or <b>max-sum algorithm</b> depending on whether the log-version or "plain"-version is used.</li>
+              <li> 
+                I the backward pass construct the likeliest joint stats via
+                <div class='scroll'>
+                  \begin{align*}
+                    x_{i-1}^{\max} = \phi(x_i^\max)\, .
+                  \end{align*}
+                </div>
+                This is also known as the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Viterbi_algorithm'>Viterbi Algorithm</a> (see a great video explaining this algorithm with an example by <a class='link' target='_blank' href='https://youtu.be/IqXdjdOgXPM'>ritvikmath on YouTube</a>.).
+              </li> 
+            </ul>
+          </li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -2515,6 +2535,49 @@
       </ul>
 
 
+      <h2>General Variables on Factor Graphs</h2>
+      <ul class="flul">
+        <li>In this part the discussion on how to perform inference using Factor Graph gets extended to first general (not only discrete) variables and second more general graph structures namely trees.</li>
+        <li><b>Trees</b>
+          <ul>
+            <li>An <i>undirected graph</i> is a tree if there is exactly one path between any pair of nodes (loop-free graphs).</li>
+            <li>A <i>directed graph</i> is a tree if there is only one node which has no parent (the <i>root</i>), and all other nodes have only one parent.</li>
+            <li>A directed graph such that every pair of nodes is connected by one and only one path is called a <i>polytree</i>.</li>
+          </ul>
+        </li>
+        <li>
+          <b>Joints on Trees:</b> Assume a tree-structured factor graph over $x=(x_1,\dots x_n)$. Pick any variable $y=x_i, i \in \{1,\dots, n\}$ because of the tree structure one can write 
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = \prod_{s\:\in \:\ne (y)} F_s (y, x_s)\, ,
+            \end{align*}
+          </div>
+          where $\ne y$ is the set of neighbor nodes of $y$ and $F_s$ is the sub-graph of nodes $x_s$ other than $y$ that are connected to the neighbor $s$.
+        </li>
+        <li>
+          <b>Marginals on Trees:</b> The marginal of $y$ can be rewritten using the factorization of the graph:
+          <div class='scroll'>
+            \begin{align*}
+              p(y) = \underset{x\setminus y}{\sumint} \: p(x) = \prod_{s\:\in\: \ne (y)} \underbrace{\left( \underset{x_s}{\sumint} F_s (y, x_s) \right)}_{=:\mu_{f_s\to y}(y)} \, ,
+            \end{align*}
+          </div>
+          i. e. the marginal is the product of <b>incoming messages</b> $\mu_{f_s\to y}(y)$ from the factors connected to $x$.
+        </li>
+        <li>
+          This notion can be extended to all subsequent sub-graphs beginning at the neighbors of $y$. Again this yields the recursion relation:
+          <div class='scroll'>
+            \begin{align*}
+              \mu_{f_s\to y}(y) = \underset{x_1, \dots , x_m}{\sumint} f_s(y, x_1,\dots , x_m) \prod_{i\:\in \: \ne (f_s) \setminus y} \mu_{f_s\to x_i}(x_i)
+            \end{align*}
+          </div>
+        </li>
+      </ul>
+
+
+
+
+
+
       <br> <br>
 
 
@@ -2528,7 +2591,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
