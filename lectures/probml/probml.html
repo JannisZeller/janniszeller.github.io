@@ -2564,12 +2564,19 @@
           i. e. the marginal is the product of <b>incoming messages</b> $\mu_{f_s\to y}(y)$ from the factors connected to $x$.
         </li>
         <li>
-          This notion can be extended to all subsequent sub-graphs beginning at the neighbors of $y$. Again this yields the recursion relation:
+          <b>Generalized Sum-Product Algorithm:</b> This notion can be extended to all subsequent sub-graphs beginning at the neighbors of $y$. Again this yields the recursion relation:
           <div class='scroll'>
             \begin{align*}
-              \mu_{f_s\to y}(y) = \underset{x_1, \dots , x_m}{\sumint} f_s(y, x_1,\dots , x_m) \prod_{i\:\in \: \ne (f_s) \setminus y} \mu_{f_s\to x_i}(x_i)
+              \mu_{f_s\to y}(y) = \underset{x_1, \dots , x_m}{\sumint} f_s(y, x_1,\dots , x_m) \prod_{i\:\in \: \ne (f_s) \setminus y} \mu_{x_i\to f_s}(x_i)\, ,
             \end{align*}
           </div>
+          where the variable-to-factor messages $\mu_{x_i\to f_s}(x_i)$ can be calculated using:
+          <div class='scroll'>
+            \begin{align*}
+              \mu_{x_i\to f_s}(x_i) = \prod_{\ell \: \in \: \ne(x_i)\setminus f_s} \mu_{f_\ell \to x_i}(x_i)\, .
+            \end{align*}
+          </div>
+          The initial / start points (called <b>leafs</b>) of this recursion are either variable or factor nodes which yield $\mu_{x\to f}(x) := 1$ and $\mu_{f\to x}(x) := f(x)$.
         </li>
       </ul>
 
@@ -2581,7 +2588,7 @@
       <br> <br>
 
 
-      <a class="link" target="_blank" href="https://youtu.be/VHLvOHwvbzs">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/VHLvOHwvbzs?t=2977">Current Video</a>
 
 
     </div> <!-- content -->
@@ -2591,7 +2598,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
