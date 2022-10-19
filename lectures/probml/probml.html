@@ -2588,8 +2588,46 @@
               \mu_{x_i\to f_s}(x_i) = \prod_{\ell \: \in \: \ne(x_i)\setminus f_s} \mu_{f_\ell \to x_i}(x_i)\, .
             \end{align*}
           </div>
-          The initial / start points (called <b>leafs</b>) of this recursion are either variable or factor nodes which yield $\mu_{x\to f}(x) := 1$ and $\mu_{f\to x}(x) := f(x)$.
+          The initial / start points (called <b>leafs</b>) of this recursion are either variable or factor nodes which yield $\mu_{x\to f}(x) := 1$ and $\mu_{f\to x}(x) := f(x)$. When reaching the root variable $y$ one might have to normalize.
         </li>
+        <li><b>Constructing all Marginals:</b> To construct all marginals choose any variable as root and calculate its marginal. Afterwards, send messages from this root towards the leafs, and thereby calculate the remaining marginals. This is <b>linear</b> in the graph size.</li>
+        <li><b>Including observed Data:</b> Assume that ina tree splits in a set of <i>observed</i> variables $x^o$ and hidden variables $x^h$. To include observations in the inference algorithm for constructing marginals, include a factor $f(x^o_i) = \delta (x_i^o-\hat x_i^o)$ for those variables where $\delta$ is the Kronecker Delta in the discrete case and the Dirac Delta in the continuous case. The sum-product algorithm then yields the <i>posterior marginal distributions</i> because $p(x^o, x^h)\propto p(x^h\vert x^o)$.</li>
+        <li>
+          <b>Non-Tree Graphs:</b> The sum-product algorithm is specifically constructed for tree-like factor graphs. Inference on non-tree graphs is not as much generalizable as on tree graphs. A common trick is the following <b>junction tree algorithm</b>: 
+          <ul>
+            <li>The sum-product algorithm does not assume that the variables are one-dimensional.</li>
+            <li>For non-tree graphs: subsume the variables which break the tree structure into join sets of variables and cliques.</li>
+            <li>Ensure that every clique that is a sub-set of another clique ends up in that clique.</li>
+          </ul>
+          The resulting sum-product algorithm is exponentially complex in the number of dimensions of the largest variable and linear in the size of the tree.
+        </li>
+        <li><i>Beyond Marginals:</i> Computing the full joint PDF in a factor graph setting is still of exponential complexity. Instead one concentrates on the maximum (mode) of the joint.</li>
+        <li>
+          <b>MAP-Mode:</b> Yet again pretty analogous to the Markov Chain factor graph the mode of the joint distribution of a <i>tree</i> factor graph can be computed by using the <b>max-sum / max-product algorithm:</b>
+          <ul>
+            <li>Choose any $x_i$ as the root. Then start at lead nodes and use the <i>same initializations as for the sum-product algorithm.</i></li>
+            <li>
+              Pass messages from leaves towards the root:
+              <div class='scroll'>
+                \begin{align*}
+                  \mu_{f_\ell \to x_j}(x_j) &= \max_{x_{\ell j}} f_\ell (x_j, x_{\ell j}) \prod_{i\: \in \: \{\ell j\} = \ne (f_\ell)\setminus x_j} \mu_{x_i \to f_\ell}(x_i)\, , \\ 
+                  \mu_{x_j \to f_\ell}(x_j) &= \prod_{i\: \in \: \ne (x_j)\setminus f_\ell} \mu_{f_i \to x_j}(x_j)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Because though not only the maximum value itself is of interest but especially the identity of the maximum, one also has to keep track of:
+              <div class='scroll'>
+                \begin{align*}
+                  \phi(x_j) = \argmax{x_{\ell j}} f_\ell(x_j, x_{\ell j}) \prod_{i\: \in \: \ne (f_\ell)\setminus x_j} \mu_{x_i \to f_\ell}(x_i)
+                \end{align*}
+              </div>
+            </li>
+            <li>Once the root has messages from all neighbors, pass messages from the root towards the leafs. At each factor node set $x_{\ell j}^{\mathrm{max}} = \phi(x_j)$.</li>
+          </ul>
+          This algorithm can be analogous to the Markov Chain case be transformed by replacing the product with sums and putting the $f_\ell$'s in logarithms - also for the initializations.
+        </li>
+        <li>Max-Sum is an example of a <i>dynamic programming</i> algorithm.</li>
       </ul>
 
 
@@ -2610,7 +2648,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
