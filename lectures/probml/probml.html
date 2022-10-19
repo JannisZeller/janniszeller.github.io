@@ -69,7 +69,7 @@
 
       <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1>
       <p>
-        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" ref="https://www.youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd" target="_blank">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>. I personally also found the <a class="link" ref="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/index.html" target="_blank">Statistics 260 Lecture by Michael Jordan</a> at Berkeley EECS helpful, which I last checked 11-10-2022 (European format).
+        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" ref="https://youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd" target="_blank">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>. I personally also found the <a class="link" ref="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/index.html" target="_blank">Statistics 260 Lecture by Michael Jordan</a> at Berkeley EECS helpful, which I last checked 11-10-2022 (European format).
       </p>
       <p>
         Latest Changes:  <span id="date"></span> (European format).
@@ -717,34 +717,35 @@
 
       <h2>Gibbs Sampling</h2>
       <ul class="flul">
-        <li><b>Gibbs Sampling:</b> In Gibbs Sampling one assumes that for a multivariate RV $x=(x_1,...,x_n)$ there exists index sets $I \subset \{1,...,n\}=:N$ for which:
+        <li>
+          <b>Gibbs Sampling:</b> In Gibbs Sampling one assumes that for a multivariate RV $x=(x_1,...,x_n)$ there exists index sets $I \subset \{1,...,n\}=:N$ for which:
           <div class='scroll'>
             \begin{align*}
             x_t \leftarrow x_{t-1}; \quad x_{t,I} \sim p(x_{t, I} \vert x_{t, N\setminus I})\, .
             \end{align*}
           </div>
+          The algorithm then looks like:
+          <ol>
+            <li>Given a current sample instance $x_t$, draw a <i>proposal</i> $x'\sim q(x' \vert x_t)$ from
+              <div class='scroll'>
+                \begin{align*}
+                q(x'\vert x_t) = \delta(x'_{N\setminus I} - x_{t, N\setminus I})\cdot p(x_i'\vert x_{t, N\setminus I})
+                \end{align*}
+              </div>
+            </li>
+            <li>Use the assumption about $x_{t, I}$ to calculate
+              <div class='scroll'>
+                \begin{align*}
+                p(x') = p(x_I'\vert x'_{N\setminus I}) \cdot p(x_{N\setminus I}')=p(x_I'\vert x_{t, N\setminus I}) \cdot p(x_{t, N\setminus I}) \, ,
+                \end{align*}
+              </div>
+              where the latter equality holds because we only update $x_I$ in this step.
+            </li>
+            <li>Plugging everything in the formula for $a$ of the Metropolis-Hastings algorithm and using the properties of the $\delta$-distribution $\delta(a-b)=\delta(b-a)$ one observes that $a=1$ always holds, thus the update is always executed.</li>
+            <li>Continue with the rest of $N\setminus I$ and add $x'$ to the sample when all $N$ indices have been updated.</li>
+          </ol>
         </li>
-        The algorithm then looks like:
-        <ol>
-          <li>Given a current sample instance $x_t$, draw a <i>proposal</i> $x'\sim q(x' \vert x_t)$ from
-            <div class='scroll'>
-              \begin{align*}
-              q(x'\vert x_t) = \delta(x'_{N\setminus I} - x_{t, N\setminus I})\cdot p(x_i'\vert x_{t, N\setminus I})
-              \end{align*}
-            </div>
-          </li>
-          <li>Use the assumption about $x_{t, I}$ to calculate
-            <div class='scroll'>
-              \begin{align*}
-              p(x') = p(x_I'\vert x'_{N\setminus I}) \cdot p(x_{N\setminus I}')=p(x_I'\vert x_{t, N\setminus I}) \cdot p(x_{t, N\setminus I}) \, ,
-              \end{align*}
-            </div>
-            where the latter equality holds because we only update $x_I$ in this step.
-          </li>
-          <li>Plugging everything in the formula for $a$ of the Metropolis-Hastings algorithm and using the properties of the $\delta$-distribution $\delta(a-b)=\delta(b-a)$ one observes that $a=1$ always holds, thus the update is always executed.</li>
-          <li>Continue with the rest of $N\setminus I$ and add $x'$ to the sample when all $N$ indices have been updated.</li>
-        </ol>
-        In practice this resembles updating all the dimensions after each other and adding a new point to the sample when every dimension has been updated. To work well, it is necessary, to align the PDF as much to the axes as possible.
+        <li>In practice this resembles updating all the dimensions after each other and adding a new point to the sample when every dimension has been updated. To work well, it is necessary, to align the PDF as much to the axes as possible.</li>
       </ul>
 
 
@@ -2630,6 +2631,35 @@
         <li>Max-Sum is an example of a <i>dynamic programming</i> algorithm.</li>
       </ul>
 
+      
+      <h2>Topic Modelling</h2>
+      <ul class="flul">
+        <li>"Disclaimer": For the origins of Topic Modelling also have a look at <a class='link' target='_blank' href='https://www.cs.columbia.edu/~blei/papers/Blei2012.pdf'>"Blei (2012): Probabilistic Topic Models"</a>. I have linked a free access link here the actual DOI is <a class='link' target='_blank' href='https://doi.org/10.1145/2133806.2133826'>10.1145/2133806.2133826</a>.</li>
+        <li><b>"Goal":</b> Infer large and important topics in the history of mankind.</li>
+        <li>
+          <b>Dataset:</b> "The State of the Union" (SotU) Speeches Dataset is composed of the state of the union speeches of the USA-presidents from 1790 till today. There are some nuances about this data regarding time and used media which will be addressed later on. Some key dates:
+          <ul>
+            <li>$D=231$ documents</li>
+            <li>Individual document length of $I_d \sim 10^3$ words.</li>
+            <li>$V \sim 10\, 000$ words in vocabulary.</li>
+          </ul>
+        </li>
+        <li><b>Task:</b> Find <b>topics</b> of US history over time. This can be regarded as an unsupervised dimensionality reduction task (reducing high dimensional collections of words to lower dimensional collections of topics).</li>
+        <li>First some common simplifications as stop word removal is applied.</li>
+        <li>The model we are going to construct (i. e. the Topic Model in its base-configuration) neglects the order of words. It is therefore a <b>Bag of Words</b> model, which allows to represent the data as a word-count matrix of shape $D\times V$.</li>
+        <li>
+          A <i>first approach</i> is to try to conceptually "decompose" the word-count matrix $X$ into a $K\times D$ document-topic matrix $Q$ and a $V\times K$ topic-word matrix $U$, such that
+          <div class='scroll'>
+            \begin{align*}
+              X = Q U^T\, ,
+            \end{align*}
+          </div>
+          where $Q_{dt}$ represents the amount topic $t$ contributes to document $d$ and $U_{vk}$ represents the "bonding power" of word $v$ to topic $k$.
+        </li>
+        <li>
+          <b>Trying a Principle Component Analysis (PCA):</b> The framed dimensionality reduction task might be suitable for a PCA approach, which is discussed here preliminary.
+        </li>
+      </ul>
 
 
 
@@ -2638,7 +2668,7 @@
       <br> <br>
 
 
-      <a class="link" target="_blank" href="https://youtu.be/9GsPsDW4QKQ">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/9GsPsDW4QKQ?t=2056">Current Video</a>
 
 
     </div> <!-- content -->
