@@ -2378,15 +2378,27 @@
 
       <h2>Factor Graphs</h2>
       <ul class="flul">
-        <li><i>Switching from Directed to Undirected Graphs and vice versa:</i> Switching from one graph type to the other is in most cases not useful and leads to a loss of interesting / useful structure in the model. The two model types are instead suited for different settings, yet though there exist settings for which neither graph type is useful (<a class="link" target="_blank" href="https://youtu.be/fXD6KJB1U20?t=780">two-coins-one-bell-example</a>).</li>
+        <li><b>From Directed to Undirected:</b> In an undirected graph we must assure that cliques, i. e. sets of $x_i$'s that appear in a shared factor - explicitly terms of the kind $p(x_a\vert x_b,x_c,\dots)$ - must be fully connected. Therefore switching from a directed to an undirected graph that <i>can</i> represent the same probability distribution one need to drop the arrows and in case of multiple parents, connect the parents by an edge (this is called <i>moralization</i>, which is a term that might be worth to be changed in the 21st century though...).</li>
+        <li><b>From Undirected to Directed:</b> Switching from undirected to directed graphs is equivalent to choose a specific conditional independence structure and joint distribution, by deciding on directions (arrows) of the edges.</li>
+        <li><b>Do not actually try to switch types:</b> Switching from one graph type to the other is in most cases not useful and leads to a loss of interesting / useful structure in the model. The two model types are instead suited for different settings, yet though there exist settings for which neither graph type is useful (<a class="link" target="_blank" href="https://youtu.be/fXD6KJB1U20?t=780">two-coins-one-bell-example</a>). <br>
+        Nevertheless it is a necessary skill to be able to switch between the graph types, therefore:
         <li><b>"Incompleteness" of Undirected and Directed Graphs:</b> Via pretty small toy examples one can already see, that neither undirected nor directed graphs provide a fully comprehensive tool set to model arbitrary settings. This observation can be stated more formally which can be seen in the <a class='link' target='_blank' href='https://youtu.be/fXD6KJB1U20?t=1015'>lecture</a>.</li>
         <li><b>$\boldsymbol p$-Map:</b> Just for the nomenclature - A graph which encodes all conditional independence structures of a probability distribution and alle independence properties can be read of from the graph is called a <i>perfect match or $p$-map</i> for that probability distribution (e. g. undirected or directed linear or chain graphs for Markov Processes).</li>
-        <li><b>Factor Graph:</b> A factor graph is a <span class="tip">bipartite<span>Only edges between V and F not elements of F or V directly.</span> </span> graph $G=(V, F, E)$ of variables $v_i\in V$, factors $f_i \in F$ and edges $E$, such that each edge connects a factor to a variable. The represented probability distribution takes the form
-        <div class='scroll'>
-          \begin{align*}
-            p(x) = \prod_s f_s(x_s)\, .
-          \end{align*}
-        </div>
+        <li>
+          <b>Factor Graph:</b> A factor graph is a <span class="tip">bipartite<span>Only edges between V and F not elements of F or V directly.</span> </span> graph $G=(V, F, E)$ of variables $v_i\in V$, factors $f_i \in F$ and edges $E$, such that each edge connects a factor to a variable. The represented probability distribution takes the form
+          <div class='scroll'>
+            \begin{align*}
+              p(x) = \prod_s f_s(x_s)\, .
+            \end{align*}
+          </div>
+          In the pictorial view variables are represented by circles, functions by boxes.
+        </li>
+        <li>
+          <b>Constructing Factor Graphs:</b> To switch from a directed or undirected graph to a factor graph do the following:
+          <ul>
+            <li><b>From Directed Graph:</b> Draw a circle for each variable and a circle for each (conditional) PDF. Note that also for the last parent nodes (which have no parents) one needs to include a box representing their marginal PDF. The (conditional) PDFs take the place of the $f$'s. The extended notion using large boxes for iid processes stays the same and (hyper-) parameters enter their corresponding function node.</li>
+            <li><b>From Undirected Graph:</b> For each clique connect all clique member-variables by a function node.</li>
+          </ul>
         </li>
         <li>The pictorial representation of a factor graph is not as important as the underlying algorithmic idea of the <b>sum-product algorithm</b>, which will be discussed below.</li>
       </ul>
@@ -2598,7 +2610,7 @@
 
   <script>
     // Development switch
-    var devel = true;
+    var devel = false;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
