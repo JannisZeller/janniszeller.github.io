@@ -2016,7 +2016,7 @@
         where only the parameters $\theta$ might change to $\tilde \theta$.
         </li>
         <li>E. g. the Gaussian Distribution is a conjugate prior of itself and the Beta-Distribution is conjugate to the Bernoulli Distribution.</li>
-        <li><b>The Dirichlet Prior:</b> The Dirichlet Distribution is the conjugate prior for a categorical experiment in the following sense. Given $K\in \N$ categories which occur with the probabilities $f_k$. Assume a dataset $X\in \{0,\dots, K\}^n$ is given, i. e. a set of $n$ outcomes of an experiment with these probabilities. Let
+        <li id="dirichlet_prior" class="cr"><b>The Dirichlet Prior:</b> The Dirichlet Distribution is the conjugate prior for a categorical experiment in the following sense. Given $K\in \N$ categories which occur with the probabilities $f_k$. Assume a dataset $X\in \{0,\dots, K\}^n$ is given, i. e. a set of $n$ outcomes of an experiment with these probabilities. Let
           <div class='scroll'>
             \begin{align*}
               n_k := \big\vert \{ x_i \in X \vert x_i = k \} \big\vert\, , 
@@ -2047,6 +2047,7 @@
             \end{align*}
           </div>
         </li>
+        See the Dirichlet Prior in action later when building <a href="#topic_models_dirichlet_prio">Topic Models</a>.
         <li><b>Conjugate Prior for Gaussian Variance:</b> Assume the likelihood
           <div class='scroll'>
             \begin{align*}
@@ -2721,9 +2722,98 @@
       </ul>
 
 
-      <h2>Topic Models II - Latent Dirichlet Allocation</h2>
+      <h2>Topic Modelling II - Latent Dirichlet Allocation</h2>
       <ul class="flul">
-        <li></li>
+        <li>In the following part the Latent Dirichlet Allocation (LDA) model is described which is the typical algorithm one has in mind, when talking about topic models.</li>
+        <li>
+          <b>Generative Process of LDA:</b> To draw $I_d \in \N$ words $w_{di} \in [1,\dots, V]$ of document $d\in [1,\dots , D]$:
+          <ul>
+            <li>
+              Draw topic assignments (each word $i$ in document $d$ is matched to one topic $c_{di}$)
+              <div class='scroll'>
+                \begin{align*}
+                  c_{di} = [c_{di1},\dots, c_{diK}] \in \{0; \ 1\}^K, \qquad \sum_k x_{dik} = 1 \qquad \textsf{(one-hot-encoding)}
+                \end{align*}
+              </div>
+              of word $w_{id}$ from
+              <div class='scroll'>
+                \begin{align*}
+                  C \in \{0; \ 1\}^{D\times I_d \times K} \quad \textsf{with} \quad p(C\vert \Pi) = \prod_{d=1}^D\prod_{i=1}^{I_d}\prod_{k=1}^K \pi_{dk}^{c_{dik}}\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Draw a word $w_{di}$ from
+              <div class='scroll'>
+                \begin{align*}
+                  p(w_{di} = v \vert c_{di},\ \Theta) = \prod_k \theta_{kv}^{c_{dik}}
+                \end{align*}
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li class="cr" id="topic_models_dirichlet_prio">
+          <b>Introducing Priors:</b> We already know that we want discrete, sparse probability distributions. We already know, that a conjugate prior for this desired behavior is the <a href="#dirichlet_prior">Dirichlet Prior</a>. The full generative process including the priors then has the following steps to drat $I_d$ words $w_{di} \in [1,\dots , V]$ of document $d\in [1,\dots , D]$:
+          <ul>
+            <li>
+              Draw $K$ topic distributions $\theta_k$ over $V$ words from (Topic-Word-Distribution)
+              <div class='scroll'>
+                \begin{align*}
+                  p(\Theta\vert \beta) = \prod_{k=1}^K \mathcal D(\theta_k;\ \beta_k)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Draw $D$ document distributions $\pi_d$ over $K$ topics from (Document-Topic-Distribution)
+              <div class='scroll'>
+                \begin{align*}
+                  p(\Theta\vert \alpha) = \prod_{d=1}^D \mathcal D(\pi_d;\ \alpha_d)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Draw topic assignments $c_{dik}$ of word $w_{di}$
+              <div class='scroll'>
+                \begin{align*}
+                  p(C\vert \Pi) = \prod_{d=1}^D\prod_{i=1}^{I_d}\prod_{k=1}^K \pi_{dk}^{c_{dik}}\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Draw a word $w_{di}$ from
+              <div class='scroll'>
+                \begin{align*}
+                  p(w_{di} = v \vert c_{di},\ \Theta) = \prod_k \theta_{kv}^{c_{dik}}\, .
+                \end{align*}
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <b>Notation</b>: Let
+          <div class='scroll'>
+            \begin{align*}
+              n_{dkv} = \# \big\{i\vert w_{di}=v, \ c_{idk}=1 \big\}\, ,
+            \end{align*}
+          </div>
+          i. e. $n_{dkv}$ counts how often the word $v$ appears in the topic $k$ and document $d$. Then define:
+          <div class='scroll'>
+            \begin{align*}
+              n_{dk\boldsymbol :} := [n_{dk1}, \dots, n_{dkV}] \quad \textsf{and} \quad n_{dk \boldsymbol \cdot } = \sum_vn_{dkv}\, ,
+            \end{align*}
+          </div>
+          where in principle each of the indexes can be used with the colon $:$ and dot $\cdot$ notation.
+        </li>
+        <li>
+          <b>Joint Probability:</b> Due to the factorization and construction of the model (also see the corresponding DAG in the <a class="link" target="_blank" href="https://youtu.be/z2q7LhsnWNg?t=2291">lecture</a>) the joint probability is given by (using the notation from above):
+          <div class='scroll'>
+            \begin{align*}
+              p(C, \Pi, \Theta, W) &= p(\Phi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
+              &= \left( \prod_{d=1}^D \frac{\Gamma \left(\sum_k \alpha_{dk}\right)}{\prod_k \Gamma (\alpha_{dk})} \prod_{k=1}^K \pi_{dk}^{\alpha_{dk}-1+n_{dk\boldsymbol \cdot}} \right) \cdot 
+                \left( \prod_{k=1}^K \frac{\Gamma \left(\sum_v \beta_{kv}\right)}{\prod_v \Gamma (\beta_{kv})} \prod_{v=1}^V \theta_{kv}^{\beta_{kv}-1+n_{\boldsymbol \cdot kv}} \right)
+            \end{align*}
+          </div>
+        </li>
       </ul>
 
 
@@ -2741,7 +2831,7 @@
       <br> <br>
 
 
-      <a class="link" target="_blank" href="https://youtu.be/9GsPsDW4QKQ?t=2056">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/z2q7LhsnWNg?t=3121">Current Video</a>
 
 
     </div> <!-- content -->
