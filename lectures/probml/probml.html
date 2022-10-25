@@ -2728,23 +2728,25 @@
               Draw topic assignments (each word $i$ in document $d$ is matched to one topic $c_{di}$)
               <div class='scroll'>
                 \begin{align*}
-                  c_{di} = [c_{di1},\dots, c_{diK}] \in \{0; \ 1\}^K, \qquad \sum_k x_{dik} = 1 \qquad \textsf{(one-hot-encoding)}
+                  c_{di} = [c_{di1},\dots, c_{diK}] \in \{0; \ 1\}^K, \qquad \sum_k c_{dik} = 1 \qquad \textsf{(one-hot-encoding)}
                 \end{align*}
               </div>
               of word $w_{id}$ from
               <div class='scroll'>
                 \begin{align*}
-                  C \in \{0; \ 1\}^{D\times I_d \times K} \quad \textsf{with} \quad p(C\vert \Pi) = \prod_{d=1}^D\prod_{i=1}^{I_d}\prod_{k=1}^K \pi_{dk}^{c_{dik}}\, .
+                  C \in \{0; \ 1\}^{D\times I_d \times K} \quad \textsf{with} \quad p(C\vert \Pi) = \prod_{d=1}^D\prod_{i=1}^{I_d}\prod_{k=1}^K \pi_{dk}^{c_{dik}}\, ,
                 \end{align*}
               </div>
+              which resembles a categorical distribution with probabilities $\Pi$.
             </li>
             <li>
               Draw a word $w_{di}$ from
               <div class='scroll'>
                 \begin{align*}
-                  p(w_{di} = v \vert c_{di},\ \Theta) = \prod_k \theta_{kv}^{c_{dik}}
+                  p(w_{di} = v \vert c_{di},\ \Theta) = \prod_k \theta_{kv}^{c_{dik}} \, ,
                 \end{align*}
               </div>
+              which resembles a categorical distribution over all words which have the suitable topic ($c_{dik}$ is one-hot-encoded).
             </li>
           </ul>
         </li>
@@ -2831,7 +2833,7 @@
                 \left( \prod_{k=1}^K \mathcal D(\theta_k; \ \beta_{k:}+n_{\cdot k:}) \right)\, ,
             \end{align*}
           </div>
-          yet the problem is, that we neither have direct acess to $C$ nor to $\Pi$ and $\Theta$ (only to $W$).
+          yet the problem is, that we neither have direct access to $C$ nor to $\Pi$ and $\Theta$ (only to $W$).
         </li>
         <li id="gibbs_sampling_in_LDA" class="cr">
           <b>Suitable Computation Method:</b> This conditional-posterior setting enables the use of a specific tool from the toolbox which is <a href="#gibbs_sampling">Gibbs Sampling</a>, where one has to iterate between:
