@@ -46,7 +46,6 @@
     \newcommand{\ne}{{\mathrm{ne}\,}}
     \newcommand{\cases}[1]{{\begin{cases}#1\end{cases}}}
     \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
-    \newcommand{\alignn}[1]{{\begin{align}\begin{split}#1\end{split}\end{align}}}
     \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
     \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
     \newcommand{\dkl}[2]{D_{\textsf{KL}}\left(#1\vert\vert#2\right)}
@@ -584,10 +583,8 @@
 
 
       <h2>Sampling by Transformation</h2>
-      <p>
-        Still one open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b>
-      </p>
       <ul class="flul">
+        <li>Still the open question remains: <b>How to generate random samples from $\boldsymbol{p(x)}$?</b></li>
         <li>One can sample from the uniform distribution $U(0,1)$ pretty decent computationally using <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">Pseudorandom Number Generators</a>.</li>
         <li><b>Sampling by Transformation:</b> Given that $U \sim U(0,1)$ and $X\sim P_X$ with CDF $F(x)$, then
           $F^{-1}(U)$ is distributed according to $P_X$.</li>
@@ -601,8 +598,8 @@
 
 
       <h2>Rejection Sampling</h2>
-      <p>But what to do <b>if we do not know a good transformation?</b></p>
       <ul class="flul">
+        <li>But what to do <b>if we do not know a good transformation?</b></li>
         <li>What makes sampling hard, is that we need to know the cumulative density everywhere, i.e. a global description of the entire function.</li>
         <li>Practical Monte Carlo Methods aim to construct samples from $p(x) = \tilde p(x) / Z$ assuming that it is possible to evaluate the <b>unnormalized</b> density $\tilde p$ at arbitrary points. Typical example: Compute moments of a posterior:
           <div class='scroll'>
@@ -715,7 +712,7 @@
       </ul>
 
 
-      <h2>Gibbs Sampling</h2>
+      <h2 id="gibbs_sampling">Gibbs Sampling</h2>
       <ul class="flul">
         <li>
           <b>Gibbs Sampling:</b> In Gibbs Sampling one assumes that for a multivariate RV $x=(x_1,...,x_n)$ there exists index sets $I \subset \{1,...,n\}=:N$ for which:
@@ -746,6 +743,7 @@
           </ol>
         </li>
         <li>In practice this resembles updating all the dimensions after each other and adding a new point to the sample when every dimension has been updated. To work well, it is necessary, to align the PDF as much to the axes as possible.</li>
+        <li>Gibbs sampling will later be <a href="#gibbs_sampling_in_LDA">applied to Latent Dirichlet Allocation</a>.</li>
       </ul>
 
 
@@ -1497,11 +1495,9 @@
 
 
       <h2>Example of Gaussian Process Regression</h2>
-      <p>
-        The <a class="link" target="_blank" href="https://www.youtube.com/watch?v=VXTIPfS_vV8&list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd&index=12&ab_channel=T%C3%BCbingenMachineLearning">lecture</a>
-        presents an actual hands-on example on how to apply the framework presented in the last parts, including prior information etc. to infer a future prediction. It is not really practical to try to follow the whole example in these notes, so follow the video (again) if searching for details. There are just some general notes, hints and best practices one can extract from the worked through example.
-      </p>
       <ul class="flul">
+        <li>The <a class="link" target="_blank" href="https://youtu.be/VXTIPfS_vV8">lecture</a>
+          presents an actual hands-on example on how to apply the framework presented in the last parts, including prior information etc. to infer a future prediction. It is not really practical to try to follow the whole example in these notes, so follow the video (again) if searching for details. There are just some general notes, hints and best practices one can extract from the worked through example.</li>
         <li>It is a good idea to include known quantities in the model, e. g. known standard errors of measure instruments etc.</li>
         <li>It is always a good idea to create some visualizations if possible to get a feeling for the data and as a sanity check.</li>
         <li>Often it is not possible to do reasonably good extrapolations or modelling in general if no further information is included to the model (e. g. via the priors).</li>
@@ -2807,12 +2803,59 @@
         <li>
           <b>Joint Probability:</b> Due to the factorization and construction of the model (also see the corresponding DAG in the <a class="link" target="_blank" href="https://youtu.be/z2q7LhsnWNg?t=2291">lecture</a>) the joint probability is given by (using the notation from above):
           <div class='scroll'>
+            \begin{align}
+              \begin{split}
+                p(C, \Pi, \Theta, W) &= p(\Phi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
+                &= \left( \prod_{d=1}^D \mathcal D(\pi_d; \ \alpha_d) \right) \cdot 
+                  \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \pi_{dk}^{c_{dik}} \right) \cdot
+                  \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \theta_{kw_{di}}^{c_{dik}} \right) \cdot 
+                  \left( \prod_{k=1}^K \mathcal D(\theta_k;\ \beta_k) \right) \\
+                &= \left( \prod_{d=1}^D \frac{\Gamma \left(\sum_k \alpha_{dk}\right)}{\prod_k \Gamma (\alpha_{dk})} \prod_{k=1}^K \pi_{dk}^{\alpha_{dk}-1+n_{dk\boldsymbol \cdot}} \right) \cdot 
+                  \left( \prod_{k=1}^K \frac{\Gamma \left(\sum_v \beta_{kv}\right)}{\prod_v \Gamma (\beta_{kv})} \prod_{v=1}^V \theta_{kv}^{\beta_{kv}-1+n_{\boldsymbol \cdot kv}} \right) \, .
+              \end{split} 
+              \label{eq:joint_LDA}
+            \end{align}
+          </div>
+        </li>
+        <li>
+          <b>Conditionals:</b> The first form of \eqref{eq:joint_LDA} yields the posterior
+          <div class='scroll'>
             \begin{align*}
-              p(C, \Pi, \Theta, W) &= p(\Phi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
-              &= \left( \prod_{d=1}^D \frac{\Gamma \left(\sum_k \alpha_{dk}\right)}{\prod_k \Gamma (\alpha_{dk})} \prod_{k=1}^K \pi_{dk}^{\alpha_{dk}-1+n_{dk\boldsymbol \cdot}} \right) \cdot 
-                \left( \prod_{k=1}^K \frac{\Gamma \left(\sum_v \beta_{kv}\right)}{\prod_v \Gamma (\beta_{kv})} \prod_{v=1}^V \theta_{kv}^{\beta_{kv}-1+n_{\boldsymbol \cdot kv}} \right)
+              p(C\vert \Theta, \Pi, W) = \prod_{d=1}^D\prod_{i=1}^{I_d} \frac{\prod_{k=1}^K (\pi_{dk}\theta_{k w_{di}})^{c_{dik}}}{\sum_{k'}(\pi_{dk'}\theta_{k'w_{di}})}
             \end{align*}
           </div>
+          and the second form yields the posterior
+          <div class='scroll'>
+            \begin{align*}
+              p(\Theta, \Pi\vert C, W) = \left( \prod_{d=1}^D \mathcal D(\pi_d; \ \alpha_{d:}+n_{d:\cdot}) \right) \cdot  
+                \left( \prod_{k=1}^K \mathcal D(\theta_k; \ \beta_{k:}+n_{\cdot k:}) \right)\, ,
+            \end{align*}
+          </div>
+          yet the problem is, that we neither have direct acess to $C$ nor to $\Pi$ and $\Theta$ (only to $W$).
+        </li>
+        <li id="gibbs_sampling_in_LDA" class="cr">
+          <b>Suitable Computation Method:</b> This conditional-posterior setting enables the use of a specific tool from the toolbox which is <a href="#gibbs_sampling">Gibbs Sampling</a>, where one has to iterate between:
+          <ol>
+            <li>
+              drawing $\Theta$ and $\Pi$ (note that the the distribution factorizes)
+              <div class='scroll'>
+                \begin{align*}
+                  \Theta \sim p(\Theta \vert C, W) &= \prod_{k=1}^K \mathcal D(\theta_k; \ \beta_{k:}+n_{\cdot k:}) \\
+                  \Pi    \sim p(\Pi    \vert C, W) &= \prod_{d=1}^D \mathcal D(\pi_d; \ \alpha_{d:}+n_{d:\cdot})
+                \end{align*}
+              </div>  
+            </li>
+            <li>
+              drawing $C$ from
+              <div class='scroll'>
+                \begin{align*}
+                  C \sim p(C\vert \Theta, \Pi, W)
+                \end{align*}
+              </div>
+              (see above) which is a discrete categorical distribution.
+            </li>
+          </ol>
+          Note hat because lots of dimensions factorize this can be done pretty efficient by drawing the samples in parallel.
         </li>
       </ul>
 
