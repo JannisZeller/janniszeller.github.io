@@ -2861,7 +2861,7 @@
           Because lots of dimensions factorize this can be done pretty efficient by drawing the samples in parallel. Despite this factorization processing larger datasets still demand for batched processing because allocating e. g. tensors (e. g. <span style="font-family: 'Cascadia Code', Consolas, monospace;">tensorflow.Tensor</span> or <span style="font-family: 'Cascadia Code', Consolas, monospace;">numpy.ndarray</span>) of sizes <span style="font-family: 'Cascadia Code', Consolas, monospace;">(10000, 1000, 10)</span>  is impossible with typical RAM-sizes.
         </li>
         <li>
-          <b>More Efficient Inference:</b> The LDA-problem can be tackeled using Exponential Families, which we have already leaveraged when using the conjugancy of the Dirichlet Prior to the Categorical distribution. 
+          <b>More Efficient Inference:</b> The LDA-problem can be tackled using Exponential Families, which we have already leveraged when using the conjugacy of the Dirichlet Prior to the Categorical distribution. 
           <ul>
             <li>
               In terms of Exponential Families one can also show, that the <i>predictive</i> for $C$ is:
@@ -2885,18 +2885,26 @@
               Using this <a href="https://stats.stackexchange.com/a/431108" class="link" target="_blank" >trick</a> for the Gamma-functions (remember that the Beta-functions is composed of Gamma-functions) one can derive:
               <div class='scroll'>
                 \begin{align*}
-                  p(c_{dik} = 1\vert C^{\setminus di}, W ) \propto \left( \alpha_{dk} + n_{dk\cdot }^{\setminus di} \right) 
-                    \left( \beta_{kw_{di}} + n_{\cdot kw_{di}}^{\setminus di} \right) 
-                    \left( \sum_v \beta_{kv} + n_{\cdot kv }^{\setminus di} \right)^{-1}\, ,
+                  p(c_{dik} = 1\vert C^{\setminus di}, W ) \propto 
+                    \frac{\alpha_{dk} + n_{dk\cdot }^{\setminus di}}{\alpha_{d\cdot} + n_{d\cdot\cdot }^{\setminus di}}
+                    \frac{\beta_{kw_{di}} + n_{\cdot kw_{di}}^{\setminus di}}{\beta_{k\cdot} + n_{\cdot k\cdot }^{\setminus di}}\, ,
                 \end{align*}
               </div>
-              where $C^{\setminus di}$ represents all word-topic assignments appart from the $i$-th word in document $d$ (analogous for $n$-bits).
+              where $C^{\setminus di}$ represents all word-topic assignments apart from the $i$-th word in document $d$ (analogous for $n$-bits).
             </li>
-            <li>This gives rise to the so called "<b>Collapsed Gibbs Sampling</b>" method (which is i. e. used in the useful related publication by <a href="https://doi.org/10.1073/pnas.0307752101" class="link" target="_blank">Griffiths & Steyvers, 2004</a>) for this particular problem, where one iterateively only updates $n$ and $C$ according to this distribution of the $c_{dik}$'s. $\Theta$ and $\Pi$ can be calculated afterwards using the posteriors $P(\Theta\vert C, W)$ and $P(\Pi\vert C, W)$.</li>
+            <li>
+              This gives rise to the so called "<b>Collapsed Gibbs Sampling</b>" method (which is i. e. used in the useful related publication by <a href="https://doi.org/10.1073/pnas.0307752101" class="link" target="_blank">Griffiths & Steyvers, 2004</a>) for this particular problem, where one iteratively only updates $n$ and $C$ according to this distribution of the $c_{dik}$'s. $\Theta$ and $\Pi$ can be calculated afterwards using the posteriors $P(\Theta\vert C, W)$ and $P(\Pi\vert C, W)$, or by interpreting the terms of $p(c_{dik} = 1\vert C^{\setminus di}, W )$: The first term corresponds to the posterior Topic-Word-Distribution and the second to the posterior Topic-Document-Distribution (note, that they are already normalized when switching fom $w_{di}$ to $v$), i. e.
+              <div class='scroll'>
+                \begin{align*}
+                  \hat \pi_{dk} &= \frac{\alpha_{dk} + n_{dk\cdot }}{\alpha_{d\cdot} + n_{d\cdot\cdot }} \, , \\
+                  \hat \theta_{kv} &= \frac{\beta_{kv} + n_{\cdot kv}}{\beta_{k\cdot} + n_{\cdot k\cdot }} \, .
+                \end{align*}
+              </div>
+            </li>
           </ul>
         </li>
         <li>
-          <b>The Mean Field:</b> This collapsed Gibbs sampler acutally is an example of the idea of the Mean Field, i. e. acting on and inferring from  
+          <b>The Mean Field:</b> This collapsed Gibbs sampler actually is an example of the idea of the Mean Field, i. e. acting on and inferring from  
           <div class='scroll'>
             \begin{align*}
               p(C\vert W) = \int p(C\vert \Theta, \Pi, W) \cdot p(\Theta, \Pi\vert W) \, \d \Theta \, \d \Pi
@@ -2910,9 +2918,9 @@
       <h2 id="mixture_models">Mixture Models</h2>
       <ul class="flul">
         <li><b>Clustering:</b> Mixture Models are a generative model type which is typically used for unsupervised learning or more specific for clustering. Clustering can be viewed as a branch of Machine Learning in which we are inductively searching for classes $c_i \in \{1, \dots, C\}$ in data $x_i$ for which we do not have labels, and "explain" why we have assigned this or that class.</li>
-        <li><b>Clustering to "discover structure":</b> When clustering is used to discover structure in the data by interpreting the results of a cluster analysis, one has to be careful not to overly interprete or generalize the findings, because the results strongly depend on the assumptions on the underlying generative process. A somewhat more "conservative" approach is to view the "creation of new $x_j$'s" which result from the underlying generative process as the goal of clustering.</li>
+        <li><b>Clustering to "discover structure":</b> When clustering is used to discover structure in the data by interpreting the results of a cluster analysis, one has to be careful not to overly interpret or generalize the findings, because the results strongly depend on the assumptions on the underlying generative process. A somewhat more "conservative" approach is to view the "creation of new $x_j$'s" which result from the underlying generative process as the goal of clustering.</li>
         <li>
-          <b>$k$-Means Algorithm:</b> Classic "describtive" algorithms like the <a class="link" target="_blank" href="https://youtu.be/hOgn0zgXvgA?t=3361">$k$-Means Algorithm</a> do not enable this creation-goal. The algorithm is: Given $\{x_i\}_{i=1,\dots, n}$
+          <b>$k$-Means Algorithm:</b> Classic "descriptive" algorithms like the <a class="link" target="_blank" href="https://youtu.be/hOgn0zgXvgA?t=3361">$k$-Means Algorithm</a> do not enable this creation-goal. The algorithm is: Given $\{x_i\}_{i=1,\dots, n}$
           <ul>
             <li><i>Initialize:</i> Set $k$ means $\{m_k\}$ to random values (often $K$ random datapoints are chosen).</li>
             <li>
@@ -2950,7 +2958,7 @@
             <li>The algorithm does not always converge to the same optimum.</li>
             <li>The clusters are assumed to be spherical symmetric.</li>
           </ul>
-          To fix thse pathologies we are searching for a generative probabilistical model which actually represents what $k$-Means does and modify it according to our needs.
+          To fix these pathologies we are searching for a generative probabilistic model which actually represents what $k$-Means does and modify it according to our needs.
         </li>
         <li><b>Lyapunov Function:</b> In the context of iterative algorithms, a Lyapunov Function $J$ is a positive function of the algorithm's state variables that decreases in each step of the algorithm.</li>
         <li>The existence of a Lyapunov Function for an algorithm guarantees convergence for each run of the algorithm (monotonuous shrinking to a lower bound $C\geq 0$). It does not guarantee, that each run converges to the same "optimum" though.</li>
