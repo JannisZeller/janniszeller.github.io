@@ -2961,7 +2961,7 @@
           To fix these pathologies we are searching for a generative probabilistic model which actually represents what $k$-Means does and modify it according to our needs.
         </li>
         <li><b>Lyapunov Function:</b> In the context of iterative algorithms, a Lyapunov Function $J$ is a positive function of the algorithm's state variables that decreases in each step of the algorithm.</li>
-        <li>The existence of a Lyapunov Function for an algorithm guarantees convergence for each run of the algorithm (monotonuous shrinking to a lower bound $C\geq 0$). It does not guarantee, that each run converges to the same "optimum" though.</li>
+        <li>The existence of a Lyapunov Function for an algorithm guarantees convergence for each run of the algorithm (monotonous shrinking to a lower bound $C\geq 0$). It does not guarantee, that each run converges to the same "optimum" though.</li>
         <li>
           For the $k$-Means algorithm a Lyapunov Function is (prove in the <a href="https://youtu.be/hOgn0zgXvgA?t=4449" class="link" target="_blank">lecture</a>):
           <div class='scroll'>
@@ -2970,14 +2970,243 @@
             \end{align*}
           </div>
         </li>
+        <li>
+          <b>From empirical Risk to Likelihood:</b> Minimizing an empirical risk like $J(r,m)$ w. r. t. some parameters $theta$ (here $r$ and $m$) can often be interpreted as maximizing a likelihood by multiplying $J(r,m)$ with $-c^2$ (where $c^2>0$ is independent of $\theta$) and transferring a sum over datapoints in a product by reversely applying the $\log$-tick, e. g. for $k$-means:
+          <div class='scroll'>
+            \begin{align*}
+              (r, m) &= \argmin{r,m} J(r, m) = \argmax{r,m} -\frac{1}{2\sigma^2} J(r, m) + \mathrm{const} \\
+                &= \argmax{r,m} \sum_{i=1}^n\sum_{k=1}^K r_{ik} \left( \frac{1}{2\sigma^2} \abs{\abs{x_i-m_k}}^2\right) + \mathrm{const} \\
+                & \overset{(\star)}{=} \argmax{r,m} \prod_{i=1}^n\sum_{k=1}^K r_{ik} \exp \left( \frac{1}{2\sigma^2} \abs{\abs{x_i-m_k}}^2\right) \cdot \frac{1}{Z} \\
+                &= \argmax{r,m} \prod_{i=1}^n\sum_{k=1}^K r_{ik} \mathcal N (x_i; m_k, \sigma^2 \boldsymbol 1) = \argmax{r,m} p( x \vert m, r)\, .
+            \end{align*}
+          </div>
+          Note that $(\star)$ only holds because $r_{ik}$ is one-hot encoded in the $k$-dimension. I. e. <b>$k$-means maximizes a hard-assignment, isotropic Gaussian mixture model.</b>
+        </li>
+        <li>
+          <b>"Fixing" $k$-Means - General Gaussian Mixture Model:</b> Using this found probabilistic model we can address the previously identified pathologies. We introduce 2 changes. First we allow for more general forms of the covariance for each cluster by introducing a set of positive definite matrices $\Sigma_k$ as parameters. Second we allow for "partial" assignments to a cluster by introducing $\pi$ like:
+          <div class='scroll'>
+            \begin{align*}
+              p(x \vert \pi, \mu, \Sigma) = \prod_{i=1}^n \sum_{k=1}^K \pi_k \mathcal N (x_i; \mu_j, \Sigma_j) \quad \textsf{where} \quad \pi_k \in [0, 1] \,  , \ \ \sum_{k=1}^K \pi_k=1\, .
+            \end{align*}
+          </div>
+          The individual underlying Gaussians are also called <i>base measures</i>. This represents a two-step generative process:
+          <ol>
+            <li>First decide with probabilities $\pi_k$ from which base measure the next datum should be (Categorical Distribution).</li>
+            <li>Next draw from the respective base measure.</li>
+          </ol>
+          A graphical representation (DAG) of this generative model is presented in the <a class="link" target="_blank" href="https://youtu.be/hYbctXabBd4?t=953">lecture</a>. This representation has a collider of all latent quantities in $x$ which results in complicated dependencies of those when conditioning on $x$, no matter what prior $p(\pi, \mu, \Sigma)$ we choose (the likelihood can not be represented as an exponential family). 
+        </li>
+        <li>
+          <b>MLE with Gaussian-Mixture-Model:</b> With some differential calculus (see partly in the <a class="link" target="_blank" href="https://youtu.be/hYbctXabBd4?t=1167">lecture</a>) one can solve the optimization problem using the responsibilities
+          <div class='scroll'>
+            \begin{align*}
+              r_{ik} = \frac{\pi_k \mathcal N(x_i; \mu_k, \Sigma_k)}{\sum_{\ell} \pi_\ell \mathcal N(x_i; \mu_\ell, \Sigma_\ell)}\, , \qquad R_k := \sum_{i=1}^nr_{ik}
+            \end{align*}
+          </div>
+          yielding
+          <div class='scroll'>
+            \begin{align*}
+              \mu_k &= \frac{1}{R_k} \sum_{i=1}^n r_{ik}x_i \\
+              \Sigma_k &= \frac{1}{R_k} \sum_{i=1}^n r_{ik}(x_i-\mu_k)(x_i-\mu_k)^T\, .
+            \end{align*}
+          </div>
+          The optimization for $\pi_k$ needs to be done using <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Lagrange_multiplier">Lagrange multipliers</a> because of the normalization constraint which yields (using $\sum_{ik} r_{ik} = n$):
+          <div class='scroll'>
+            \begin{align*}
+              \pi_k = \frac{R_k}{n}\, .
+            \end{align*}
+          </div>
+          This results again in an iterative algorithm (very much reminding of $k$-means):
+          <ol>
+            <li>Initialize $\mu$, $\Sigma$ and $\pi$ (e. g. random $\mu$, and $\Sigma$, uniform $\pi$).</li>
+            <li>In an alternating manner repeatedly set $r_{ki} = r_{ki}(\pi, \mu, \Sigma, x)$ and $\mu = \mu(r_{ik}, x)$, $\pi = \pi(r_{ik}, x)$ as well as $\Sigma = \Sigma(r_{ik}, x)$ until convergence.
+          </ol>
+        </li>
       </ul>
 
 
+      <h2 id="em_algorithm">The Expectation Maximization Algorithm</h2>
+      <ul class="flul">
+        <li>The optimization algorithm for the general Gaussian Mixture model is an example of an Expectation Maximization Algorithm, which can be applied for efficient inference in other settings as wenn, which is why it gets discussed in more detail now.</li>
+        <li>
+          Gaussian Mixture Models Revisited: Instead of fixing the $\pi_i$'s as latent variables, lets model them in another "layer" using binary $z_{ik} \in \{0; 1\}$ with $\sum_{k} z_{ik} = 1$ - one hot encoded cluster assignments for the data points, analogous to the topic assignments $c_{idk}$ in topic modelling. Therefore write: $p(x, z) = p(x\vert z)p(z)$ with
+          <div class='scroll'>
+            \begin{align*}
+              p(z_{ik} = 1)=\pi_k \quad \Rightarrow \quad p(z) = \prod_{i=1}^n \prod_{k=1}^K\pi_k^{z_{ik}}\, , 
+            \end{align*}
+          </div>
+          i. e. categorical distributed. This results in 
+          <div class='scroll'>
+            \begin{align*}
+              p(x_i \vert z_{i:}) = \prod_{k=1}^K \big( \mathcal N (x_i; \mu_k, \Sigma_k)  \big)^{z_{ik}}\, ,
+            \end{align*}
+          </div>
+          yielding the marginal
+          <div class='scroll'>
+            \begin{align*}
+              p(x_i) = \sum_{k=1}^K p(z_{ik} = 1)p(x_i\vert z_{ik}=1) = \sum_{k=1}^K \pi_k \mathcal N(x_i; \mu_k, \Sigma_k )
+            \end{align*}
+          </div>
+          and the joint
+          <div class='scroll'>
+            \begin{align*}
+              p(x, z\vert \pi, \mu, \Sigma) = \prod_{i=1}^n \prod_{k=1}^K \pi_k^{z_{ik}} \big( \mathcal N (x_i; \mu_k, \Sigma_k)  \big)^{z_{ik}} \, .
+            \end{align*}
+          </div>
+          This yields the <b>posterior</b>
+          <div class='scroll'>
+            \begin{align*}
+              p(z_{ik} = 1\vert x_i, \pi, \mu, \Sigma) = \frac{p(z_{ik} = 1)p(x_i\vert z_{ik}=1)}{p(x_i)} = \dots = r_{ik}\, ,
+            \end{align*}
+          </div>
+          which is the marginal posterior probability (i. e. <b>Expectation</b>) for $z_{ik}=1$.
+        </li>
+        <li>In this language the presented MLE-algorithm for the Gaussian Mixture Model is iterating between computing the <b>Expectation of a latent variable</b> and <b>Maximizing the likelihood for the observable</b> w. r. t. the parameters pretending the latent variable is fixed.</li>
+        <li><b>The EM-Algorithm is an iterative Maximum Likelihood algorithm.</b></li>
+        <li>
+          <b>Abstraction of the EM-Algorithm:</b> 
+          <ul>
+            <li>
+              <b>Setting:</b> Assume one wants to apply ML (or MAP) estimation to a model involving a latent variable $z$:
+              <div class='scroll'>
+                \begin{align*}
+                  \theta_* = \argmax{\theta}\big(\log p(x\vert \theta) \big) = \argmax{\theta}\left[\log \left( \sum_{z} p(x, z \vert \theta)\right) \right] \, .
+                \end{align*}
+              </div>
+              Assume that the summation over $z$ inside the $\log$ makes analytic optimization intractable but that optimization would be analytic if $z$ were known (i. e. if there were only one term in the sum).
+            </li>
+            <li>
+              <b>Idea:</b> Initialize $\theta_0$, then iterate between
+              <ol>
+                <li>Compute $p(z\vert x, \theta_{\textsf{old}})$.</li>
+                <li>
+                  Set $\theta_{\textsf{new}}$ to the <b>Maximum of the Expectation</b> of the <i>complete-data log-likelihood</i> $\log p(x, z\vert \theta)$
+                  <div class='scroll'>
+                    \begin{align*}
+                      \theta_{\textsf{new}} = \argmax{\theta}\big( p(z\vert x, \theta_{\textsf{old}}) \log p(x\vert \theta) \big) = \argmax{\theta} \E_{p(z\vert x,\theta_{\textsf{old}})} \big[ \log p(x, z \vert \theta)\big] \, .
+                    \end{align*}
+                  </div>
+                </li>
+                <li>Check for convergence of either the log-likelihood, or $\theta$.</li>
+              </ol>
+            </li>
+            <li>Sometimes $z$ has to be introduced to the problem artificially to construct an EM-solution for a problem (like for the Gaussian mixture model).</li>
+          </ul>
+        </li>
+        <li>
+          <b>Rephrasing the Mixture Model:</b> We wish to maximize as a function of $\theta=(\pi_k, \mu_k, \Sigma_k)_{k=1,\dots K}$
+          <div class='scroll'>
+            \begin{align*}
+              \log p(x\vert \theta) = \sum_{i=1}^n \log \left( \sum_{k=1}^K \pi_k \mathcal N (x_i; \mu_k, \Sigma_k) \right)\, .
+            \end{align*}
+          </div>
+          Introducing $z$ as presented above the complete-data log-likelihood becomes:
+          <div class='scroll'>
+            \begin{align*}
+              \log p(x, z\vert \theta) &= \log \left[ \prod_{i=1}^n \prod_{k=1}^K \pi_k^{z_{ik}} \big( \mathcal N (x_i; \mu_k, \Sigma_k)  \big)^{z_{ik}} \right] \\
+              &= \sum_{i=1}^n \sum_{k=1}^K z_{ik} \Big( \log \pi_k + \log \mathcal N (x_i; \mu_k, \Sigma_k) \Big)
+            \end{align*}
+          </div>
+          Applying EM then means iterating between:
+          <ol>
+            <li>
+              E-Step: Calculate $p(z\vert x, \theta_{\textsf{old}})$:
+              <div class='scroll'>
+                \begin{align*}
+                  p(z_{ik}=1\vert x_i, \mu, \Sigma) = r_{ik}\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              M-Step: Maximize:
+              <div class='scroll'>
+                \begin{align*}
+                  \E_{p(z\vert x,\theta_{\textsf{old}})} \big[ \log p(x, z \vert \theta)\big] = \sum_{i=1}^n \sum_{k=1}^K r_{ik} \Big( \log \pi_k + \log \mathcal N (x_i; \mu_k, \Sigma_k) \Big) 
+                \end{align*}
+              </div>
+            </li>
+          </ol>
+        </li>
+        <table class="mdtbl">
+          <tr>
+            <td><b>Model</b></td>
+            <td><b>Computation Technique</b></td>
+          </tr>
+          <tr>
+            <td>Directed Graphical Models (representable by a DAG)</td>
+            <td>Monte Carlo Sampling and extensions</td>
+          </tr>
+          <tr>
+            <td>Gaussian Distributions</td>
+            <td>Gaussian Inference by Linear Algebra</td>
+          </tr>
+          <tr>
+            <td>(Deep) Learnt Representations</td>
+            <td>Maximum Likelihood / Maximum Aposteriori</td>
+          </tr>
+          <tr>
+            <td>Kernels</td>
+            <td>Laplace Approximation</td>
+          </tr>
+          <tr>
+            <td>Markov Chains</td>
+            <td>Expectation-Maximization</td>
+          </tr>
+          <tr>
+            <td>Exponential Families / Conjugate Priors</td>
+            <td></td>
+          </tr>
+          <tr>
+            <td>Factor Graphs & Message Passing</td>
+            <td></td>
+          </tr>
+        </table>
+      </ul>
+
+
+      <h2>Free Energy</h2>
+      <ul class="flul">
+      </ul>
 
       <br> <br>
 
 
-      <a class="link" target="_blank" href="https://youtu.be/hYbctXabBd4?t=107">Current Video</a>
+      <!-- <table class="mdtbl">
+        <tr>
+          <td><b>Model</b></td>
+          <td><b>Computation Technique</b></td>
+        </tr>
+        <tr>
+          <td>Directed Graphical Models (representable by a DAG)</td>
+          <td>Monte Carlo Sampling and extensions</td>
+        </tr>
+        <tr>
+          <td>Gaussian Distributions</td>
+          <td>Gaussian Inference by Linear Algebra</td>
+        </tr>
+        <tr>
+          <td>(Deep) Learnt Representations</td>
+          <td>Maximum Likelihood / Maximum Aposteriori</td>
+        </tr>
+        <tr>
+          <td>Kernels</td>
+          <td>Laplace Approximation</td>
+        </tr>
+        <tr>
+          <td>Markov Chains</td>
+          <td>Expectation-Maximization</td>
+        </tr>
+        <tr>
+          <td>Exponential Families / Conjugate Priors</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Factor Graphs & Message Passing</td>
+          <td></td>
+        </tr>
+      </table> -->
+
+      <a class="link" target="_blank" href="https://youtu.be/1GJjO7AE8JY">Current Video</a>
 
 
     </div> <!-- content -->
@@ -2987,7 +3216,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}
