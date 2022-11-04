@@ -3025,7 +3025,7 @@
       </ul>
 
 
-      <h2 id="em_algorithm">The Expectation Maximization Algorithm</h2>
+      <h2 id="em_algorithm">Expectation Maximization Algorithm I</h2>
       <ul class="flul">
         <li>The optimization algorithm for the general Gaussian Mixture model is an example of an Expectation Maximization Algorithm, which can be applied for efficient inference in other settings as wenn, which is why it gets discussed in more detail now.</li>
         <li>
@@ -3127,6 +3127,82 @@
             </li>
           </ol>
         </li>
+      </ul>
+
+
+      <h2 id="em_algorithm2">Expectation Maximization Algorithm II</h2>
+      <ul class="flul">
+        <li>In this second part on the EM-algorithm we want to first take a mathematical closer look at the procedure and second connect it to other concepts.</li>
+          <b>Jensen's inequality.</b> To prove that the EM algorithm actually solves the MLE optimization problem we will need the so called  <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Jensen%27s_inequality'>Jansen's inequality</a>: Let $(\Omega, A, \mu)$ be a probability space, $g$ be a real-valued, $\mu$-integrable function, and $\phi$ be a convex function over $\R$. Then
+          <div class='scroll'>
+            \begin{align*}
+              \phi \left( \int_\Omega g \, \d \mu \right) \leq \int_\Omega \phi \circ g \, \d \mu\, ,
+            \end{align*}
+          </div>
+          where for concave $\phi$ the inequality direction is switched.
+        </li>
+        <li>
+          <b>M-Step in Math:</b> Using the Jensen's inequality one can easily show ($\log$ is concave), that for each "approximation" PDF $q(z)$ (e. g. $p(z\vert x, \theta)$) the following inequality holds (multiply with creative one $q(z)/q(z)$):
+          <div class='scroll'>
+            \begin{align*}
+              \log p(x\vert \theta) = \log \int p(x, z\vert \theta)\, \d z \geq \int q(z) \log \frac{p(x, z\vert \theta)}{q(z)} \, \d z =: \mathcal L (q)\, ,
+            \end{align*}
+          </div>
+          i. e. when maximizing $\mathcal L (q)$ one maximizes a lower bound on $\log p(x\vert \theta)$. $\mathcal L$ is also called the <b>Expectation Lower Bound (ELBo)</b>, which can be also rewritten to:
+          <div class='scroll'>
+            \begin{align*}
+              \textsf{ELBo:} \qquad \mathcal L(q, \theta) = \E_{q(z)} \big[ \log p(x, z\vert \theta) \big] + H(q)
+            \end{align*}
+          </div>
+          where $H(q) = \E_{q(z)}[\log(q(z))]$ is the entropy of $q$ which is constant w. r. t. $\theta$.
+        </li>
+        <li>
+          <b>E-Step in Math:</b> Using 
+          <div class='scroll'>
+            \begin{align*}
+              p(x, z\vert \theta) = p(z\vert x, \theta)\cdot p(x\vert \theta) 
+            \end{align*}
+          </div>
+          one can show that
+          <div class='scroll'>
+            \begin{align*}
+              \log p(x\vert \theta) = \mathcal L (q) - \int q(z) \log \frac{p(z\vert x, \theta)}{q(z)} = \mathcal L (q) + \dkl{q}{p(z\vert x, \theta)}\, .
+            \end{align*}
+          </div>
+          Thus because of $\dkl p q = 0$ is equivalent to $p\equiv q$ with the choice of $q(z)=p(z\vert x, \theta)$ in the E-step one "sets the gap" the ELBo and $\log p(x\vert \theta)$ to zero.
+        </li>
+        <li>The two bullets above prove, that the EM-algorithm actually maximizes $\log p(x\vert \theta)$. A good derivation can also be found on <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Proof_of_correctness'>Wikipedia</a>.</li>
+        <li>
+          <b>EM and Exponential Families:</b> When using EM it is helpful if $p(x, z \vert \theta) is an exponential family with $\theta$ as the natural parameters, i. e. 
+          <div class='scroll'>
+            \begin{align*}
+              p(x, z\vert \theta) = \exp \Big( \phi(x, z)^T \theta - \log Z(\theta) \Big)\, ,
+            \end{align*}
+          </div>
+          because then one can show that in this case:
+          <div class='scroll'>
+            \begin{align*}
+              \nabla_\theta \mathcal L (q(z), \theta) = 0 \quad \Rightarrow \quad \nabla_\theta \log Z(\theta)
+            \end{align*}
+          </div>
+          and optimization in the M-step might be analytically possible (e. g. for gaussian mixture models).
+        </li>
+        <li>
+          <b>Maximize Posterior (MAP) with EM:</b> Instead of using EM for MLE, i. e. maximizing $p(x\vert \theta)$ one can also us EM for MAP optimization by including a prior for $\theta$. The E-step stays the same but the M-step becomes setting $\theta_{\textsf{new}}$ to:
+          <div class='scroll'>
+            \begin{align*}
+              \theta_{\textsf{new}} = \argmax{\theta} \int q(z) \, \log \left(  \frac{p(z, x\vert \theta)p(\theta)}{q(z)} \right) = \argmax{\theta} \Big[ \mathcal L (q, \theta) + \log p(\theta) \Big]
+            \end{align*}
+          </div>
+          which because of 
+          <div class='scroll'>
+            \begin{align*}
+              \log p(\theta \vert x) \underset{\textsf{wrt} \ \theta}{\propto}  \log p(x\vert \theta) + \log p(\theta) \leq \mathcal L (q, \theta) + \log p(\theta) 
+            \end{align*}
+          </div>
+          yields in the maximization of $p(\theta \vert x)$.
+        </li>
+        <li>After all this still the optimization of the ELBo w. r. t. $\theta$ might be intractable though. In this cases we can still use EM and numerically optimize the ELBo e. g. with an autodiff framework. This is also called <b>generalized EM</b>.</li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -3164,9 +3240,17 @@
       </ul>
 
 
-      <h2>Free Energy</h2>
+      <h2 id="variational_approximations">Variational Approximations</h2>
       <ul class="flul">
+
       </ul>
+
+
+
+
+
+
+
 
       <br> <br>
 
@@ -3206,7 +3290,7 @@
         </tr>
       </table> -->
 
-      <a class="link" target="_blank" href="https://youtu.be/1GJjO7AE8JY">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/1GJjO7AE8JY?t=2352">Current Video</a>
 
 
     </div> <!-- content -->
