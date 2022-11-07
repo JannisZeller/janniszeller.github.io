@@ -52,6 +52,7 @@
     \newcommand{\indep}{\perp\!\!\!\perp}
     \newcommand{\nindep}{\centernot\indep}
     \newcommand{\sumint}{\ \ \ \mathclap{\int}\mathclap{\sum} \ \ \ } 
+    \newcommand{\constwrt}[1]{\underset{\textsf{wrt.} \ #1}{\mathrm{const.}}}
     $$
   </div>
 
@@ -112,6 +113,7 @@
             \end{align*}
           </div>
         </li>
+        <li>The notation $\constwrt{x}$ represents terms which are constant with respect to (wrt.) $x$.</li>
         <li>If space is an issue, determinants of matrices get denoted as $\vert A \vert$. Elsewhere $\det A$ is used for clarity.</li>
       </ul>
 
@@ -1266,7 +1268,7 @@
             \sigma^2)\, .
             \end{align*}
           </div>
-          Optimizing w. r. t. $W$ and $\theta$ yields:
+          Optimizing wrt. $W$ and $\theta$ yields:
           <div class='scroll'>
             \begin{align*}
             \underset{\theta, W}{\mathrm{argmax}} \, P(W, \theta \vert y) &= \underset{\theta, W}{\mathrm{argmin}}
@@ -1427,8 +1429,8 @@
             \end{align*}
           </div>
         </li>
-        are called eigenfunction and eigenvalue of $f$ with respect to $\nu$.
-        <li><b>Mercers Theorem / Spectral Theorem of Mercer Kernels:</b> Let $(\mathbb X, \nu)$ be a finite measure space and $k:\mathbb X\times \mathbb X \to \mathbb R$ a continuous (Mercer) kernel. Then there exist eigenvalues/functions $(\lambda_i, \phi_i)_{i\in I}$ w. r. t. $\nu$ such that $I$ is countable,, all
+        are called eigenfunction and eigenvalue of $f$ wrt. $\nu$.
+        <li><b>Mercers Theorem / Spectral Theorem of Mercer Kernels:</b> Let $(\mathbb X, \nu)$ be a finite measure space and $k:\mathbb X\times \mathbb X \to \mathbb R$ a continuous (Mercer) kernel. Then there exist eigenvalues/functions $(\lambda_i, \phi_i)_{i\in I}$ wrt. $\nu$ such that $I$ is countable,, all
           $\lambda_i$ are real and non-negative, the eigenfunction can be made orthonormal, and the following series converges absolutely and uniformly $\nu^2$-almost-everywhere:
           <div class='scroll'>
             \begin{align*}
@@ -1876,7 +1878,7 @@
           </div>
           where $\hat f = \mathrm{argmax}\, \log p(f_X\vert y)$ and $\Sigma = -\nabla^2 \big(\log p(f_X\vert y)\big\vert_{f_X=\hat f} \big)^{-1}$.
         </li>
-        <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ w. r. t. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} [f_X]$) with the approximations $\hat f$ and $\hat
+        <li>Using the Laplace Approximation in this setting resembles replacing the actual mean and variance of $f_X$ wrt. $p(f_X\vert y)$ (e. g. $\mathbb E_{p(f_X\vert y)} [f_X]$) with the approximations $\hat f$ and $\hat
           \Sigma$.</li>
         <li>Note that for this setting the Laplace approximation yields at $f_X = \hat f_X$:
           <div class='scroll'>
@@ -2210,7 +2212,7 @@
               p(x) \approx \hat p(x\vert w) = \exp\left(\phi(x)^T w - \log Z(w)\right)\, .
             \end{align*}
           </div>
-          On can then show (<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=4520">lecture</a>) that <i>minimizing $\dkl{p(x)}{\hat p(x\vert w)}$ w. r. t. $w$ is equivalent to finding the MLE point estimate \eqref{eq:exp_family_mle} of $w$.</i> 
+          On can then show (<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=4520">lecture</a>) that <i>minimizing $\dkl{p(x)}{\hat p(x\vert w)}$ wrt. $w$ is equivalent to finding the MLE point estimate \eqref{eq:exp_family_mle} of $w$.</i> 
         </li>
         <li><b>MAP inference with Exponential Families:</b> Analogously one can show that minimizing $\dkl{p(x)}{\hat p(x, w)}$ or $\dkl{p(x)}{\hat p(w, x)}$ - constructed with the conjugate prior - which resembles a MAP inference yields:
           <div class='scroll'>
@@ -2807,7 +2809,7 @@
           <div class='scroll'>
             \begin{align}
               \begin{split}
-                p(C, \Pi, \Theta, W) &= p(\Phi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
+                p(C, \Pi, \Theta, W) &= p(\Pi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
                 &= \left( \prod_{d=1}^D \mathcal D(\pi_d; \ \alpha_d) \right) \cdot 
                   \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \pi_{dk}^{c_{dik}} \right) \cdot
                   \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \theta_{kw_{di}}^{c_{dik}} \right) \cdot 
@@ -2971,7 +2973,7 @@
           </div>
         </li>
         <li>
-          <b>From empirical Risk to Likelihood:</b> Minimizing an empirical risk like $J(r,m)$ w. r. t. some parameters $theta$ (here $r$ and $m$) can often be interpreted as maximizing a likelihood by multiplying $J(r,m)$ with $-c^2$ (where $c^2>0$ is independent of $\theta$) and transferring a sum over datapoints in a product by reversely applying the $\log$-tick, e. g. for $k$-means:
+          <b>From empirical Risk to Likelihood:</b> Minimizing an empirical risk like $J(r,m)$ wrt. some parameters $theta$ (here $r$ and $m$) can often be interpreted as maximizing a likelihood by multiplying $J(r,m)$ with $-c^2$ (where $c^2>0$ is independent of $\theta$) and transferring a sum over datapoints in a product by reversely applying the $\log$-tick, e. g. for $k$-means:
           <div class='scroll'>
             \begin{align*}
               (r, m) &= \argmin{r,m} J(r, m) = \argmax{r,m} -\frac{1}{2\sigma^2} J(r, m) + \mathrm{const} \\
@@ -3061,7 +3063,7 @@
           </div>
           which is the marginal posterior probability (i. e. <b>Expectation</b>) for $z_{ik}=1$.
         </li>
-        <li>In this language the presented MLE-algorithm for the Gaussian Mixture Model is iterating between computing the <b>Expectation of a latent variable</b> and <b>Maximizing the likelihood for the observable</b> w. r. t. the parameters pretending the latent variable is fixed.</li>
+        <li>In this language the presented MLE-algorithm for the Gaussian Mixture Model is iterating between computing the <b>Expectation of a latent variable</b> and <b>Maximizing the likelihood for the observable</b> wrt. the parameters pretending the latent variable is fixed.</li>
         <li><b>The EM-Algorithm is an iterative Maximum Likelihood algorithm.</b></li>
         <li>
           <b>Abstraction of the EM-Algorithm:</b> 
@@ -3154,7 +3156,7 @@
               \textsf{ELBo:} \qquad \mathcal L(q, \theta) = \E_{q(z)} \big[ \log p(x, z\vert \theta) \big] + H(q)
             \end{align*}
           </div>
-          where $H(q) = \E_{q(z)}[\log(q(z))]$ is the entropy of $q$ which is constant w. r. t. $\theta$.
+          where $H(q) = \E_{q(z)}[\log(q(z))]$ is the entropy of $q$ which is constant wrt. $\theta$.
         </li>
         <li>
           <b>E-Step in Math:</b> Using 
@@ -3202,7 +3204,7 @@
           </div>
           yields in the maximization of $p(\theta \vert x)$.
         </li>
-        <li>After all this still the optimization of the ELBo w. r. t. $\theta$ might be intractable though. In this cases we can still use EM and numerically optimize the ELBo e. g. with an autodiff framework. This is also called <b>generalized EM</b>.</li>
+        <li>After all this still the optimization of the ELBo wrt. $\theta$ might be intractable though. In this cases we can still use EM and numerically optimize the ELBo e. g. with an autodiff framework. This is also called <b>generalized EM</b>.</li>
         <table class="mdtbl">
           <tr>
             <td><b>Model</b></td>
@@ -3252,8 +3254,8 @@
           where
           <div class='scroll'>
             \begin{align*}
-            \mathcal L (q, \theta) &= \underset{z}{\sumint} q(z)\, \log\left( \frac{p(x,z\vert \theta)}{q(z)}\right) \, , \\
-            \dkl{q(z)}{p(z\vert x, \theta)}  &= - \underset{z}{\sumint} q(z) \log \left( \frac{p(z\vert x, \theta)}{q(z)} \right)\, .
+              \mathcal L (q, \theta) &= \underset{z}{\sumint} q(z)\, \log\left( \frac{p(x,z\vert \theta)}{q(z)}\right) \, , \\
+              \dkl{q(z)}{p(z\vert x, \theta)}  &= - \underset{z}{\sumint} q(z) \log \left( \frac{p(z\vert x, \theta)}{q(z)} \right)\, .
             \end{align*}
           </div>
           Using the EM-algorithm one iteratively maximizes this by minimizing the KL-divergence (setting $q(z) = p(z\vert x, \theta)$, E-step) and maximizing $\mathcal L(q, \theta)$ in $\theta$ (M-step).
@@ -3265,23 +3267,23 @@
               z \leftarrow z \cup \theta
             \end{align*}
           </div>
-          and solely maximize $\mathcal L (q(z))$ w. r. t. $q$ to implicitly minimize $\dkl{q}{p(z\vert x)}$ (this is true because $\log p(x\vert \theta)$ is a constant in $z$, and the equation from the "Setting").
+          and solely maximize $\mathcal L (q(z))$ wrt. $q$ to implicitly minimize $\dkl{q}{p(z\vert x)}$ (this is true because $\log p(x\vert \theta)$ is a constant in $z$, and the equation from the "Setting").
         </li>
         <li>Variational Inference Goal:</li> Variational Inference is a general framework to construct approximating probability distributions $q(z)$ to non-analytic posterior distributions $p(z\vert x)$ by minimizing the <b>functional</b>
         <div class='scroll'>
           \begin{align*}
-            q^\star = \argmin{q\in \mathcal Q} \dkl{q(z)}{p(z\vert x)} = \argmax{q\in \mathcal Q} \mathcal L(q)\, ,
+            q^* = \argmin{q\in \mathcal Q} \dkl{q(z)}{p(z\vert x)} = \argmax{q\in \mathcal Q} \mathcal L(q)\, ,
           \end{align*}
         </div>
         where $\mathcal Q$ is a class of probability measures and finding the argmax of $L(q)$ might be actually easier than working with the KL-Divergence (because it does not involve $p(z\vert x, \theta)$).
         <li>
-          <b>Calculus of Variations:</b> The VI goal needs the ability to maximize quantities (called <i>Functionals</i>) w. r. t. not parameters but whole functions. The framework in which this can be achieved is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Calculus_of_variations'>Calculus of Variations</a> which was already referred to here, when denoting that the Gaussian PDF maximizes the entropy of all real-valued, continuous PDFs with fixed first and second moment. Because of <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a> we know, that the problem is exactly solved for $q(z) = p(z\vert x)$ where $\dkl{q(z)}{p(z\vert x)} = 0$, but it might be impossible to compute $p(z\vert x)$. Therefore approximations like the following are used.
+          <b>Calculus of Variations:</b> The VI goal needs the ability to maximize quantities (called <i>Functionals</i>) wrt. not parameters but whole functions. The framework in which this can be achieved is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Calculus_of_variations'>Calculus of Variations</a> which was already referred to here, when denoting that the Gaussian PDF maximizes the entropy of all real-valued, continuous PDFs with fixed first and second moment. Because of <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a> we know, that the problem is exactly solved for $q(z) = p(z\vert x)$ where $\dkl{q(z)}{p(z\vert x)} = 0$, but it might be impossible to compute $p(z\vert x)$. Therefore approximations like the following are used.
         </li>
         <li>
           <b>Mean Field Theory / Factorizing Approximation:</b> 
           <ul>
             <li>
-              Assuming that $q(z)$ factorizes w. r. t. groups of variable $z_i$, i. e.
+              Assuming that $q(z)$ factorizes wrt. groups of variable $z_i$, i. e.
               <div class='scroll'>
                 \begin{align*}
                   q(z) = \prod_i q_i(z_i) =: \prod_i q_i
@@ -3290,8 +3292,8 @@
               one can rewrite $\mathcal L(q)$ to
               <div class='scroll'>
                 \begin{align*}
-                  \mathcal L (q) &= \underset{z_j}{\sumint} q_j \log \tilde p(x, z_j) - \underset{z_j}{\sumint} q_j \log q_j + \underset{\textsf{wrt} \ q_j}{\mathrm{const}} \\
-                  &= - \dkl{q_j(z_j)}{\tilde p(x, z_j)} + \underset{\textsf{wrt} \ q_j}{\mathrm{const}} 
+                  \mathcal L (q) &= \underset{z_j}{\sumint} q_j \log \tilde p(x, z_j) - \underset{z_j}{\sumint} q_j \log q_j + \underset{\textsf{wrt.} \ q_j}{\mathrm{const.}} \\
+                  &= - \dkl{q_j(z_j)}{\tilde p(x, z_j)} + \underset{\textsf{wrt.} \ q_j}{\mathrm{const.}} 
                 \end{align*}
               </div>
               where
@@ -3301,7 +3303,7 @@
                 \end{align*}
               </div>
             </li>
-            <li>Because this can be rewritten to a KL-divergence we know that this is maximized by setting $q_j(z_j) = \tilde p(x, z_j)$.</li>
+            <li>Because $\mathcal L (q)$ can be rewritten to a KL-divergence we know that this is maximized by setting $q_j(z_j) = \tilde p(x, z_j)$.</li>
             <li>
               This leads to the following <b>algorithm</b>:
               <ul>
@@ -3310,7 +3312,7 @@
                   Repeat the following iterative (over $j$) update till convergence:
                   <div class='scroll'>
                     \begin{align*}
-                      \log q^\star_j (z_j) = \E_{q, i\neq j} (\log p(x, z)) + \mathrm{const}\, .
+                      \log q^*_j (z_j) = \E_{q, i\neq j} (\log p(x, z)) + \mathrm{const}\, .
                     \end{align*}
                   </div>
                 </li>
@@ -3356,11 +3358,174 @@
       </ul>
 
 
-      <h2>Variational Inference Applied</h2>
+      <h2>VI Applied I - Gaussian-Mixture-Model</h2>
       <ul class="flul">
         <li>Variational Inference tools are very powerful and versatile (also efficient) methods but they need a lot of manual derivations of corresponding probabilities, integrals, etc. Therefore to get a first insight of how a model actually behaves it is more common to apply easier methods, like MCMC sampling, to a subset of the data before diving into VI.</li>
+        <li>
+          Remember the setting: $\theta := (\pi, \mu, \Sigma)$
+          <div class='scroll'>
+            \begin{align*}
+              p(x, z\vert \theta) &= \prod_{n=1}^N \prod_{k=1}^K \pi_k^{z_{nk}}\cdot \mathcal N(x_n; \mu_k, \Sigma_k)^{z_{nk}} \\
+              &= \prod_{n=1}^N p(z_{n:}\vert \pi) \cdot p(x_n \vert z_{n:}, \mu, \Sigma)\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          To perform VI on this setting, include the parameters as probabilistic variables to the model (where choosing suitable conjugate priors):
+          <div class='scroll'>
+            \begin{align*}
+              p(x, z, \pi, \mu, \Sigma) &= p(x, z\vert \pi, \mu, \Sigma) \cdot p(\pi) \cdot p(\mu\vert \Sigma) \cdot p(\Sigma) \quad \textsf{with} \\
+              p(\pi) &= \mathcal D(\pi\vert \alpha)\, , \quad \textsf{and} \\
+              p(\mu\vert\Sigma)\cdot p(\Sigma) &= \prod_{k=1}^K \mathcal N(\mu_k; m, \Sigma_k/\beta) \cdot \mathcal W(\Sigma_k^{-1}; W, \nu)\, ,
+            \end{align*}
+          </div>
+          where $\mathcal W$ is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Wishart_distribution'>Wishart distribution</a> and $\mathcal N\cdot \mathcal W$ is the conjugate prior for simultaneous observation of mean and covariance of a Gaussian variable.
+        </li>
+        <li>
+          The full posterior $p(z, \pi, \mu, \Sigma\vert x)$ is intractable, thus consider an approximation $q(z, \pi, \mu, \Sigma)$ with the factorization ("educated guess"):
+          <div class='scroll'>
+            \begin{align*}
+              q(z, \pi, \mu, \Sigma) = q(z) \cdot q(\pi, \mu, \Sigma)\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          The distribution $q^*(z)$ can be derived using the factorization of the joint which yields:
+          <div class='scroll'>
+            \begin{align*}
+              \log q^*(z) &=  \E_{q(\pi, \mu, \Sigma)} \big( \log p(x, z, \pi, \mu, \Sigma) \big) + \constwrt{z} \\
+              &=  \E_{q(\pi)} \big( \log p(z \vert \pi) \big) + \E_{q(\mu, \Sigma)} \big( \log p(x,\vert z, \mu, \Sigma) \big) + \constwrt{z} \\
+              &=  \sum_{n=1}^N\sum_{k=1}^K z_{nk} \underbrace{\Big( \E_{q(\pi)}(\log \pi_k) + \frac 1 2 \E_{q(\mu, \Sigma)} \big( \log \abs{\Sigma^{-1}} - (x_n-\mu_k)^T\Sigma_k^{-1} (x-\mu_k) \big) \Big)}_{=:\log(\rho_{nk})}  + \constwrt{z} \, ,
+            \end{align*}
+          </div>
+          where $\rho_{nk}$ is independent of $z$ and therefore
+          <div class='scroll'>
+            \begin{align*}
+              q^*(z) \propto \prod_{n=1}^N\prod_{k=1}^K \rho_{nk}^{z_{nk}}
+            \end{align*}
+          </div>
+          and with 
+          <div class='scroll'>
+            \begin{align*}
+              r_{nk} = \frac{\rho_{nk}}{\sum_{j=1}^K \rho_{nj}}
+            \end{align*}
+          </div>
+          it follows
+          <div class='scroll'>
+            \begin{align*}
+              q^*(z) = \prod_{n=1}^N\prod_{k=1}^K r_{nk}^{z_{nk}} \quad \textsf{with} \quad \E_{q(z)} [z]= r_{nk} \, . 
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          The distribution $q^*(\pi, \mu, \Sigma)$ can be derived analogously but are more tedious, because there are more terms in the joint depending on $\pi, \mu, \Sigma$ than on $z$ (see details in the <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=2294'>lecture</a>). The results actually show, that (without requiring this when setting up the approximation) $q$ factorizes further to
+          <div class='scroll'>
+            \begin{align*}
+              q(\pi, \mu, \Sigma) = q(\pi) \cdot \prod_{k=1}^K q(\mu_k, \Sigma_k)
+            \end{align*}
+          </div>
+          where
+          <div class='scroll'>
+            \begin{align*}
+              q^*(\pi) &= \mathcal D(\pi, \alpha + N_k) \, , \\
+              q^*(\mu_k, \Sigma_k) &= \mathcal N \big(\mu_k; m_k, \Sigma_k/\beta_k\big) \cdot \mathcal W\big(\Sigma_k^{-1}; W_k, \nu_k\big)
+            \end{align*}
+          </div>
+          with 
+          <div class='scroll'>
+            \begin{align*}
+              N_k &= \sum_{n=1}^N r_{nk} \, , \\
+              \alpha_k &= \alpha + N_k \, ,\\
+              \beta_k  &= \beta + N_k \, , \\
+              m_k      &= \frac{1}{\beta_k} \big(\beta m + N_k \bar x_k \big) \, , \\
+              \nu_k    &= \nu +N_k \, , \\
+              W_k^{-1} &= W^{-1} + N_kS_k + \frac{\beta N_k}{\beta + N_k}(\bar x_k - m)(\bar x_k -m)^T\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          Given these distributions for $\pi, \mu$ and $\Sigma$ we can now actually resolve the expectations remaining in $\log \rho_{nk}$. This should be done by looking up properties of the corresponding distributions (do not reinvent the wheel...). The terms (which include the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Digamma_function'>Digamma function</a>) are listed in the <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=3295'>lecture</a> and can be implemented using standard libraries.
+        </li>
+        <li>We now have an approximation not only for the mode (or something similar) of the posterior but instead a full approximation of the actual functional form of the posterior PDF(s).</li>
       </ul>
 
+
+      <h2>VI Applied II - Topic Model</h2>
+      <ul class="flul">
+        <li>
+          Setting: Remember the joint PDF of the topic model parameters from eq. \eqref{eq:joint_LDA}:
+          <div class='scroll'>
+            \begin{align*}
+                p(C, \Pi, \Theta, W) &= p(\Pi\vert \alpha)\cdot p(C\vert \Pi)\cdot p(\Theta\vert \beta)\cdot p(W\vert C, \Theta) = \dots \\
+                &= \left( \prod_{d=1}^D \mathcal D(\pi_d; \ \alpha_d) \right) \cdot 
+                  \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \pi_{dk}^{c_{dik}} \right) \cdot
+                  \left( \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K \theta_{kw_{di}}^{c_{dik}} \right) \cdot 
+                  \left( \prod_{k=1}^K \mathcal D(\theta_k;\ \beta_k) \right) \\
+                &= \left( \prod_{d=1}^D \frac{\Gamma \left(\sum_k \alpha_{dk}\right)}{\prod_k \Gamma (\alpha_{dk})} \prod_{k=1}^K \pi_{dk}^{\alpha_{dk}-1+n_{dk\boldsymbol \cdot}} \right) \cdot 
+                  \left( \prod_{k=1}^K \frac{\Gamma \left(\sum_v \beta_{kv}\right)}{\prod_v \Gamma (\beta_{kv})} \prod_{v=1}^V \theta_{kv}^{\beta_{kv}-1+n_{\boldsymbol \cdot kv}} \right) \, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          <i>Notation:</i> We use the abbreviations
+          <div class='scroll'>
+            \begin{align*}
+            \sum_{d, i, k} := \sum_{d=1}^D \sum_{i=1}^{I_d} \sum_{k=1}^K \qquad \textsf{and} \qquad \prod_{d, i, k} := \prod_{d=1}^D \prod_{i=1}^{I_d} \prod_{k=1}^K
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          The full posterior $p(C, \Pi, \Theta \vert W)$ is intractable, thus consider an approximation $q(C, \Pi, \Theta)$ with the factorization ("educated guess", motivated by the same argument that worked out for the collapsed Gibbs sampler):
+          <div class='scroll'>
+            \begin{align*}
+              q(C, \Pi, \Theta) = q(C) \cdot q(\Pi, \Theta)\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          The distribution $q^*(C)$ for $C$ can be derived using the factorization of the joint which yields: 
+          <div class='scroll'>
+            \begin{align*}
+              \log q^*(C) &= \E_{q(\Pi, \Theta)} \left( \sum_{d, i, k} c_{dik} \log(\pi_{dk} \theta_{kw_{di}}) \right) + \constwrt{C} \\
+              &= \sum_{d=1}^D \underbrace{\Big( \E_{q(\Pi, \Theta)} (\log \pi_{dk}\theta_{dw_{di}}) \Big)}_{=: \log \gamma_{dik}} +  \constwrt{C}\, ,
+            \end{align*}
+          </div>
+          which is (analogous to the Mixture-Model situation) a categorical distribution with probabilities 
+          <div class='scroll'>
+            \begin{align*}
+              \tilde \gamma_{dik} = \frac{\gamma_{dik}}{\sum_k \gamma_{dik}}
+            \end{align*}
+          </div>
+          i. e.
+          <div class='scroll'>
+            \begin{align*}
+              q(C)=\prod_{d, i, k} \tilde \gamma_{dik}^{c_{dik}}\quad \Rightarrow \quad \E_q(c_{dik}) = \tilde \gamma_{dik}\, . 
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          The distribution $q^*(\Pi, \Theta)$ can be derived analogously but are more tedious. As already suspected another factorization results during the derivation. Proceeding analogous as for $q(C)$ one arrives at
+          <div class='scroll'>
+            \begin{align*}
+              q^*(\Pi) &= \prod_{d=1}^D \mathcal D(\pi_d; \underbrace{\alpha_{d:} + \tilde \gamma_{d\cdot :}}_{=:\tilde \alpha_{d:}} ) \, , \\
+              q^*(\Theta) &= \prod_{k=1}^K \mathcal D\Bigg(\theta_k; \underbrace{\left[\beta_{kv} + \sum_{d, i} \tilde \gamma_{di} 1_{w_{di}=v}\right]_{v=1,\dots, V}}_{=: \tilde \beta_{k}}  \Bigg)
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          Again we now can compute $\E_{q(\Pi, \Theta)} (\log \pi_{dk}\theta_{dw_{di}})$ which we where missing before:
+          <div class='scroll'>
+            \begin{align*}
+              \gamma_{dik} = \exp \left[\psi(\tilde \alpha_{dk}) + \psi(\tilde \beta_{kw_{di}}) - \psi \left( \sum_v \tilde \beta_{kv} \right)\right]
+            \end{align*}
+          </div>
+          where $\psi$ is the Digamma function and some terms can be omitted thanks to the normalization of $\gamma$ to $\tilde \gamma$.
+        </li>
+        <li>
+          To apply VI to a problem, we do not necessarily need to compute the ELBo $\mathcal L(q)$ itself, but it can be used as a unittest and monitoring tool. It can be calculated analogously to the update rules for the parameters.
+        </li>
+        <li>The full algorithm can be found in <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=4945'>pseudocode in the lecture</a>.</li>
+      </ul>
 
 
 
