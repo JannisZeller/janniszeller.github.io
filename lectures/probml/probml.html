@@ -2196,7 +2196,7 @@
               \dkl P Q := \dkl p q := \int \log \left( \frac{p(x)}{q(x)}\right) \, \d p(x) = \int \log \left( \frac{p(x)}{q(x)}\right) p(x) \, \d x \, .
             \end{align*}
           </div>
-          Note that $\dkl P Q$ is not symmetric in $P$ and $Q$ but positive (<i>Gibbs' inequality)</i>).Additionally 
+          Note that $\dkl P Q$ is not symmetric in $P$ and $Q$ but positive (<a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a>). Additionally 
           <div class='scroll'>
             \begin{align*}
               \dkl P Q = 0 \quad \Leftrightarrow \quad p \equiv q \ \ \textsf{almost everywhere.}
@@ -3166,7 +3166,7 @@
           one can show that
           <div class='scroll'>
             \begin{align*}
-              \log p(x\vert \theta) = \mathcal L (q) - \int q(z) \log \frac{p(z\vert x, \theta)}{q(z)} = \mathcal L (q) + \dkl{q}{p(z\vert x, \theta)}\, .
+              \log p(x\vert \theta) = \mathcal L (q) - \int q(z) \log \frac{p(z\vert x, \theta)}{q(z)} \, \d z = \mathcal L (q) + \dkl{q}{p(z\vert x, \theta)}\, .
             \end{align*}
           </div>
           Thus because of $\dkl p q = 0$ is equivalent to $p\equiv q$ with the choice of $q(z)=p(z\vert x, \theta)$ in the E-step one "sets the gap" the ELBo and $\log p(x\vert \theta)$ to zero.
@@ -3191,7 +3191,7 @@
           <b>Maximize Posterior (MAP) with EM:</b> Instead of using EM for MLE, i. e. maximizing $p(x\vert \theta)$ one can also us EM for MAP optimization by including a prior for $\theta$. The E-step stays the same but the M-step becomes setting $\theta_{\textsf{new}}$ to:
           <div class='scroll'>
             \begin{align*}
-              \theta_{\textsf{new}} = \argmax{\theta} \int q(z) \, \log \left(  \frac{p(z, x\vert \theta)p(\theta)}{q(z)} \right) = \argmax{\theta} \Big[ \mathcal L (q, \theta) + \log p(\theta) \Big]
+              \theta_{\textsf{new}} = \argmax{\theta} \int q(z) \, \log \left(  \frac{p(z, x\vert \theta)p(\theta)}{q(z)} \right)\, \d z = \argmax{\theta} \Big[ \mathcal L (q, \theta) + \log p(\theta) \Big]
             \end{align*}
           </div>
           which because of 
@@ -3240,9 +3240,125 @@
       </ul>
 
 
-      <h2 id="variational_approximations">Variational Approximations</h2>
+      <h2 id="variational_approximations">Variational Inference</h2>
       <ul class="flul">
+        <li>
+          <b>Setting:</b> The setting is analogous to the EM-setting, i. e. we seek to maximize (MLE) the Likelihood
+          <div class='scroll'>
+            \begin{align*}
+              \log p(x\vert \theta) = \mathcal L (q, \theta) + \dkl{q}{p(z\vert x, \theta)}\, .
+            \end{align*}
+          </div>
+          where
+          <div class='scroll'>
+            \begin{align*}
+            \mathcal L (q, \theta) &= \underset{z}{\sumint} q(z)\, \log\left( \frac{p(x,z\vert \theta)}{q(z)}\right) \, , \\
+            \dkl{q(z)}{p(z\vert x, \theta)}  &= - \underset{z}{\sumint} q(z) \log \left( \frac{p(z\vert x, \theta)}{q(z)} \right)\, .
+            \end{align*}
+          </div>
+          Using the EM-algorithm one iteratively maximizes this by minimizing the KL-divergence (setting $q(z) = p(z\vert x, \theta)$, E-step) and maximizing $\mathcal L(q, \theta)$ in $\theta$ (M-step).
+        </li>
+        <li>
+          <b>Variational Inference (VI) Approach:</b> Alternatively one could try to model the $\theta$'s as probabilistic variables and include them in the set of variables $z$:
+          <div class='scroll'>
+            \begin{align*}
+              z \leftarrow z \cup \theta
+            \end{align*}
+          </div>
+          and solely maximize $\mathcal L (q(z))$ w. r. t. $q$ to implicitly minimize $\dkl{q}{p(z\vert x)}$ (this is true because $\log p(x\vert \theta)$ is a constant in $z$, and the equation from the "Setting").
+        </li>
+        <li>Variational Inference Goal:</li> Variational Inference is a general framework to construct approximating probability distributions $q(z)$ to non-analytic posterior distributions $p(z\vert x)$ by minimizing the <b>functional</b>
+        <div class='scroll'>
+          \begin{align*}
+            q^\star = \argmin{q\in \mathcal Q} \dkl{q(z)}{p(z\vert x)} = \argmax{q\in \mathcal Q} \mathcal L(q)\, ,
+          \end{align*}
+        </div>
+        where $\mathcal Q$ is a class of probability measures and finding the argmax of $L(q)$ might be actually easier than working with the KL-Divergence (because it does not involve $p(z\vert x, \theta)$).
+        <li>
+          <b>Calculus of Variations:</b> The VI goal needs the ability to maximize quantities (called <i>Functionals</i>) w. r. t. not parameters but whole functions. The framework in which this can be achieved is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Calculus_of_variations'>Calculus of Variations</a> which was already referred to here, when denoting that the Gaussian PDF maximizes the entropy of all real-valued, continuous PDFs with fixed first and second moment. Because of <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a> we know, that the problem is exactly solved for $q(z) = p(z\vert x)$ where $\dkl{q(z)}{p(z\vert x)} = 0$, but it might be impossible to compute $p(z\vert x)$. Therefore approximations like the following are used.
+        </li>
+        <li>
+          <b>Mean Field Theory / Factorizing Approximation:</b> 
+          <ul>
+            <li>
+              Assuming that $q(z)$ factorizes w. r. t. groups of variable $z_i$, i. e.
+              <div class='scroll'>
+                \begin{align*}
+                  q(z) = \prod_i q_i(z_i) =: \prod_i q_i
+                \end{align*}
+              </div>
+              one can rewrite $\mathcal L(q)$ to
+              <div class='scroll'>
+                \begin{align*}
+                  \mathcal L (q) &= \underset{z_j}{\sumint} q_j \log \tilde p(x, z_j) - \underset{z_j}{\sumint} q_j \log q_j + \underset{\textsf{wrt} \ q_j}{\mathrm{const}} \\
+                  &= - \dkl{q_j(z_j)}{\tilde p(x, z_j)} + \underset{\textsf{wrt} \ q_j}{\mathrm{const}} 
+                \end{align*}
+              </div>
+              where
+              <div class='scroll'>
+                \begin{align*}
+                  \log \tilde p(x, z_j) = \E_{q, i\neq j} [\log p(x, z)] + \mathrm{const}\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>Because this can be rewritten to a KL-divergence we know that this is maximized by setting $q_j(z_j) = \tilde p(x, z_j)$.</li>
+            <li>
+              This leads to the following <b>algorithm</b>:
+              <ul>
+                <li>Assume $q(z) = \prod q_i(z_i)$ and initialize all $q_i$ to some initial distribution.</li>
+                <li>
+                  Repeat the following iterative (over $j$) update till convergence:
+                  <div class='scroll'>
+                    \begin{align*}
+                      \log q^\star_j (z_j) = \E_{q, i\neq j} (\log p(x, z)) + \mathrm{const}\, .
+                    \end{align*}
+                  </div>
+                </li>
+              </ul>
+            </li>
+            <li>With <i>Exponential Family</i> distributions for $p$ one only needs the expectation of $q$ under the sufficient statistics as the example in the next part will show.</li>
+          </ul>
+        </li>
+        <table class="mdtbl">
+          <tr>
+            <td><b>Model</b></td>
+            <td><b>Computation Technique</b></td>
+          </tr>
+          <tr>
+            <td>Directed Graphical Models (representable by a DAG)</td>
+            <td>Monte Carlo Sampling and extensions</td>
+          </tr>
+          <tr>
+            <td>Gaussian Distributions</td>
+            <td>Gaussian Inference by Linear Algebra</td>
+          </tr>
+          <tr>
+            <td>(Deep) Learnt Representations</td>
+            <td>Maximum Likelihood / Maximum Aposteriori</td>
+          </tr>
+          <tr>
+            <td>Kernels</td>
+            <td>Laplace Approximation</td>
+          </tr>
+          <tr>
+            <td>Markov Chains</td>
+            <td>Expectation-Maximization</td>
+          </tr>
+          <tr>
+            <td>Exponential Families / Conjugate Priors</td>
+            <td>Variational Inference</td>
+          </tr>
+          <tr>
+            <td>Factor Graphs & Message Passing</td>
+            <td></td>
+          </tr>
+        </table>
+      </ul>
 
+
+      <h2>Variational Inference Applied</h2>
+      <ul class="flul">
+        <li>Variational Inference tools are very powerful and versatile (also efficient) methods but they need a lot of manual derivations of corresponding probabilities, integrals, etc. Therefore to get a first insight of how a model actually behaves it is more common to apply easier methods, like MCMC sampling, to a subset of the data before diving into VI.</li>
       </ul>
 
 
@@ -3252,43 +3368,8 @@
 
 
 
+
       <br> <br>
-
-
-      <!-- <table class="mdtbl">
-        <tr>
-          <td><b>Model</b></td>
-          <td><b>Computation Technique</b></td>
-        </tr>
-        <tr>
-          <td>Directed Graphical Models (representable by a DAG)</td>
-          <td>Monte Carlo Sampling and extensions</td>
-        </tr>
-        <tr>
-          <td>Gaussian Distributions</td>
-          <td>Gaussian Inference by Linear Algebra</td>
-        </tr>
-        <tr>
-          <td>(Deep) Learnt Representations</td>
-          <td>Maximum Likelihood / Maximum Aposteriori</td>
-        </tr>
-        <tr>
-          <td>Kernels</td>
-          <td>Laplace Approximation</td>
-        </tr>
-        <tr>
-          <td>Markov Chains</td>
-          <td>Expectation-Maximization</td>
-        </tr>
-        <tr>
-          <td>Exponential Families / Conjugate Priors</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td>Factor Graphs & Message Passing</td>
-          <td></td>
-        </tr>
-      </table> -->
 
       <a class="link" target="_blank" href="https://youtu.be/1GJjO7AE8JY?t=2352">Current Video</a>
 
