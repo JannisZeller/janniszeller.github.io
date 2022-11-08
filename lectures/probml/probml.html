@@ -15,7 +15,7 @@
   <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Probml-Skript -->
+  <!-- Probml-Script -->
   <script src="./probml.js"></script>
 
   <!-- Styling -->
@@ -48,7 +48,8 @@
     \newcommand{\align}[1]{{\begin{align*}#1\end{align*}}}
     \newcommand{\argmax}[1]{{\underset{#1}{\mathrm{argmax}}\, }}
     \newcommand{\argmin}[1]{{\underset{#1}{\mathrm{argmin}}\, }}
-    \newcommand{\dkl}[2]{D_{\textsf{KL}}\left(#1\vert\vert#2\right)}
+    \newcommand{\dkl}{D_{\textsf{KL}}}
+    \newcommand{\vvert}{\vert\vert}
     \newcommand{\indep}{\perp\!\!\!\perp}
     \newcommand{\nindep}{\centernot\indep}
     \newcommand{\sumint}{\ \ \ \mathclap{\int}\mathclap{\sum} \ \ \ } 
@@ -176,8 +177,7 @@
             \end{align*}
           </div>
         </li>
-        <li>E. g. lets look at the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Lebesgue_measure">Lebesgue Measure</a>, which resembles the "classical" known integration technique on $\mathbb R^d$. Let $A \subset \mathbb R$. Then the Lebesgue measure
-          $\lambda(A)$ is the Infimum of the summed lengths of all sequences of open subsets of $\mathbb R^d$ which contain $A$. Therefore at integration time one multiplies the function $f$ with a length of an interval, which leads to something really close to the known <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Riemann_integral">Riemann Integral</a> from calculus.</li>
+        <li>E. g. lets look at the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Lebesgue_measure">Lebesgue Measure</a>, which resembles the "classical" known integration technique on $\mathbb R^d$. Let $A \subset \mathbb R$. Then the Lebesgue measure $\lambda(A)$ is the Infimum of the summed lengths of all sequences of open subsets of $\mathbb R^d$ which contain $A$. Therefore at integration time one multiplies the function $f$ with a length of an interval, which leads to something really close to the known <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Riemann_integral">Riemann Integral</a> from calculus.</li>
         <li>The arguably easiest measure to execute on a test function $f$ is the <b>Dirac Measure:</b> $\delta_x(A) = 1_A(x)$ such that:
           <div class='scroll'>
             \begin{align*}
@@ -793,7 +793,7 @@
             </div>
             This assures that $\boldsymbol{P_H(x',p')=P_H(x,p)}$ for the Metropolis-Hastings procedure when interpreting the <b>Markov Chain steps as time steps</b>.
           </li>
-          <li>The proposal-part of the algorithm is thereby practically omitted, because generating a sample $(x', y')$ by time propagation given by $H$ is already the proposal of a new point. The dynamics of such a system are time-reversible (<a class="link" target="_blank" href="https://physics.stackexchange.com/questions/528020/reversibility-of-hamiltonian-dynamics">Superfast Jellyfish, StackExchange</a>), which resembles the Detailed Balance Condition to be fulfilled.</li>
+          <li>The proposal-part of the algorithm is thereby practically omitted, because generating a sample $(x', y')$ by time propagation given by $H$ is already the proposal of a new point. The dynamics of such a system are time-reversible (see <a class="link" target="_blank" href="https://physics.stackexchange.com/questions/528020/reversibility-of-hamiltonian-dynamics">here</a>), which resembles the Detailed Balance Condition to be fulfilled.</li>
           <li>Because the distribution $P_H(x,p)$ factorizes to $P_H(x,p) = P_E(x)P_K(p)$ we are now able to sample from
             $P_E(x)=p(x)$ with accepting each proposal by the cost of solving an ordinary differential equation (ODE) of the first order namely
             <div class='scroll'>
@@ -1683,7 +1683,7 @@
             K := P_t^{-}H^T(HP_t^{-}H^T + R)^{-1} \, , \qquad z:= y_t-Hm_t^-\, .
             \end{align*}
           </div>
-          During the smoothing step (reference Rauch Tung Striebel or <b>RTS Smoothing</b>) $m_T=m_T^S$ and $P_T=P_T^S$ are known from the last step ($T$) of the forward pass and one can iterate backwarts:
+          During the smoothing step (reference Rauch Tung Striebel or <b>RTS Smoothing</b>) $m_T=m_T^S$ and $P_T=P_T^S$ are known from the last step ($T$) of the forward pass and one can iterate backwards:
           <div class='scroll'>
             \begin{align*}
             \textsf{Smoothing}: \quad p(x_t\vert Y) = \mathcal N (x_t; \underbrace{m_t+G_t(m_{t+1}^S - m_{t+1}^-)}_{=m_t^S}, \underbrace{P_t+G_t(P_{t+1}^S-P_{t+1}^-)G_t^T}_{P_t^S}) \, ,
@@ -2195,13 +2195,13 @@
         <li><b>Kullback-Leibler-Divergence:</b> Given 2 probability distributions $P$ and $Q$ over $\X$ with PDFs $p(x)$ and $q(x)$ the <i>KL-divergence from $Q$ to $P$</i> is defined as
           <div class='scroll'>
             \begin{align*}
-              \dkl P Q := \dkl p q := \int \log \left( \frac{p(x)}{q(x)}\right) \, \d p(x) = \int \log \left( \frac{p(x)}{q(x)}\right) p(x) \, \d x \, .
+              \dkl (P \vvert Q) := \dkl (p\vvert q) := \int \log \left( \frac{p(x)}{q(x)}\right) \, \d p(x) = \int \log \left( \frac{p(x)}{q(x)}\right) p(x) \, \d x \, .
             \end{align*}
           </div>
-          Note that $\dkl P Q$ is not symmetric in $P$ and $Q$ but positive (<a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a>). Additionally 
+          Note that $\dkl (P \vvert Q)$ is not symmetric in $P$ and $Q$ but positive (<a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a>). Additionally 
           <div class='scroll'>
             \begin{align*}
-              \dkl P Q = 0 \quad \Leftrightarrow \quad p \equiv q \ \ \textsf{almost everywhere.}
+            \dkl (P \vvert Q) = 0 \quad \Leftrightarrow \quad p \equiv q \ \ \textsf{almost everywhere.}
             \end{align*}
           </div>
           "Almost everywhere" means up to a set of measure $0$ (in $\R$ this would be e. g. a set of discrete points).
@@ -2212,9 +2212,9 @@
               p(x) \approx \hat p(x\vert w) = \exp\left(\phi(x)^T w - \log Z(w)\right)\, .
             \end{align*}
           </div>
-          On can then show (<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=4520">lecture</a>) that <i>minimizing $\dkl{p(x)}{\hat p(x\vert w)}$ wrt. $w$ is equivalent to finding the MLE point estimate \eqref{eq:exp_family_mle} of $w$.</i> 
+          On can then show (<a class="link" target="_blank" href="https://youtu.be/BdtlrPA5hrs?t=4520">lecture</a>) that <i>minimizing $\dkl \big(p(x) \vvert \hat p(x\vert w)\big)$ wrt. $w$ is equivalent to finding the MLE point estimate \eqref{eq:exp_family_mle} of $w$.</i> 
         </li>
-        <li><b>MAP inference with Exponential Families:</b> Analogously one can show that minimizing $\dkl{p(x)}{\hat p(x, w)}$ or $\dkl{p(x)}{\hat p(w, x)}$ - constructed with the conjugate prior - which resembles a MAP inference yields:
+        <li><b>MAP inference with Exponential Families:</b> Analogously one can show that minimizing $\dkl\big(p(x)\vvert\hat p(x, w)\big)$ or $\dkl\big(p(x)\\vvert \hat p(w, x)\big)$ - constructed with the conjugate prior - which resembles a MAP inference yields:
           <div class='scroll'>
             \begin{align*}
               \E_p[\phi(x)] \approx \frac{1}{n} \sum_{i=1}^n \phi(x_i) = \frac{n+\nu}{n}\nabla_w\log Z(w) - \frac{1}{n}\alpha\, ,
@@ -2266,7 +2266,7 @@
             <li>Fill in all observed variables (variables on which we want to <i>condition</i>).</li>
           </ol>
         </li>
-        <li><b>Extending the Notion of Graphical Models:</b> There are some convenient extension to DGMs in the pictorial which are presented in the image below. First a <b>box or plate</b> with a natural number (typically $n$) represents $n$ identical copies of the box, in the case below this is $n$ iid $y_i$'s. Also (hyper-)parameters, which are not modelled in a fully probabilistic manner (i. e. being searched by MLE or MAP) are added through arrows with <b>small circles</b> and the parameters names on the siede ($\mu, \Sigma$ and $\sigma$ in the image below. The image below could therefor e. g. represent
+        <li><b>Extending the Notion of Graphical Models:</b> There are some convenient extension to DGMs in the pictorial which are presented in the image below. First a <b>box or plate</b> with a natural number (typically $n$) represents $n$ identical copies of the box, in the case below this is $n$ iid $y_i$'s. Also (hyper-)parameters, which are not modelled in a fully probabilistic manner (i. e. being searched by MLE or MAP) are added through arrows with <b>small circles</b> and the parameters names on the side ($\mu, \Sigma$ and $\sigma$ in the image below. The image below could therefor e. g. represent
         <div class='scroll'>
           \begin{align*}
             w \sim \mathcal N(\mu, \Sigma) \qquad \textsf{with} \qquad  y_i \overset{\mathrm{iid}}{\sim} \mathcal N( \phi(x_i)^T w, \sigma^2)\, , \quad i=1,\dots n
@@ -2720,7 +2720,7 @@
       </ul>
 
 
-      <h2>Topic Modelling II - Latent Dirichlet Allocation</h2>
+      <h2 id="lda">Topic Modelling II - Latent Dirichlet Allocation</h2>
       <ul class="flul">
         <li>In the following part the Latent Dirichlet Allocation (LDA) model is described which is the typical algorithm one has in mind, when talking about topic models.</li>
         <li>
@@ -2863,7 +2863,9 @@
           Because lots of dimensions factorize this can be done pretty efficient by drawing the samples in parallel. Despite this factorization processing larger datasets still demand for batched processing because allocating e. g. tensors (e. g. <span style="font-family: 'Cascadia Code', Consolas, monospace;">tensorflow.Tensor</span> or <span style="font-family: 'Cascadia Code', Consolas, monospace;">numpy.ndarray</span>) of sizes <span style="font-family: 'Cascadia Code', Consolas, monospace;">(10000, 1000, 10)</span>  is impossible with typical RAM-sizes.
         </li>
         <li>
-          <b>More Efficient Inference:</b> The LDA-problem can be tackled using Exponential Families, which we have already leveraged when using the conjugacy of the Dirichlet Prior to the Categorical distribution. 
+          <b>More Efficient Inference:</b> 
+          <br>
+          The LDA-problem can be tackled using Exponential Families, which we have already leveraged when using the conjugacy of the Dirichlet Prior to the Categorical distribution. 
           <ul>
             <li>
               In terms of Exponential Families one can also show, that the <i>predictive</i> for $C$ is:
@@ -3029,7 +3031,7 @@
 
       <h2 id="em_algorithm">Expectation Maximization Algorithm I</h2>
       <ul class="flul">
-        <li>The optimization algorithm for the general Gaussian Mixture model is an example of an Expectation Maximization Algorithm, which can be applied for efficient inference in other settings as wenn, which is why it gets discussed in more detail now.</li>
+        <li>The optimization algorithm for the general Gaussian Mixture model is an example of an Expectation Maximization Algorithm, which can be applied for efficient inference in other settings as well, which is why it gets discussed in more detail now.</li>
         <li>
           Gaussian Mixture Models Revisited: Instead of fixing the $\pi_i$'s as latent variables, lets model them in another "layer" using binary $z_{ik} \in \{0; 1\}$ with $\sum_{k} z_{ik} = 1$ - one hot encoded cluster assignments for the data points, analogous to the topic assignments $c_{idk}$ in topic modelling. Therefore write: $p(x, z) = p(x\vert z)p(z)$ with
           <div class='scroll'>
@@ -3168,10 +3170,10 @@
           one can show that
           <div class='scroll'>
             \begin{align*}
-              \log p(x\vert \theta) = \mathcal L (q) - \int q(z) \log \frac{p(z\vert x, \theta)}{q(z)} \, \d z = \mathcal L (q) + \dkl{q}{p(z\vert x, \theta)}\, .
+              \log p(x\vert \theta) = \mathcal L (q) - \int q(z) \log \frac{p(z\vert x, \theta)}{q(z)} \, \d z = \mathcal L (q) + \dkl \big(q\vvert p(z\vert x, \theta)\big)\, .
             \end{align*}
           </div>
-          Thus because of $\dkl p q = 0$ is equivalent to $p\equiv q$ with the choice of $q(z)=p(z\vert x, \theta)$ in the E-step one "sets the gap" the ELBo and $\log p(x\vert \theta)$ to zero.
+          Thus because of $\dkl (p \vvert q) = 0$ is equivalent to $p\equiv q$ with the choice of $q(z)=p(z\vert x, \theta)$ in the E-step one "sets the gap" the ELBo and $\log p(x\vert \theta)$ to zero.
         </li>
         <li>The two bullets above prove, that the EM-algorithm actually maximizes $\log p(x\vert \theta)$. A good derivation can also be found on <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Proof_of_correctness'>Wikipedia</a>.</li>
         <li>
@@ -3199,10 +3201,10 @@
           which because of 
           <div class='scroll'>
             \begin{align*}
-              \log p(\theta \vert x) \underset{\textsf{wrt} \ \theta}{\propto}  \log p(x\vert \theta) + \log p(\theta) \leq \mathcal L (q, \theta) + \log p(\theta) 
+              \log p(\theta \vert x) \underset{\textsf{wrt.} \ \theta}{\propto}  \log p(x\vert \theta) + \log p(\theta) \geq \mathcal L (q, \theta) + \log p(\theta) 
             \end{align*}
           </div>
-          yields in the maximization of $p(\theta \vert x)$.
+          yields to the maximization of $p(\theta \vert x)$.
         </li>
         <li>After all this still the optimization of the ELBo wrt. $\theta$ might be intractable though. In this cases we can still use EM and numerically optimize the ELBo e. g. with an autodiff framework. This is also called <b>generalized EM</b>.</li>
         <table class="mdtbl">
@@ -3244,18 +3246,19 @@
 
       <h2 id="variational_approximations">Variational Inference</h2>
       <ul class="flul">
+        <li>Also find some useful lecture notes from David Blei <a class='link' target='_blank' href='https://www.cs.princeton.edu/courses/archive/fall11/cos597C/lectures/variational-inference-i.pdf'>here</a>.</li>
         <li>
           <b>Setting:</b> The setting is analogous to the EM-setting, i. e. we seek to maximize (MLE) the Likelihood
           <div class='scroll'>
             \begin{align*}
-              \log p(x\vert \theta) = \mathcal L (q, \theta) + \dkl{q}{p(z\vert x, \theta)}\, .
+              \log p(x\vert \theta) = \mathcal L (q, \theta) + \dkl\big(q\vvert p(z\vert x, \theta)\big)\, .
             \end{align*}
           </div>
           where
           <div class='scroll'>
             \begin{align*}
               \mathcal L (q, \theta) &= \underset{z}{\sumint} q(z)\, \log\left( \frac{p(x,z\vert \theta)}{q(z)}\right) \, , \\
-              \dkl{q(z)}{p(z\vert x, \theta)}  &= - \underset{z}{\sumint} q(z) \log \left( \frac{p(z\vert x, \theta)}{q(z)} \right)\, .
+              \dkl\big(q(z)\vvert p(z\vert x, \theta)\big) &= - \underset{z}{\sumint} q(z) \log \left( \frac{p(z\vert x, \theta)}{q(z)} \right)\, .
             \end{align*}
           </div>
           Using the EM-algorithm one iteratively maximizes this by minimizing the KL-divergence (setting $q(z) = p(z\vert x, \theta)$, E-step) and maximizing $\mathcal L(q, \theta)$ in $\theta$ (M-step).
@@ -3272,12 +3275,12 @@
         <li>Variational Inference Goal:</li> Variational Inference is a general framework to construct approximating probability distributions $q(z)$ to non-analytic posterior distributions $p(z\vert x)$ by minimizing the <b>functional</b>
         <div class='scroll'>
           \begin{align*}
-            q^* = \argmin{q\in \mathcal Q} \dkl{q(z)}{p(z\vert x)} = \argmax{q\in \mathcal Q} \mathcal L(q)\, ,
+            q^* = \argmin{q\in \mathcal Q} \dkl\big(q(z)\vvert p(z\vert x)\big) = \argmax{q\in \mathcal Q} \mathcal L(q)\, ,
           \end{align*}
         </div>
         where $\mathcal Q$ is a class of probability measures and finding the argmax of $L(q)$ might be actually easier than working with the KL-Divergence (because it does not involve $p(z\vert x, \theta)$).
         <li>
-          <b>Calculus of Variations:</b> The VI goal needs the ability to maximize quantities (called <i>Functionals</i>) wrt. not parameters but whole functions. The framework in which this can be achieved is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Calculus_of_variations'>Calculus of Variations</a> which was already referred to here, when denoting that the Gaussian PDF maximizes the entropy of all real-valued, continuous PDFs with fixed first and second moment. Because of <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a> we know, that the problem is exactly solved for $q(z) = p(z\vert x)$ where $\dkl{q(z)}{p(z\vert x)} = 0$, but it might be impossible to compute $p(z\vert x)$. Therefore approximations like the following are used.
+          <b>Calculus of Variations:</b> The VI goal needs the ability to maximize quantities (called <i>Functionals</i>) wrt. not parameters but whole functions. The framework in which this can be achieved is the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Calculus_of_variations'>Calculus of Variations</a> which was already referred to here, when denoting that the Gaussian PDF maximizes the entropy of all real-valued, continuous PDFs with fixed first and second moment. Because of <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Gibbs%27_inequality'>Gibbs' inequality</a> we know, that the problem is exactly solved for $q(z) = p(z\vert x)$ where $\dkl\big(q(z)\vvert p(z\vert x)\big) = 0$, but it might be impossible to compute $p(z\vert x)$. Therefore approximations like the following are used.
         </li>
         <li>
           <b>Mean Field Theory / Factorizing Approximation:</b> 
@@ -3293,7 +3296,7 @@
               <div class='scroll'>
                 \begin{align*}
                   \mathcal L (q) &= \underset{z_j}{\sumint} q_j \log \tilde p(x, z_j) - \underset{z_j}{\sumint} q_j \log q_j + \underset{\textsf{wrt.} \ q_j}{\mathrm{const.}} \\
-                  &= - \dkl{q_j(z_j)}{\tilde p(x, z_j)} + \underset{\textsf{wrt.} \ q_j}{\mathrm{const.}} 
+                  &= - \dkl\big(q_j(z_j)\vvert\tilde p(x, z_j)\big) + \underset{\textsf{wrt.} \ q_j}{\mathrm{const.}} 
                 \end{align*}
               </div>
               where
@@ -3312,7 +3315,7 @@
                   Repeat the following iterative (over $j$) update till convergence:
                   <div class='scroll'>
                     \begin{align*}
-                      \log q^*_j (z_j) = \E_{q, i\neq j} (\log p(x, z)) + \mathrm{const}\, .
+                      \log q^*_j (z_j) = \E_{q, i\neq j} [\log p(x, z)] + \mathrm{const}\, .
                     \end{align*}
                   </div>
                 </li>
@@ -3393,9 +3396,9 @@
           The distribution $q^*(z)$ can be derived using the factorization of the joint which yields:
           <div class='scroll'>
             \begin{align*}
-              \log q^*(z) &=  \E_{q(\pi, \mu, \Sigma)} \big( \log p(x, z, \pi, \mu, \Sigma) \big) + \constwrt{z} \\
-              &=  \E_{q(\pi)} \big( \log p(z \vert \pi) \big) + \E_{q(\mu, \Sigma)} \big( \log p(x,\vert z, \mu, \Sigma) \big) + \constwrt{z} \\
-              &=  \sum_{n=1}^N\sum_{k=1}^K z_{nk} \underbrace{\Big( \E_{q(\pi)}(\log \pi_k) + \frac 1 2 \E_{q(\mu, \Sigma)} \big( \log \abs{\Sigma^{-1}} - (x_n-\mu_k)^T\Sigma_k^{-1} (x-\mu_k) \big) \Big)}_{=:\log(\rho_{nk})}  + \constwrt{z} \, ,
+              \log q^*(z) &=  \E_{q(\pi, \mu, \Sigma)} \big[ \log p(x, z, \pi, \mu, \Sigma) \big] + \constwrt{z} \\
+              &=  \E_{q(\pi)} \big( \log p(z \vert \pi) \big) + \E_{q(\mu, \Sigma)} \big[ \log p(x,\vert z, \mu, \Sigma) \big] + \constwrt{z} \\
+              &=  \sum_{n=1}^N\sum_{k=1}^K z_{nk} \underbrace{\Big( \E_{q(\pi)}[\log \pi_k] + \frac 1 2 \E_{q(\mu, \Sigma)} \big[ \log \abs{\Sigma^{-1}} - (x_n-\mu_k)^T\Sigma_k^{-1} (x-\mu_k) \big] \Big)}_{=:\log(\rho_{nk})}  + \constwrt{z} \, ,
             \end{align*}
           </div>
           where $\rho_{nk}$ is independent of $z$ and therefore
@@ -3444,8 +3447,14 @@
           </div>
         </li>
         <li>
-          Given these distributions for $\pi, \mu$ and $\Sigma$ we can now actually resolve the expectations remaining in $\log \rho_{nk}$. This should be done by looking up properties of the corresponding distributions (do not reinvent the wheel...). The terms (which include the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Digamma_function'>Digamma function</a>) are listed in the <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=3295'>lecture</a> and can be implemented using standard libraries.
+          Given these distributions for $\pi, \mu$ and $\Sigma$ we can now actually resolve the expectations remaining in $\log \rho_{nk}$. This should be done by looking up properties of the corresponding distributions (do not reinvent the wheel...). These terms include the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Digamma_function'>Digamma function</a> $\psi$ and are listed in the <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=3295'>lecture</a> and can be implemented using standard libraries. The relation these terms rely on is the following expectation:
+          <div class='scroll'>
+            \begin{align*}
+              x\sim \mathcal D(\alpha) \qquad \Rightarrow \qquad \E[\log x_i] = \psi(\alpha_i)- \psi(\alpha_0)\, ,
+            \end{align*}
+          </div>
         </li>
+        where $\alpha_0 = \sum_j \alpha_j$. Find a <a class='link' target='_blank' href='https://stats.stackexchange.com/a/483674'>proof of this relation</a> using that the fact that <a class='link' target='_blank' href='https://stats.stackexchange.com/a/319640'>marginals of a Dirichlet RV are Beta-distributed</a>.
         <li>We now have an approximation not only for the mode (or something similar) of the posterior but instead a full approximation of the actual functional form of the posterior PDF(s).</li>
       </ul>
 
@@ -3486,8 +3495,8 @@
           The distribution $q^*(C)$ for $C$ can be derived using the factorization of the joint which yields: 
           <div class='scroll'>
             \begin{align*}
-              \log q^*(C) &= \E_{q(\Pi, \Theta)} \left( \sum_{d, i, k} c_{dik} \log(\pi_{dk} \theta_{kw_{di}}) \right) + \constwrt{C} \\
-              &= \sum_{d=1}^D \underbrace{\Big( \E_{q(\Pi, \Theta)} (\log \pi_{dk}\theta_{dw_{di}}) \Big)}_{=: \log \gamma_{dik}} +  \constwrt{C}\, ,
+              \log q^*(C) &= \E_{q(\Pi, \Theta)} \left[ \sum_{d, i, k} c_{dik} \log\big(\pi_{dk} \theta_{kw_{di}}\big) \right] + \constwrt{C} \\
+              &= \sum_{d=1}^D \underbrace{\Big( \E_{q(\Pi, \Theta)} \big[\log \pi_{dk}\theta_{dw_{di}}\big] \Big)}_{=: \log \gamma_{dik}} +  \constwrt{C}\, ,
             \end{align*}
           </div>
           which is (analogous to the Mixture-Model situation) a categorical distribution with probabilities 
@@ -3499,7 +3508,7 @@
           i. e.
           <div class='scroll'>
             \begin{align*}
-              q(C)=\prod_{d, i, k} \tilde \gamma_{dik}^{c_{dik}}\quad \Rightarrow \quad \E_q(c_{dik}) = \tilde \gamma_{dik}\, . 
+              q(C)=\prod_{d, i, k} \tilde \gamma_{dik}^{c_{dik}}\quad \Rightarrow \quad \E_q[c_{dik}] = \tilde \gamma_{dik}\, . 
             \end{align*}
           </div>
         </li>
@@ -3511,9 +3520,10 @@
               q^*(\Theta) &= \prod_{k=1}^K \mathcal D\Bigg(\theta_k; \underbrace{\left[\beta_{kv} + \sum_{d, i} \tilde \gamma_{di} 1_{w_{di}=v}\right]_{v=1,\dots, V}}_{=: \tilde \beta_{k}}  \Bigg)
             \end{align*}
           </div>
+          where $\tilde \beta_k \in \R^V$, the notation $[\cdot ]_{v=1,\dots, V}$ denoting each component $\beta_{kv}$.
         </li>
         <li>
-          Again we now can compute $\E_{q(\Pi, \Theta)} (\log \pi_{dk}\theta_{dw_{di}})$ which we where missing before:
+          Again we now can compute $\E_{q(\Pi, \Theta)} [\log \pi_{dk}\theta_{dw_{di}}]$ which we where missing before:
           <div class='scroll'>
             \begin{align*}
               \gamma_{dik} = \exp \left[\psi(\tilde \alpha_{dk}) + \psi(\tilde \beta_{kw_{di}}) - \psi \left( \sum_v \tilde \beta_{kv} \right)\right]
@@ -3528,6 +3538,189 @@
       </ul>
 
 
+      <h2>VI Extended - Customizing Algorithms</h2>
+      <ul class="flul">
+        <li>
+          <b>Exponential Family Approximations:</b> 
+          <br>
+          In the topic model example we have seen, that using exponential families (and corresponding prior / likelihood - pairs) can simplify calculations immensely. Why is that the case?
+          <ul>
+            <li>
+              Consider an exponential family joint distribution that factorizes for all datapoints $i \in \{1, \dots , N\}$
+              <div class='scroll'>
+                \begin{align*}
+                  p(x, z\vert \eta) = \prod_{n=1}^N \exp\big(\eta^T\phi(x_n, z_n) - \log Z(\eta)\big)
+                \end{align*}
+              </div>
+              with conjugate prior
+              <div class='scroll'>
+                \begin{align*}
+                  p(\eta \vert \alpha, \beta) = \exp\big( \alpha \eta^T \beta - \alpha \log Z(\eta) - \log F(\alpha, \beta) \big)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              Now assuming $q(z,\eta) = q(z)\cdot q(\eta) yields
+              <div class='scroll'>
+                \begin{align*}
+                  \log q^*(z) = \E_{q(\eta)} \big[ \log p(x, z\vert \eta) \big] + \constwrt{z} = \sum_{n=1}^N {\underbrace{\E_{q(\eta)}[\eta]}_{=:\, \E\eta}}^T \phi(x_n, z_n) + \constwrt{z} \, ,
+                \end{align*}
+              </div>
+              i. e. $q$ is in the same exponential family:
+              <div class='scroll'>
+                \begin{align*}
+                  q^*(z) = \prod_{n=1}^N \exp \big( \E\eta^T\phi(x_n, z_n) - \log Z(\E \eta) \big)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              The situation for $q^*(\eta)$ is similar yielding
+              <div class='scroll'>
+                \begin{align*}
+                  q^*(\eta) = \exp \left( \eta^T \left(\beta + \sum_{n=1}^N \E_{q(z)}[\phi(x_n, z_n)] \right) - (\alpha + N)\log Z(\eta) - \constwrt{\eta} \right)
+                \end{align*}
+              </div>
+            </li>
+          </ul>
+        </li>
+        <li>
+          <b>Collapsing Variational Inference for Topic Models:</b> 
+          <br> 
+          For Topic Models like Gibbs sampling one can also collapse the VI procedure (original paper by <a class='link' target='_blank' href='https://proceedings.neurips.cc/paper/2006/file/532b7cbe070a3579f424988a040752f2-Paper.pdf'>Teh, Newman, & Welling, 2006</a>). Smart mathematical tricks and reformulations can speed up inference, save computational resources and make algorithms more robust. Instead they require (significant) human effort.
+          <ul>
+            <li>
+              The idea here is, to - instead of assuming a fully factorization of the approximation $q(\Pi, \Theta, C)$ - make a weaker assumption:
+              <div class='scroll'>
+                \begin{align*}
+                  q(\Pi, \Theta, C) = q(\Theta, \Pi\vert C) \prod_{d, i}q(c_{di})\, ,
+                \end{align*}
+              </div>
+              where the factorization over the individual $c_{di}$'s is not an additional assumption (compare to the found $q^*(C)$ from above).
+            </li>
+            <li>
+              Using the structure 
+              <div class='scroll'>
+                \begin{align*}
+                  p(C, \Theta, \Pi \vert W) = p(\Theta, \Pi \vert C, W) \cdot p(C\vert W)
+                \end{align*}
+              </div>
+              one can actually split up the KL-divergence:
+              <div class='scroll'>
+                \begin{align*}
+                  \dkl \big( q(\Theta, \Pi, C)\vvert p(\Pi, \Theta, C\vert W)\big) = \dots = \dkl\big( q(\Theta, \Pi\vert  C)\vvert p(\Pi, \Theta\vert C, W)\big) + \dkl\big( q(C)\vvert p(C\vert W)\big)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              The trick is now, that we already now a closed form of $p(\Pi, \Theta \vert C, W)$ from section <a href="#LDA">Topic Modelling II - LDA</a>, and can therefore set 
+              <div class='scroll'>
+                \begin{align*}
+                q(\Theta, \Pi\vert  C) &= p(\Pi, \Theta \vert C) = p(\Theta \vert C)\cdot p(\Pi \vert C) \\
+                &= \prod_{k=1}^K \mathcal D (\theta_k; \beta_{k:}+n_{\cdot k :}) \cdot \prod_{d=1}^D \mathcal D (\pi_d; \alpha_{d:}+n_{d : \cdot})
+                \end{align*}
+              </div>
+              which automatically sets the first $\dkl$-term to zero and we are left only to optimize the second one.
+            </li>
+            <li>
+              The VI-problem is therefore reduced to optimize the collapsed ELBo 
+              <div class='scroll'>
+                \begin{align*}
+                  \mathcal L(q) = \sum_C q(C)\cdot \log p(C, W) + \constwrt C\, ,
+                \end{align*}
+              </div>
+              where $p(C,W)$ has already been derived in the collapsed Gibbs sampling part of <a href="#LDA">Topic Modelling II - LDA</a>.
+            </li>
+            <li>
+              This ELBo can be maximized by iteratively for each individual $c_{di}$ setting:
+              <div class='scroll'>
+                \begin{align*}
+                  \log q(c_{di}) = \E_{q(C^{\setminus di})} [\log p(C, W)] + \constwrt{c_{di}}\, .
+                \end{align*}
+              </div>
+              For being able to compute the appearing expectations we have to introduce an assumption over the distribution of $C$, because we can not use some structure which results from additional factors unlike before where we could use resulting structure from $q(\Theta)$ to solve $\E_{q(\Theta)}[\cdot]$ terms in other $q$'s. But we know, that $C$ must be a discrete distribution with some probabilities, i. e.:
+              <div class='scroll'>
+                \begin{align*}
+                  q(c_{di})= \prod_{k=1}^N \gamma_{dik}\quad \textsf{wit} \quad \sum_{k=1}^N \gamma_{dik} = 1\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              After some <a class='link' target='_blank' href='https://youtu.be/TML7iF93NTg?t=1825'>tedious calculations</a> on arrives at
+              <div class='scroll'>
+                \begin{align*}
+                  \gamma_{dik} \propto \exp \left( \E_{q(C^{\setminus di})} \left[ \log \left(\alpha_{dk} + n_{dk\cdot}^{\setminus di}\right) + \log\left(\beta_{kw_{di}} + n_{\cdot k w_{di}}^{\setminus di}\right) - \log\left( \sum_{v=1}^V \beta_{kv} + n_{\cdot k v}^{\setminus di} \right) \right] \right)\, .
+                \end{align*}
+              </div>
+              Computing the expectation of these $\log(\cdot + n)$ terms is actually really hard. An exact solution is actually computationally very inefficient and therefore approximations to the appearing distributions, i. e. 
+              <div class='scroll'>
+                \begin{align*}
+                  \mathrm{bin}(k; p, N) \approx \mathcal N\big(k; Np, Np(1-p) \big)
+                \end{align*}
+              </div>
+              and a second order taylor expansion of $\log(x+n)$ around $\E n$ are used (see <a class='link' target='_blank' href='https://youtu.be/TML7iF93NTg?t=2310'>lecture</a>). Together this yields (abbreviating $\E_{q(C^{\setminus di})}$ simply with $\E$ and $\var_{q(C^{\setminus di})}$ with $\var$):
+              <div class='scroll'>
+                \begin{align*}
+                  \gamma_{dik} \propto\, &
+                    \left( \alpha_{dk} + \E\left[n_{dk\cdot }^{\setminus di}\right] \right)
+                    \left( \beta_{kw_{di}} + \E\left[n_{\cdot kw_{di} }^{\setminus di}\right] \right)
+                    \left( \sum_{v=1}^V\beta_{kv} + \E\left[n_{\cdot kv }^{\setminus di}\right] \right)^{-1} \cdot \\
+                    & \cdot \exp \left( 
+                      - \frac{\var\left[ n_{dk\cdot}^{\setminus di} \right]}{2\left( \alpha_{dk} + \E\left[n_{dk\cdot }^{\setminus di}\right] \right)^2} 
+                      - \frac{\var\left[ n_{\cdot k w_{di}}^{\setminus di} \right]}{2\left( \beta_{kw_{di}} + \E\left[n_{\cdot kw_{di} }^{\setminus di}\right] \right)^2}  
+                      + \frac{\var\left[ n_{\cdot k \cdot}^{\setminus di} \right]}{2\left( \sum_v \beta_{kv} + \E\left[n_{\cdot kv}^{\setminus di}\right] \right)^2}  
+                    \right)\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              In each step the expectations and variances are calculated using the $\gamma_{dik}$ of the previous step like:
+              <div class='scroll'>
+                \begin{align*}
+                  \E\left[n_{dk\cdot }^{\setminus di}\right] =   \sum_{j=1, \ j\neq i}^{I_d} \gamma_{djk} 
+                  \qquad \textsf{and} \qquad 
+                  \var\left[n_{dk\cdot }^{\setminus di}\right] = \sum_{j=1, \ j\neq i}^{I_d} \gamma_{djk}(1-\gamma_{djk})\, .
+                \end{align*}
+              </div>
+            </li>
+          </ul>
+          <li>
+            <b>Including Meta-Data to a Topic Model:</b>
+            <br>
+            To get insights, it might be useful / necessary to include metadata (in case of the SotU dataset this might be the identity of presidents and the year of the speech). This can be (as always) done by including such "prior" information via denoting some prior to the until now basically ignored (set to constant) model parameters $\alpha$ and $\beta$. In the following we discuss briefly how to include these via MAP-style estimation to the model (analogously to MAP-EM at the end of part <a href="#em_algorithm2">EM Algorithm II</a>).
+            <ul>
+              <li>
+                Assuming we have found an ELBo $\mathcal L(q, \alpha, \beta)$ and a suitable $q$, then
+                <div class='scroll'>
+                  \begin{align*}
+                    \log p(\alpha, \beta \vert W) = \mathcal L(q, \alpha, \beta) + \log p(\alpha, \beta) + \dkl \big( q(C) \vvert p(C\vert W, \alpha, \beta) \big) + \constwrt{\alpha, \beta}
+                  \end{align*}
+                </div>
+                Note that it is not actually important if the collapsed VI-version with only $q(C)$ or the standard VI-version with $q(C, \Theta, \Pi)$
+                <!-- <div class='scroll'>
+                  \begin{align*}
+                    \dkl \big( q(C) \vvert p(C\vert W, \alpha, \beta) \big)
+                  \end{align*}
+                </div>
+                or the standard VI-version with
+                <div class='scroll'>
+                  \begin{align*}
+                    \dkl \big( q(C, \Theta, \Pi) \vvert p(C, \Theta, \Pi\vert W, \alpha, \beta) \big)
+                  \end{align*}
+                </div> -->
+                is used.
+              </li>
+              <li> 
+                Now using the functional form of $q$ which has been found via VI, we can now perform EM-style parameter optimization on the setting: In the E-step, set the ELBo using the most recent $q$ and in the M-step maximize the ELBo $+$ log-prior (KL-divergence is approx. $0$ after the E-step) wrt. $\alpha$ and $\beta$.
+              </li>
+              <li>
+                In the <a class='link' target='_blank' href='https://youtu.be/TML7iF93NTg?t=4414'>lecture</a> a simplified version of including a gaussian process prior for $\alpha$ as in <a class='link' target='_blank' href='https://arxiv.org/abs/1110.4713'>Hennig et al. (2011)</a> is presented.
+              </li>
+            </ul>
+          </li>
+        </li>
+      </ul>
+
+
 
 
 
@@ -3536,7 +3729,7 @@
 
       <br> <br>
 
-      <a class="link" target="_blank" href="https://youtu.be/1GJjO7AE8JY?t=2352">Current Video</a>
+      <a class="link" target="_blank" href="https://youtu.be/NhIoQGpvYtA">Current Video</a>
 
 
     </div> <!-- content -->
