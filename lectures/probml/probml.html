@@ -70,10 +70,10 @@
 
       <h1 style="margin-top: -1em;">Probabilistic Machine Learning - Notes</h1>
       <p>
-        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" ref="https://youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd" target="_blank">YouTube</a> © Philipp Hennig / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>. I personally also found the <a class="link" ref="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/index.html" target="_blank">Statistics 260 Lecture by Michael Jordan</a> at Berkeley EECS helpful, which I last checked 11-10-2022 (European format).
+        Notes on the "Probabilistic Machine Learning" Lecture by Prof. Dr. Philipp Hennig from University of Tübingen Germany) 2020 / 2021. Lectures on <a class="link" ref="https://youtube.com/playlist?list=PL05umP7R6ij1tHaOFY96m5uX3J21a6yNd" target="_blank">YouTube</a> © <a class='link' target='_blank' href='https://scholar.google.com/citations?hl=de&user=UeG5w08AAAAJ'>Philipp Hennig</a> / University of Tübingen, 2020 CC BY-NC-SA 3.0. Lots of additional details can be found in the freely available book <a class="link" href="http://gaussianprocess.org/gpml/" target="_blank">Gaussian Processes for Machine Learning by Rasmussen & Williams (2006)</a>. I personally also found the <a class="link" ref="https://people.eecs.berkeley.edu/~jordan/courses/260-spring10/lectures/index.html" target="_blank">Statistics 260 Lecture by Michael Jordan</a> at Berkeley EECS helpful, which I last checked 11-10-2022 (europ.).
       </p>
       <p>
-        Latest Changes:  <span id="date"></span> (European format).
+        Latest Changes:  <span id="date"></span> (europ.).
       </p>
 
       <h3><i>Notation</i></h3>
@@ -122,7 +122,7 @@
       <p>
         Throughout the lecture and these notes we keep track of a "Toolbox" for Modelling- and Computation-Techniques. Directed Graphical Models are the first entry:
       </p>
-      <table class="mdtbl">
+      <table class="toolbox">
         <tr>
           <td><b>Modelling Techniques</b></td>
           <td><b>Computation Techniques</b></td>
@@ -402,7 +402,7 @@
           </li>
           <li>Note that the arrows indicate conditional dependence not causality. The independence structure might often be more nuanced, than the DAG suggests.</li>
           <li>There is more to follow on DGMs <a href="#gmod_2">later</a>.</li>
-          <table class="mdtbl">
+          <table class="toolbox">
             <tr>
               <td><b>Model</b></td>
               <td><b>Computation Technique</b></td>
@@ -811,7 +811,7 @@
           </li>
         </ul>
         <li>HMC has the flaw of needing us to set the step size of the ODE-integrator and the number of steps which should be propagated before a new sample is fixed. Especially with too big step sizes (but also with to long integration) the dynamics tend to move back and forth through the parameter-space and end up ending close to the start point. This is called the <b>U-Turn Problem</b>, which can be further addressed (e.g. see <a class="link" target="_blank" href="https://arxiv.org/abs/1111.4246?context=cs">Hoffman and Gelman, 2011</a>).</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -1144,7 +1144,7 @@
         <li><b>Generalized Regression:</b> Nothing in the Bayesian Regression framework hinders us from choosing arbitrary functions in $\phi_X$, which is pretty cool. Choosing e.g. $\phi_x=(\cos x,\, \sin x,\, \cos(2x), \,
           \sin (2x),\,...)^T$ or step-functions (using the <a class="link" target="_blank" href="https://en.wikipedia.org/wiki/Heaviside_step_function">Heaviside Step Function</a>) is also valid, and even only requires minimal modifications in a program which does the job!</li>
         <li><b>Multivariate Outputs:</b> Above we restricted the general discussion to $y\in \mathbb R$ when we noticed wo would have to use the somewhat unhandy Matrix normal distribution to go on if we want higher dimensional outputs. Otherwise one can also <i>do gaussian regression for each output feature separately</i> to cover multivariate output.</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -1240,7 +1240,7 @@
           </div>
           where typically the <b>Log-Prior takes the role of a regularization</b>. The first equality holds because the marginal $p(y\vert x) = \int p(y \vert \theta, x) p(\theta) \, \mathrm d\theta$ does not depend on $\theta$.
         </li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -1360,7 +1360,7 @@
         </ul>
         are Mercer kernels as well.
         <li>Note that also parameters of kernels can be learned analogous as in "Learning Representations", e. g. by using ML or MAP estimation.</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -1698,7 +1698,7 @@
           Note that $m_T=m_T^S$ and for $P$ respectively only holds for the last timestep.
         </li>
         <li><b>Generalization from Discrete to Continuous Time:</b> Until now, it is only possible to make predictions at discrete timesteps. The generalization is possible by approaching $\delta t \to 0$ (infinitesimal small timesteps) while reducing the introduced variance at each step by the same factor. This gives rise to a whole new field and introduces a new probability measure called the <i>Wiener Measure</i>. The resulting processes can be described with <i>Stochastic Differential Equations</i> which also connects Gaussian Processes to discrete Gauss-Markov Models.</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -1842,7 +1842,7 @@
           <li><b></b>This technique is not only applicable in this classification setting but in lots of intractable posterior estimations.</b> But note that it can be <b>arbitrarily wrong,</b> because it is a <b>local</b>
             approximation.</li>
         </ul>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -2224,7 +2224,7 @@
         </li>
         <li>Also one can show, that the <b>full posterior concentrates at the MAP / MLE estimate for large $n$</b>.</li>
         <li><b>Toy Example:</b> Prof. Hennig shows a worked toy example with MLE estimation in the <a href="https://youtu.be/BdtlrPA5hrs?t=5283" target="_blank" class="link">lecture</a>.</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -2510,7 +2510,7 @@
               </li> 
             </ul>
           </li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -3207,7 +3207,7 @@
           yields to the maximization of $p(\theta \vert x)$.
         </li>
         <li>After all this still the optimization of the ELBo wrt. $\theta$ might be intractable though. In this cases we can still use EM and numerically optimize the ELBo e. g. with an autodiff framework. This is also called <b>generalized EM</b>.</li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -3324,7 +3324,7 @@
             <li>With <i>Exponential Family</i> distributions for $p$ one only needs the expectation of $q$ under the sufficient statistics as the example in the next part will show.</li>
           </ul>
         </li>
-        <table class="mdtbl">
+        <table class="toolbox">
           <tr>
             <td><b>Model</b></td>
             <td><b>Computation Technique</b></td>
@@ -3532,9 +3532,16 @@
           where $\psi$ is the Digamma function and some terms can be omitted thanks to the normalization of $\gamma$ to $\tilde \gamma$.
         </li>
         <li>
-          To apply VI to a problem, we do not necessarily need to compute the ELBo $\mathcal L(q)$ itself, but it can be used as a unittest and monitoring tool. It can be calculated analogously to the update rules for the parameters.
+          To apply VI to a problem, we do not necessarily need to compute the ELBo $\mathcal L(q)$ itself, but it can be used as a unittest and monitoring tool. It can be derived analogously to the update rules for the parameters.
+          <!-- <div class='scroll'>
+            \begin{align*}
+              \mathcal L &= \int q(C, \Theta, \Pi) \log p(W, C, \Theta, \Pi) \, \d C\, \d \Pi\, \d \Theta - \int q(C, \Theta, \Pi) \log q(C, \Theta, \Pi) \, \d C\, \d \Pi\, \d \Theta \\
+              &= 
+            \end{align*}
+          </div> -->
         </li>
         <li>The full algorithm can be found in <a class='link' target='_blank' href='https://youtu.be/TcgeofQJYyM?t=4945'>pseudocode in the lecture</a>.</li>
+        <li>It is pretty common, that the variational distribution $q$ is of a similar factorizing structure as the joint $p$ and also, that the single factors of $q$ are actually the same distributions as their corresponding factors in $p$, but with "updated" parameters. Sometimes it is therefore also common, to beforehand chose corresponding factors of $q$ instead of going through the tedious process of first leaving out certain expectations as "not-yet-known" like we did above (e. g. see the lecture from <a class='link' target='_blank' href='https://scholar.google.com/citations?user=BT4XTP4AAAAJ'>Jordan Boyd-Graber</a> on <a class='link' target='_blank' href='https://youtu.be/2pEkWk-LHmU'>YouTube</a>).</li>
       </ul>
 
 
@@ -3692,10 +3699,10 @@
                 Assuming we have found an ELBo $\mathcal L(q, \alpha, \beta)$ and a suitable $q$, then
                 <div class='scroll'>
                   \begin{align*}
-                    \log p(\alpha, \beta \vert W) = \mathcal L(q, \alpha, \beta) + \log p(\alpha, \beta) + \dkl \big( q(C) \vvert p(C\vert W, \alpha, \beta) \big) + \constwrt{\alpha, \beta}
+                    \log p(\alpha, \beta \vert W) = \mathcal L(q, \alpha, \beta) + \log p(\alpha, \beta) + \dkl \big( q(C, \Theta, \Pi) \vvert p(C, \Theta, \Pi\vert W, \alpha, \beta) \big) + \constwrt{\alpha, \beta} \, .
                   \end{align*}
                 </div>
-                Note that it is not actually important if the collapsed VI-version with only $q(C)$ or the standard VI-version with $q(C, \Theta, \Pi)$
+                <!-- Note that it is not actually important if the collapsed VI-version with only $q(C)$ or the standard VI-version with $q(C, \Theta, \Pi)$ -->
                 <!-- <div class='scroll'>
                   \begin{align*}
                     \dkl \big( q(C) \vvert p(C\vert W, \alpha, \beta) \big)
@@ -3707,7 +3714,7 @@
                     \dkl \big( q(C, \Theta, \Pi) \vvert p(C, \Theta, \Pi\vert W, \alpha, \beta) \big)
                   \end{align*}
                 </div> -->
-                is used.
+                <!-- is used. -->
               </li>
               <li> 
                 Now using the functional form of $q$ which has been found via VI, we can now perform EM-style parameter optimization on the setting: In the E-step, set the ELBo using the most recent $q$ and in the M-step maximize the ELBo $+$ log-prior (KL-divergence is approx. $0$ after the E-step) wrt. $\alpha$ and $\beta$.
@@ -3723,7 +3730,192 @@
 
       <h2>Making Decisions</h2>
       <ul class="flul">
-        <li></li>
+        <li>
+          While the content up till now focuses on building the model and inferring model parameters from data, this part is dedicated to the question: What happens next? How to make decisions from modelling results?
+        </li>
+        <li>
+          <b>Basic Decision Theory:</b> Given the outcome of a "situation" as a RV $X$, dependent on "actions" $a$ (might be discrete or continuous), assign a <b>risk / loss / reward / utility</b> $\ell: \ \X \to \R$ and choose the action such that 
+          <div class='scroll'>
+            \begin{align*}
+              a_* = \argmin{a} \underset{\X}{\sumint} \ell (x) \cdot p(x\vert a)\, .
+            \end{align*}
+          </div>
+          Defining the loss function actually just yields a new RV $Y = \ell(X)$. Implicitly speaking: Choose the loss such that it represents the quantity that you want to minimize.
+        </li>
+        <li>
+          <i>Example:</i> Imagine a comparison of two treatments $A$ and $B$ for a disease, both leading to one of three outcomes $X$, which are death of the patient (0), full recovery (1) of the patient, and recovery but with severe side effects (2). The probabilities for the three outcomes given a treatment can be summarized in a table:
+          <table class="plain">
+            <tr>
+              <td></td>
+              <td><b>$P(X\vert A)$</b></td>
+              <td><b>$P(X\vert B)$</b></td>
+            </tr>
+            <tr>
+              <td><b>0</b></td>
+              <td>$0.1$</td>
+              <td>$0.2$</td>
+            </tr>
+            <tr>
+              <td><b>1</b></td>
+              <td>$0.2$</td>
+              <td>$0.01$</td>
+            </tr>
+            <tr>
+              <td><b>2</b></td>
+              <td>$0.7$</td>
+              <td>$0.79$</td>
+            </tr>
+          </table>
+          The outcome is the variable $X$, the action / policy / decision / option / choice is the treatment.
+        </li>
+        <li>
+          <b>Accumulated Loss:</b> Consider independent draws $x_i$ with $x_i \sim p(x\vert a_i)$. Then choose all $a_i = a_*$ to minimize the accumulated loss 
+          <div class='scroll'>
+            \begin{align*}
+              L(n) = \E_{p(x\vert a)}\left[ \sum_i \ell(x_i)\right] \, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          <b>Delayed Reward:</b> It might be the case, that actions and behavior are connected through time (e. g. in a control technology setting), where actions might need to be chosen beforehand to reduce costs in the future. This complication will not be addressed further in this notes though.
+        </li>
+        <li>
+          <b>Learning by Doing:</b> 
+          <ul>
+            <li>
+              Assume $K$ choices of which each $k\in \{1, \dots, K\}$ yields a binary (Bernoulli) reward / loss $x_i$ with probability $\pi_k \in [0,1]$ at time $i$ (iid).
+            </li>
+            <li>
+              The question arises, after <i>how many trys</i> are we allowed or should we stop the experiment? When are we confident enough, that one $\pi_k$ stands out (depending on the underlying situation) "enough"? That is, how to set the reward / decision rule?
+            </li>
+            <li>
+              A suitable prior for the $\pi_k$'s is the beta-distribution:
+              <div class='scroll'>
+                \begin{align*}
+                  p(\pi_k) = \mathcal B (\pi; a, b) = \frac{1}{B(a, b)} \pi_k^{a-1}(1-\pi_k)^{b-1}\, ,
+                \end{align*}
+              </div>
+              which is conjugate to the Bernoulli distribution.
+            </li>
+            <li>
+              It is easy to show that this yields the posteriors
+              <div class='scroll'>
+                \begin{align*}
+                  p(\pi_k \vert n_k, m_k) = \mathcal B \big(\pi_k; a+m_k, b+(n_k-m_k)\big)\, ,
+                \end{align*}
+              </div>
+              where $n_k$ is the number of trys of choice $k$ and $m_k$ is the number of "successes" with choice $k$, i. e. $m_k = \sum_i x_k^{(i)}$.
+            </li>
+            <li>
+              For $a, b\to 0$ ("extreme" prior) this posterior has mean and variance:
+              <div class='scroll'>
+                \begin{align*}
+                  \bar \pi_k = \E_{p(\pi_k \vert n_k, m_k)}[\pi_k] = \frac{m_k}{n_k} \, , \qquad \sigma_k^2:= \var_{p(\pi_k \vert n_k, m_k)}[\pi_k] = \frac{m_k(n_k-m_k)}{n_k^2(n_k+1)} = \mathcal O(n_k^{-1})\, .
+                \end{align*}
+              </div>
+            </li>
+            <li>
+              From the insights on posterior mean and variance we can now state the following decision rule: At each time step $i$ choose option $k$ that maximizes 
+              <div class='scroll'>
+                \begin{align*}
+                  \bar \pi_k + c\sigma_k
+                \end{align*}
+              </div>
+              for some value $c>0$, which regulates the "Explore-Exploit-Tradeoff" behavior of the procedure.
+            </li>
+          </ul>
+        </li>
+        <li>
+          <b>Explore-Exploit-Tradeoff:</b> A policy like the one in the example above, has a tradeoff between exploratory behavior and exploiting behavior. If $c$ is chosen to be large, the policy will try the choices for more iterations because the uncertainty part of the policy ($\sigma_k$) gets weighted stronger. If $c$ is chosen to be small, the policy quickly "exploits" the results of the experiment to stop after fewer iterations.
+        </li>
+        <li>
+          For reaching a goof explore-exploit balance it is common, to not set $c$ (or something comparable) to a fixed value, but increment it over time (typically at a rate less than $\mathcal O (n_k^{1/2})$). That way it will quickly focus on promising options $k$ but never totally omit the others.
+        </li>
+        <li>
+          <b>Generalization:</b> Due to the <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Central_limit_theorem'>Central Limit Theorem</a> and the connected <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Central_limit_theorem#Relation_to_the_law_of_large_numbers'>Law of Large Numbers</a> this discussion actually generalizes well to other kinds of situation (priors, likelihoods, posteriors) as well. <!-- I. e. in all settings where the timesteps are independent of each other (iid) a policy like:
+          <div class='scroll'>
+            \begin{align*}
+              &\textsf{At each timestep $i$ choose option $k$ that maximizes} \\
+              &\bar x_k + c\sigma_k\, ,
+            \end{align*}
+          </div>
+          where $\bar x$ and $\sigma$ are (empirical) posterior estimators for mean and standard deviation of the target quantity $x$, is a good choice. -->
+        </li>
+        <li>
+          <b>Chernoff-Hoeffding Theorem:</b> The claim above can be formalized using the Chernoff-Hoeffding Theorem. Let $X_1,\dots , X_n$ be random variables with a common range $[0,1]$ and such that 
+          <div class='scroll'>
+            \begin{align*}
+              \E[X_t\vert X_1, \dots , X_{t-1}] = \mu \quad \textsf{for all} \ t \, ,
+            \end{align*}
+          </div>
+          which is obviously true if the $X_i$'s are iid. Let $S_n = \sum_t X_t$. Then for all $a \geq 0$:
+          <div class='scroll'>
+            \begin{align*}
+              p(S_n - n\mu \leq -a) \leq \exp \left( \frac{-2a^2}{n} \right) \quad \textsf{and} \quad
+              p(S_n - n\mu \geq  a) \leq \exp \left( \frac{-2a^2}{n} \right)
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          <b>The $\boldsymbol K$-Armed Bandit:</b> 
+          <br>
+          The analogy of the $K$-armed bandit is the generalized setting for the above stated kind of experiments. 
+          <ul>
+            <li>
+              A <i></i>$K$-armed bandit</i> ($K$AB) is a collection $X_{kn}$ of RVs where $k = 1\, \dots \, K$ and $n\geq 1$ where $k$ is the arm of the bandit. Successive plays of $k$ yield rewards $X_{k1}, X_{k2}, \dots$ which are iid according to an unknown $P_k$ with $\E_{P_k}(X_{ki}) = \mu_k$.
+            </li>
+            <li>
+              A <i>policy</i> $A$ chooses the next machine to play at time $n$, based on past plays and rewards.
+            </li>
+            <li>
+             Let $T_k(n)$ be the number of times machine $k$ was played by $A$ during the first $n$ plays.  <!-- i. e. 
+              <div class='scroll'>
+                \begin{align*}
+                  \sum_{k=1}^K T_k(n) = n    
+                \end{align*}
+              </div> -->
+              The <i>regret</i> of $A$ is 
+              <div class='scroll'>
+                \begin{align*}
+                  R_A(n) = \mu^*\cdot n - \sum_{k=1}^K \E_{P_k}[T_k(n)]\cdot \mu_k \quad \textsf{with} \quad \mu^* := \max_{k} \mu_k\, ,
+                \end{align*}
+              </div>
+              where $T_k(n)$ depends on the algorithm.
+            </li>
+          </ul>
+        </li>
+        <li> 
+          When building a policy-algorithm / agent, at each step $t$ the $\mu_k$'s and $\E_{P_k}T_k(n)$'s have to be estimated / counted from the past timesteps.
+        </li>
+        <li>
+          <b>Upper Confidence Bound (UCB):</b> The UCB algorithm is a policy to explore the behavior of a $K$AB. Let $\bar x_k$ be the empirical average of rewards from $k$ and $n_k$ the number of plays of machine $k$ in $n$ plays. Then
+          <ul>
+            <li>Play each machine (at least) once.</li>
+            <li>Play a(n arbitrary) number of steps where at each step choose machine
+              <div class='scroll'>
+                \begin{align*}
+                  k^* = \argmax{k} \left( \bar x_k + \sqrt{\frac{2\log n}{n_k}} \right)\, .
+                \end{align*}
+              </div>              
+            </li>
+          </ul>
+          This is suitable because $\sigma_k \sim \mathcal O(n_k^{-1/2})$, with $c =\sqrt{2\log n}$. For this algorithm the statistical learning theory can provide an upper bound on the expected regret for arbitrary $P_k$'s which is an <a class='link' target='_blank' href='https://youtu.be/NhIoQGpvYtA?t=3473'>ugly expression</a> but roughly speaking shows, that the expected regret is $\mathcal O(K\log n)$, indicating that sub-optimal arms are played "logarithmically" often and therefor the fraction of the times the optimal arm gets played is <div class='scroll'>
+            \begin{align*}
+              \pi(\textsf{optimal arm}) \sim  \frac{n-K\log(n)}{n} \underset{n\to \infty}{\longrightarrow} 1\, .
+            \end{align*}
+          </div>
+        </li>
+        <li>
+          <b>Limitations:</b>
+          <br>
+          In the <a class='link' target='_blank' href='https://youtu.be/NhIoQGpvYtA?t=3922'>lecture</a> some limitations of these so called "bandit algorithms" are stated and a short recap of tackles to these limitations are noted, which here will get dropped just as buzzwords:
+          <ul>
+            <li>No problem is ever discrete, finite and independent - Continuous Armed Bandits / Bayesian Hyperparameter Optimization</li>
+            <li>In a continuous problem, no "arm" can or should ever be played twice.</li>
+            <li>In many prototyping settings there is a clear cutoff between development and production and early exploration should be free.</li>
+            <li>Tackles are e. g. the <a class='link' target='_blank' href='https://arxiv.org/abs/0912.3995v4'>GP Upper Confidence Bound Algorithm</a> or <a class='link' target='_blank' href='https://arxiv.org/abs/1112.1217'>Entropy Search</a>.</li>
+          </ul>
+        </li>
       </ul>
 
 
@@ -3742,7 +3934,7 @@
 
   <script>
     // Development switch
-    var devel = false;
+    var devel = true;
     if (devel) {
       var bg2 = document.getElementById('bg2');
       if (devel) {bg2.style.transition = "none";}

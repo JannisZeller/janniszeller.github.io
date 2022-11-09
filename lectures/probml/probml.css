@@ -162,8 +162,12 @@ a.link:hover {
     border-bottom-color: transparent;
 }
 
+
 /* Tables */
-table.mdtbl {
+/* -------------------------------------------------------------------------- */
+
+/* Toolbox */
+table.toolbox {
     border-collapse: collapse;
     margin-left:    auto;
     margin-right:   auto;
@@ -173,7 +177,7 @@ table.mdtbl {
     box-shadow: 0 0 0.5em 0em #000000;
 }
 
-table.mdtbl td {
+table.toolbox td {
     width: 50%;
     padding: 0.5em;
     line-height: 1.15em;
@@ -181,24 +185,48 @@ table.mdtbl td {
     border-bottom: 0.05rem solid white;
 }
 
-table.mdtbl tr:first-child td {
+table.toolbox tr:first-child td {
     background-color: #e0c7ff; /* #90fff4; */
     color: #000000;
     font-weight: bold;
     border: none;
 }
 
-table.mdtbl tr:last-child td {
+table.toolbox tr:last-child td {
     border: none;
 }
 
-table.mdtbl tr:first-child td:first-child {border-top-left-radius: 0.3em;}
-table.mdtbl tr:first-child td:last-child  {border-top-right-radius: 0.3em;}
+table.toolbox tr:first-child td:first-child {border-top-left-radius: 0.3em;}
+table.toolbox tr:first-child td:last-child  {border-top-right-radius: 0.3em;}
 
-table.mdtbl tr:last-child td:first-child {border-bottom-left-radius: 0.3em;}
-table.mdtbl tr:last-child td:last-child  {border-bottom-right-radius: 0.3em;}
+table.toolbox tr:last-child td:first-child {border-bottom-left-radius: 0.3em;}
+table.toolbox tr:last-child td:last-child  {border-bottom-right-radius: 0.3em;}
 
 
+/* Plain */
+table.plain {
+    border-collapse: collapse;
+    margin-left:    auto;
+    margin-right:   auto;
+    margin-top:     0.5em;
+    margin-bottom:  0.5em;
+    width: 33%;
+}
+
+table.plain td {
+    padding: 0.5em;
+    line-height: 1.15em;
+    border-bottom: 0.05rem solid white;
+    text-align: right;
+}
+
+table.plain > tr:first-child td {
+    width: 20%;
+}
+
+table.plain > tr:not(:first-child) td {
+    width: 40%;
+}
 
 
 
