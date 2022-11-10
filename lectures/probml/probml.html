@@ -3270,7 +3270,7 @@
               z \leftarrow z \cup \theta
             \end{align*}
           </div>
-          and solely maximize $\mathcal L (q(z))$ wrt. $q$ to implicitly minimize $\dkl{q}{p(z\vert x)}$ (this is true because $\log p(x\vert \theta)$ is a constant in $z$, and the equation from the "Setting").
+          and solely maximize $\mathcal L (q(z))$ wrt. $q$ to implicitly minimize $\dkl \big( q\vvert p(z\vert x)\big)$ (this is true because $\log p(x\vert \theta)$ is a constant in $z$, and the equation from the "Setting").
         </li>
         <li>Variational Inference Goal:</li> Variational Inference is a general framework to construct approximating probability distributions $q(z)$ to non-analytic posterior distributions $p(z\vert x)$ by minimizing the <b>functional</b>
         <div class='scroll'>
