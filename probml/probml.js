@@ -8,23 +8,6 @@ window.mobileCheck = function() {
   }
 check_mobile = window.mobileCheck();
 
-/* Mathjax settings */
-var mathjax_scale = 1.0;
-window.MathJax = {
-  loader: {
-    load: ['[tex]/tagformat', '[tex]/color', '[tex]/centernot', '[tex]/mathtools']
-  },
-  chtml: {
-    scale: mathjax_scale,
-  },
-  tex: {
-    inlineMath: [['$', '$']],
-    packages: {'[+]': ['tagformat', 'href', 'centernot', 'mathtools']},
-    processEscapes: true,
-    tags: 'ams',
-  },
-}
-
 /* Responsive Scroll-Formula Elements */
 var scrolls = document.getElementsByClassName('scroll');
 responsive_formulas = function(scrolls) {
@@ -46,14 +29,6 @@ responsive_formulas = function(scrolls) {
             div.style.marginTop  = "0";
             div.style.boxShadow  = "none";
         }
-        // Debugging
-        // if (div.id == "testformula") {
-        //     console.log(div);
-        //     console.log(div.offsetWidth);
-        //     console.log(div.scrollWidth);
-        //     console.log(parent);
-        //     console.log(parent.clientWidth);
-        // }
     }   
     console.log("Scanning and Converting Formula-Divs.");
     console.log("Numbers of Formulas " + k.toString());
@@ -69,7 +44,7 @@ document.load_effect = function() {
     content.style.opacity = 0.88;
 }
 
-/* Date (props https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript)*/
+/* Date (src https://stackoverflow.com/questions/1531093/how-do-i-get-the-current-date-in-javascript)*/
 var today = new Date();
 var dd = String(today.getDate()).padStart(2, '0');
 var mm = String(today.getMonth() + 1).padStart(2, '0'); 
