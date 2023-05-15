@@ -42,14 +42,18 @@ blockquote, q {
 	quotes: none;
 }
 
-	blockquote:before, blockquote:after, q:before, q:after {
-		content: '';
-		content: none;
-	}
+blockquote:before, blockquote:after, q:before, q:after {
+	content: '';
+	content: none;
+}
 
 table {
 	border-collapse: collapse;
 	border-spacing: 0;
+}
+
+table.scroll {
+	margin: 0.4em;
 }
 
 body {
