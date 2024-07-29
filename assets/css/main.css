@@ -1313,11 +1313,14 @@ input, select, textarea {
 			}
 
 		#header .logo {
-			width: 5.5rem;
-			height: 5.5rem;
+			width: 15rem;
+			height: 15rem;
 			line-height: 5.5rem;
 			border: solid 1px #ffffff;
 			border-radius: 100%;
+			background-image: url("../../images/jz-2024.jpg");
+			background-position: center;
+			background-size: cover;
 		}
 
 			#header .logo .icon:before {
