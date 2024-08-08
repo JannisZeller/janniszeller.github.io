@@ -2975,7 +2975,7 @@
           </div>
         </li>
         <li>
-          <b>From empirical Risk to Likelihood:</b> Minimizing an empirical risk like $J(r,m)$ wrt. some parameters $theta$ (here $r$ and $m$) can often be interpreted as maximizing a likelihood by multiplying $J(r,m)$ with $-c^2$ (where $c^2>0$ is independent of $\theta$) and transferring a sum over datapoints in a product by reversely applying the $\log$-tick, e. g. for $k$-means:
+          <b>From empirical Risk to Likelihood:</b> Minimizing an empirical risk like $J(r,m)$ wrt. some parameters $\theta$ (here $r$ and $m$) can often be interpreted as maximizing a likelihood by multiplying $J(r,m)$ with $-c^2$ (where $c^2>0$ is independent of $\theta$) and transferring a sum over datapoints in a product by reversely applying the $\log$-trick, e. g. for $k$-means:
           <div class='scroll'>
             \begin{align*}
               (r, m) &= \argmin{r,m} J(r, m) = \argmax{r,m} -\frac{1}{2\sigma^2} J(r, m) + \mathrm{const} \\
@@ -3177,7 +3177,7 @@
         </li>
         <li>The two bullets above prove, that the EM-algorithm actually maximizes $\log p(x\vert \theta)$. A good derivation can also be found on <a class='link' target='_blank' href='https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm#Proof_of_correctness'>Wikipedia</a>.</li>
         <li>
-          <b>EM and Exponential Families:</b> When using EM it is helpful if $p(x, z \vert \theta) is an exponential family with $\theta$ as the natural parameters, i. e. 
+          <b>EM and Exponential Families:</b> When using EM it is helpful if $p(x, z \vert \theta)$ is an exponential family with $\theta$ as the natural parameters, i. e. 
           <div class='scroll'>
             \begin{align*}
               p(x, z\vert \theta) = \exp \Big( \phi(x, z)^T \theta - \log Z(\theta) \Big)\, ,
